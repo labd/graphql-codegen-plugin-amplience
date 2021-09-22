@@ -1,0 +1,5 @@
+{
+  "$id": "https://schema-examples.com/test",
+  "title": "Test",
+  "properties": [{ "name": { "title": "name" } }]
+}

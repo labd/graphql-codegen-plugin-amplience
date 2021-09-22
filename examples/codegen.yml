@@ -1,0 +1,11 @@
+overwrite: true
+hooks:
+  afterAllFileWrite:
+    - prettier --write
+generates:
+  examples/output/bla.json:
+    schema: ./examples/schema.graphql
+    plugins:
+      - ./dist/index.js
+    config:
+      hostname: 'https://schema-examples.com'
