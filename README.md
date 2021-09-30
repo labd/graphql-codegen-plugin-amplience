@@ -1,5 +1,3 @@
-# graphql-codegen-plugin-amplience
+# GraphQL Codegen Amplience
 
-Plugin for GraphQL codegen that outputs your schema to Amplience JSON schema's.
-
-WIP
+Collection of packages to create Amplience schema's and Terraform resources for Amplience.
