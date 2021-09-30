@@ -11,16 +11,16 @@
     "node": ">=10"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test",
-    "lint": "tsdx lint",
+    "lerna": "lerna",
+    "start": "lerna run start --stream --parallel",
+    "test": "lerna run test --",
+    "lint": "lerna run lint -- --fix",
+    "build": "lerna run build",
     "prepare": "tsdx build",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "example": "graphql-codegen --config examples/codegen.yml"
   },
-  "peerDependencies": {},
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
@@ -32,9 +32,10 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "name": "graphql-codegen-plugin-amplience",
+  "name": "graphql-codegen-amplience",
   "author": "Boris Besemer",
   "module": "dist/graphql-codegen-plugin-amplience.esm.js",
+  "private": true,
   "size-limit": [
     {
       "path": "dist/graphql-codegen-plugin-amplience.cjs.production.min.js",
@@ -49,6 +50,7 @@
     "@graphql-codegen/cli": "^2.2.0",
     "@size-limit/preset-small-lib": "^5.0.4",
     "husky": "^7.0.2",
+    "lerna": "^4.0.0",
     "size-limit": "^5.0.4",
     "tsdx": "^0.14.1",
     "tslib": "^2.3.1",
@@ -58,5 +60,8 @@
     "@graphql-codegen/plugin-helpers": "^2.1.1",
     "change-case": "^4.1.2",
     "graphql": "^15.6.0"
-  }
+  },
+  "workspaces": [
+    "packages/*"
+  ]
 }
