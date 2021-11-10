@@ -1,64 +1,64 @@
 {
-    "name": "graphql-codegen-plugin-amplience-terraform",
-    "author": "Boris Besemer",
-    "version": "0.1.0",
-    "module": "dist/graphql-codegen-plugin-amplience-terraform.esm.js",
-    "private": true,
-    "license": "MIT",
-    "main": "dist/index.js",
-    "typings": "dist/index.d.ts",
-    "files": [
-      "dist",
-      "src"
-    ],
-    "engines": {
-      "node": ">=10"
+  "name": "graphql-codegen-plugin-amplience-terraform",
+  "author": "Boris Besemer",
+  "version": "0.1.0",
+  "module": "dist/graphql-codegen-plugin-amplience-terraform.esm.js",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why",
+    "example": "graphql-codegen --config examples/codegen.yml"
+  },
+  "peerDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "size-limit": [
+    {
+      "path": "dist/graphql-codegen-plugin-amplience-terraform.cjs.production.min.js",
+      "limit": "10 KB"
     },
-    "scripts": {
-      "start": "tsdx watch",
-      "build": "tsdx build",
-      "test": "tsdx test --passWithNoTests",
-      "lint": "tsdx lint",
-      "prepare": "tsdx build",
-      "size": "size-limit",
-      "analyze": "size-limit --why",
-      "example": "graphql-codegen --config examples/codegen.yml"
-    },
-    "peerDependencies": {},
-    "husky": {
-      "hooks": {
-        "pre-commit": "tsdx lint"
-      }
-    },
-    "prettier": {
-      "printWidth": 80,
-      "semi": true,
-      "singleQuote": true,
-      "trailingComma": "es5"
-    },
-    "size-limit": [
-      {
-        "path": "dist/graphql-codegen-plugin-amplience-terraform.cjs.production.min.js",
-        "limit": "10 KB"
-      },
-      {
-        "path": "dist/graphql-codegen-plugin-amplience-terraform.esm.js",
-        "limit": "10 KB"
-      }
-    ],
-    "devDependencies": {
-      "@graphql-codegen/cli": "^2.2.0",
-      "@size-limit/preset-small-lib": "^5.0.4",
-      "husky": "^7.0.2",
-      "size-limit": "^5.0.4",
-      "tsdx": "^0.14.1",
-      "tslib": "^2.3.1",
-      "typescript": "^4.4.3"
-    },
-    "dependencies": {
-      "@graphql-codegen/plugin-helpers": "^2.1.1",
-      "change-case": "^4.1.2",
-      "graphql": "^15.6.0"
-    },
-    "workspaces": ["packages/*"]
+    {
+      "path": "dist/graphql-codegen-plugin-amplience-terraform.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@graphql-codegen/cli": "^2.2.0",
+    "@size-limit/preset-small-lib": "^5.0.4",
+    "husky": "^7.0.2",
+    "size-limit": "^5.0.4",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.4.3"
+  },
+  "dependencies": {
+    "@graphql-codegen/plugin-helpers": "^2.1.1",
+    "change-case": "^4.1.2",
+    "graphql": "^15.6.0",
+    "terraform-generator": "^5.1.0"
   }
+}

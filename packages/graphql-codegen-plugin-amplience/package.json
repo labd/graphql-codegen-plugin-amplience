@@ -48,6 +48,5 @@
       }
     ],
     "devDependencies": {},
-    "dependencies": {},
-    "workspaces": ["packages/*"]
+    "dependencies": {}
   }
