@@ -9,3 +9,4 @@ generates:
       - ./dist/index.js
     config:
       hostname: 'https://schema-examples.com'
+      schemaDirectory: '${path.module}/content-type-schemas/schemas'

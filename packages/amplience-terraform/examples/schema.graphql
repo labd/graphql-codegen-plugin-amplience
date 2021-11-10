@@ -1,3 +1,7 @@
-type Test {
+type Test @amplienceContent {
     name: String
+}
+
+type NotATest {
+    name: String!
 }
