@@ -13,6 +13,7 @@
     "text": {
       "title": "Text",
       "type": "string",
+      "format": "markdown",
       "minLength": 2,
       "maxLength": 4,
       "examples": ["one example", "another example"]

@@ -149,6 +149,8 @@ export const ampliencePropertyType = (
       }
       return checkLocalized(prop, type, {
         type: 'string',
+        format: findDirectiveValue<StringValueNode>(prop, 'text', 'format')
+          ?.value,
         minLength: maybeToNumber(
           findDirectiveValue<IntValueNode>(prop, 'text', 'minLength')?.value
         ),
