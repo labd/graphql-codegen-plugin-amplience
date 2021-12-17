@@ -1,0 +1,97 @@
+{
+  "$id": "https://schema-examples.com/localized",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "allOf": [
+    {
+      "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content"
+    }
+  ],
+  "title": "Localized",
+  "description": "Localized",
+  "type": "object",
+  "properties": {
+    "string": {
+      "title": "String",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/localization#/definitions/localized-string"
+        }
+      ]
+    },
+    "boolean": {
+      "title": "Boolean",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/localized-value"
+        }
+      ],
+      "properties": {
+        "values": {
+          "items": {
+            "properties": {
+              "value": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Int": {
+      "title": "Int",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/localized-value"
+        }
+      ],
+      "properties": {
+        "values": {
+          "items": {
+            "properties": {
+              "value": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "Float": {
+      "title": "Float",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/localized-value"
+        }
+      ],
+      "properties": {
+        "values": {
+          "items": {
+            "properties": {
+              "value": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      }
+    },
+    "image": {
+      "title": "Image",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/localization#/definitions/localized-image"
+        }
+      ]
+    },
+    "video": {
+      "title": "Video",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/localization#/definitions/localized-video"
+        }
+      ]
+    }
+  },
+  "propertyOrder": ["string", "boolean", "Int", "Float", "image", "video"],
+  "required": ["string", "boolean", "Int", "Float", "image", "video"]
+}

@@ -1,3 +1,15 @@
-type Test {
-    name: String
+type Test @amplience {
+  """
+  This a description
+  """
+  name: String
+
+  bla: Int!
+}
+
+type Test2 @amplience {
+  name: String
+  test: Test
+
+  aLotOfTests: [Test!]!
 }

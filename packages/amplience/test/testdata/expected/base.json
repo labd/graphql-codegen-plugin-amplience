@@ -1,0 +1,186 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema-examples.com/base",
+  "title": "Base",
+  "description": "Base",
+  "allOf": [
+    {
+      "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content"
+    }
+  ],
+  "type": "object",
+  "properties": {
+    "text": {
+      "title": "Text",
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 4,
+      "examples": ["one example", "another example"]
+    },
+    "optionalText": {
+      "title": "Optional Text",
+      "type": "string"
+    },
+    "textList": {
+      "title": "Text List",
+      "minItems": 1,
+      "maxItems": 10,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "boolean": {
+      "title": "Boolean",
+      "type": "boolean"
+    },
+    "optionalBoolean": {
+      "title": "Optional Boolean",
+      "type": "boolean"
+    },
+    "integer": {
+      "maximum": 10,
+      "minimum": 0,
+      "title": "Integer",
+      "type": "integer"
+    },
+    "optionalInteger": {
+      "title": "Optional Integer",
+      "type": "integer"
+    },
+    "float": {
+      "maximum": 10,
+      "minimum": 0,
+      "title": "Float",
+      "type": "number"
+    },
+    "optionalFloat": {
+      "title": "Optional Float",
+      "type": "number"
+    },
+    "constString": {
+      "title": "Const String",
+      "type": "string",
+      "const": "const"
+    },
+    "constArray": {
+      "title": "Const Array",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "const": ["this", "is", "const"]
+    },
+    "enum": {
+      "title": "Enum",
+      "type": "string",
+      "enum": ["a", "b"]
+    },
+    "a": {
+      "title": "A",
+      "type": "object",
+      "properties": {
+        "a": {
+          "title": "A",
+          "type": "string"
+        }
+      },
+      "propertyOrder": ["a"],
+      "required": ["a"]
+    },
+    "bs": {
+      "title": "Bs",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "b": {
+            "title": "B",
+            "type": "string"
+          }
+        },
+        "propertyOrder": ["b"],
+        "required": ["b"]
+      }
+    },
+    "image": {
+      "title": "Image",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/image-link"
+        }
+      ]
+    },
+    "video": {
+      "title": "Video",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/video-link"
+        }
+      ]
+    },
+    "linkedA": {
+      "title": "Linked A",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content-link"
+        },
+        {
+          "properties": {
+            "contentType": {
+              "enum": ["https://schema-examples.com/a"]
+            }
+          }
+        }
+      ]
+    },
+    "union": {
+      "title": "Union",
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content-link"
+        },
+        {
+          "properties": {
+            "contentType": {
+              "enum": [
+                "https://schema-examples.com/a",
+                "https://schema-examples.com/b"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "required": [
+    "text",
+    "textList",
+    "integer",
+    "float",
+    "boolean",
+    "constArray",
+    "image",
+    "video"
+  ],
+  "propertyOrder": [
+    "text",
+    "optionalText",
+    "textList",
+    "integer",
+    "optionalInteger",
+    "float",
+    "optionalFloat",
+    "boolean",
+    "optionalBoolean",
+    "constString",
+    "constArray",
+    "image",
+    "video",
+    "enum",
+    "a",
+    "bs",
+    "union",
+    "linkedA"
+  ]
+}

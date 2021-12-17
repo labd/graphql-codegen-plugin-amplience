@@ -1,0 +1,18 @@
+{
+  "typescript.tsdk": "./node_modules/typescript/lib",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true,
+    "source.organizeImports": true
+  },
+  "eslint.validate": ["typescript", "javascript"],
+  "eslint.packageManager": "yarn",
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "cSpell.words": ["amplience", "typedefs"],
+  "jest.pathToJest": "NODE_ENV=test node_modules/.bin/jest",
+  "eslint.options": {
+    "parserOptions": {
+      "project": ["${workspaceFolder}/tsconfig.json"]
+    }
+  }
+}

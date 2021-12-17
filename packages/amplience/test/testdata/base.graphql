@@ -1,0 +1,73 @@
+type Base @amplience {
+  text: String!
+    @text(minLength: 2, maxLength: 4, format: markdown)
+    @example(items: ["one example", "another example"])
+  optionalText: String
+  textList: [String!]! @list(minItems: 1, maxItems: 10)
+  integer: Int! @number(minimum: 0, maximum: 10)
+  optionalInteger: Int
+  float: Float! @number(minimum: 0, maximum: 10)
+  optionalFloat: Float
+  boolean: Boolean!
+  optionalBoolean: Boolean
+  constString: String @const(item: "const")
+  constArray: [String!]! @const(items: ["this", "is", "const"])
+  image: AmplienceImage!
+  video: AmplienceVideo!
+  enum: Enum
+  a: A
+  bs: [B]
+  union: Union
+  linkedA: A @link
+}
+
+enum Enum {
+  a
+  b
+}
+
+union Union = A | B
+
+type A {
+  a: String!
+}
+
+type B {
+  b: String!
+}
+
+type Localized @amplience {
+  string: String! @localized
+  boolean: Boolean! @localized
+  Int: Boolean! @localized
+  Float: Boolean! @localized
+  image: AmplienceImage! @localized
+  video: AmplienceVideo! @localized
+}
+
+## Tags op type niveau
+# * content
+# 	* param icons
+# 	* param
+# * hierarchy
+# * partial
+# * slot
+# * description
+# * visualization
+
+## Tags op field niveau
+# * title
+# * children
+# * minlength
+# * maxlength
+# * minitems
+# * maxitems
+# * minimum
+# * maximum
+# * format -> color/markdown
+# * sortable
+# * filterable
+# * description -> kan dit met docs?
+# * localized ->
+# * example ->
+# * link (?)
