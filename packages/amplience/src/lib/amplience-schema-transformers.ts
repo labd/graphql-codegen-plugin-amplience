@@ -1,4 +1,3 @@
-/* eslint-disable import/no-named-as-default-member */
 import { capitalCase, paramCase } from 'change-case'
 import {
   FieldDefinitionNode,
@@ -13,52 +12,49 @@ import {
   TypeDefinitionNode,
   TypeNode,
   UnionTypeDefinitionNode,
+  ValueNode,
 } from 'graphql'
-import {
-  combinations,
-  findDirective,
-  findDirectiveValue,
-  hasDirective,
-  ifNotEmpty,
-  maybeToNumber,
-  switchArray,
-} from '../lib/util'
-import { typeName } from './graphql-ast'
-import {
-  AmplienceContentType,
-  AmplienceContentTypeSettings,
-  AmpliencePropertyType,
-  GeneratorConfig,
-} from './types'
+import { switchArray, typeName } from './graphql-ast'
+import { AmplienceContentTypeSchemaBody, AmpliencePropertyType } from './types'
+import { combinations, ifNotEmpty, maybeToNumber } from './util'
 
-export const contentTypeSchema = (
-  type: TypeDefinitionNode,
-  validationLevel: 'CONTENT_TYPE' | 'PARTIAL' | 'SLOT',
-  { schemaHost }: GeneratorConfig
-): AmplienceContentType => ({
-  body: `./schemas/${paramCase(type.name.value)}-schema.json`,
-  schemaId: typeUri(type, schemaHost),
-  validationLevel,
-})
-
-export const contentType = (
-  type: TypeDefinitionNode,
-  icon = 'https://bigcontent.io/cms/icons/ca-types-primitives.png',
-  { schemaHost, visualizations }: GeneratorConfig
-): AmplienceContentTypeSettings => ({
-  contentTypeUri: typeUri(type, schemaHost),
-  status: 'ACTIVE',
-  settings: {
-    label: capitalCase(type.name.value),
-    icons: [
-      {
-        size: 256,
-        url: icon,
-      },
-    ],
-    visualizations,
-    cards: [],
+/**
+ * Returns a Amplience ContentType from an interface type.
+ */
+export const contentTypeSchemaBody = (
+  type: ObjectTypeDefinitionNode,
+  schema: GraphQLSchema,
+  schemaHost: string,
+  hierarchy?: boolean
+): AmplienceContentTypeSchemaBody => ({
+  $id: typeUri(type, schemaHost),
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  ...refType(AMPLIENCE_TYPE.CORE.Content),
+  title: capitalCase(type.name.value),
+  description: type.description?.value ?? capitalCase(type.name.value),
+  'trait:sortable': sortableTrait(type),
+  'trait:hierarchy': hierarchy ? hierarchyTrait(type, schemaHost) : undefined,
+  'trait:filterable': filterableTrait(type),
+  type: 'object',
+  properties: {
+    ...objectProperties(type, schema, schemaHost),
   },
+  propertyOrder:
+    type.fields
+      ?.filter(field =>
+        ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
+          term => !hasDirective(field, term)
+        )
+      )
+      .map(field => field.name.value) ?? [],
+  required: type.fields
+    ?.filter(field =>
+      ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
+        term => !hasDirective(field, term)
+      )
+    )
+    .filter(field => field.type.kind === 'NonNullType')
+    .map(n => n.name.value),
 })
 
 /**
@@ -117,6 +113,7 @@ export const ampliencePropertyType = (
 ): AmpliencePropertyType => {
   const node = schema.getType(typeName(type))
 
+  // Handle non-primitive types.
   if (node) {
     if (isUnionType(node) && node.astNode) {
       return contentLink(node.astNode, schemaHost)
@@ -135,6 +132,7 @@ export const ampliencePropertyType = (
     }
   }
 
+  // Handle primitive types.
   switch (typeName(type)) {
     case 'String':
       const constTag = findDirective(prop, 'const')
@@ -243,7 +241,7 @@ const enumProperties = (
 })
 
 /**
- * Wraps a Amplience type object in localized JSON
+ * Wraps a Amplience type object in localized JSON.
  */
 export const checkLocalized = (
   prop: FieldDefinitionNode,
@@ -302,11 +300,6 @@ export const localized = (value: AmpliencePropertyType) => ({
 export const typeUri = (type: TypeDefinitionNode, schemaHost: string) =>
   `${schemaHost}/${paramCase(type.name.value)}`
 
-export const definitionUri = (type: TypeDefinitionNode, schemaHost: string) =>
-  `${schemaHost}/${paramCase(type.name.value)}#/definitions/${paramCase(
-    type.name.value
-  )}`
-
 /**
  * Returns sortable trait path for amplience based on properties containing the `@sortable` tag
  * @returns Object that can be pushed to `trait:sortable` directly
@@ -361,3 +354,20 @@ export const filterableTrait = (type: ObjectTypeDefinitionNode) => {
     filterBy: filterCombinations.map(paths => ({ paths })),
   }
 }
+
+export const hasDirective = (
+  symbol: FieldDefinitionNode | TypeDefinitionNode,
+  name: string
+) => symbol.directives?.some(t => t.name.value === name)
+
+export const findDirective = (symbol: FieldDefinitionNode, name: string) =>
+  symbol.directives?.find(t => t.name.value === name)
+
+export const findDirectiveValue = <T extends ValueNode>(
+  symbol: FieldDefinitionNode | TypeDefinitionNode,
+  name: string,
+  argument: string
+) =>
+  symbol.directives
+    ?.find(t => t.name.value === name)
+    ?.arguments?.find(t => t.name.value === argument)?.value as T | undefined

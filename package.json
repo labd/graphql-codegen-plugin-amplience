@@ -1,5 +1,5 @@
 {
-  "name": "graphql-codegen-amplience",
+  "name": "@amplience-codegen/amplience-codegen",
   "author": "Boris Besemer",
   "version": "0.1.0",
   "module": "dist/graphql-codegen-plugin-amplience.esm.js",
@@ -24,19 +24,18 @@
     "size": "lerna run size",
     "analyze": "lerna run analyze"
   },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
   "husky": {
     "hooks": {
       "pre-commit": "tsdx lint"
     }
   },
-  "prettier": {
-    "printWidth": 80,
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5"
-  },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.2.0",
+    "@labd/eslint-config": "^0.4.0",
     "@size-limit/preset-small-lib": "^5.0.4",
     "husky": "^7.0.2",
     "lerna": "^4.0.0",

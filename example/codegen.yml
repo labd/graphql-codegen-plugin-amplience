@@ -1,0 +1,28 @@
+overwrite: true
+schema: ./examples/schema.graphql
+generates:
+  examples/output/bla.tf:
+    hooks:
+      afterAllFileWrite:
+        - terraform fmt
+        - prettier --write
+    plugins:
+      - amplience
+      - amplience-terraform
+    config:
+      hostname: https://schema-examples.com
+      # using a terraform variable:
+      visualization: var.variables["VISUALIZATION_HOST"]
+      # or directly:
+      # visualization: https://example.com/preview?vse={{vse.domain}}&content={{content.sys.id}}
+      content_repositories:
+        # using a terraform variable:
+        website1: var.variables["CONTENT_REPO1_ID"]
+        # or directly:
+        website2: '123456789'
+      slot_repositories:
+        # using a terraform variable:
+        slot1: var.variables["SLOT_REPO1_ID"]
+        # or directly:
+        slot2: '12312412412'
+    preset: amplience

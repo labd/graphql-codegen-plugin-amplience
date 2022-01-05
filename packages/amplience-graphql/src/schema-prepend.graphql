@@ -1,0 +1,13 @@
+enum ValidationLevel {
+  SLOT
+  CONTENT_TYPE
+}
+type Visualization {
+  label: String!
+  templated_uri: String!
+  default: Boolean
+}
+directive @amplience(
+  validationLevel: ValidationLevel
+  visualizations: [Visualization!]
+) on OBJECT

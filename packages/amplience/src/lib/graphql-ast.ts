@@ -3,7 +3,7 @@ import {
   DocumentNode,
   ObjectTypeDefinitionNode,
   TypeDefinitionNode,
-  TypeNode,
+  TypeNode
 } from 'graphql'
 
 export const isObjectTypeDefinitionNode = (
@@ -37,3 +37,16 @@ export const getContentTypes = (documentNode: DocumentNode) =>
   documentNode.definitions
     .filter(isObjectTypeDefinitionNode)
     .filter(a => a.directives?.some(d => d.name.value === 'amplience'))
+
+export const switchArray = <T>(
+  type: TypeNode,
+  {
+    ifArray,
+    other
+  }: { ifArray: (subType: TypeNode) => T; other: (type: TypeNode) => T }
+) =>
+  type.kind === 'ListType'
+    ? ifArray(type.type)
+    : type.kind === 'NonNullType' && type.type.kind === 'ListType'
+    ? ifArray(type.type.type)
+    : other(type)

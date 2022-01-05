@@ -1,10 +1,4 @@
-export interface AmplienceContentTypeJsonFiles {
-  name: string
-  contentTypeSchema: AmplienceContentType
-  contentTypeSchemaBody: AmplienceContentTypeSchema
-  contentType?: AmplienceContentTypeSettings
-}
-export interface AmplienceContentType {
+export interface AmplienceContentTypeSchema {
   body: string
   schemaId: string
   validationLevel: string
@@ -19,22 +13,6 @@ export interface AmplienceContentTypeSettings {
     visualizations: any[]
     cards: any[]
   }
-}
-
-export interface AmplienceContentTypeSchema {
-  $id: string
-  $schema: string
-  allOf: any[]
-  title: string
-  description: string
-  'trait:filterable'?: {},
-  'trait:hierarchy'?: {},
-  'trait:sortable'?: {},
-  type: 'object'
-  properties?: { [name: string]: AmpliencePropertyType }
-  definitions?: { [name: string]: AmpliencePropertyType }
-  propertyOrder?: string[]
-  required?: string[]
 }
 
 export interface AmpliencePropertyType {
@@ -58,13 +36,29 @@ export interface AmpliencePropertyType {
   examples?: string[]
 }
 
-export interface GeneratorConfig {
-  visualizations: Visualization[]
-  schemaHost: string
+export interface AmplienceContentTypeSchemaBody {
+  $id: string
+  $schema: string
+  allOf: any[]
+  title: string
+  description: string
+  'trait:filterable'?: {}
+  'trait:hierarchy'?: {}
+  'trait:sortable'?: {}
+  type: 'object'
+  properties?: { [name: string]: AmpliencePropertyType }
+  definitions?: { [name: string]: AmpliencePropertyType }
+  propertyOrder?: string[]
+  required?: string[]
 }
 
 export interface Visualization {
   templatedUri: string
   label: string
   default: boolean
+}
+
+export interface GeneratorConfig {
+  visualizations: Visualization[]
+  schemaHost: string
 }

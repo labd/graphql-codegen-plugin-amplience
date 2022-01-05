@@ -2,7 +2,7 @@ import { getCachedDocumentNodeFromSchema } from '@graphql-codegen/plugin-helpers
 import fs from 'fs'
 import { buildSchema } from 'graphql'
 import { addToSchema } from '../src/index'
-import { contentTypeSchemaBody } from '../src/lib/content-type'
+import { contentTypeSchemaBody } from '../src/lib/amplience-schema-transformers'
 import { getContentTypes } from '../src/lib/graphql-ast'
 
 it.each([{ graphqlFile: 'base', jsons: ['base', 'localized'] }])(
@@ -16,10 +16,7 @@ it.each([{ graphqlFile: 'base', jsons: ['base', 'localized'] }])(
     const contentTypes = getContentTypes(documentNode)
 
     const result = contentTypes.map(type =>
-      contentTypeSchemaBody(type, schema, {
-        schemaHost: 'https://schema-examples.com',
-        visualizations: [],
-      })
+      contentTypeSchemaBody(type, schema, 'https://schema-examples.com')
     )
 
     for (const [i, json] of jsons.entries()) {

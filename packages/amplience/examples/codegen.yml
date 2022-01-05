@@ -3,12 +3,10 @@ hooks:
   afterAllFileWrite:
     - prettier --write
 generates:
-  examples/output/:
+  examples/output/bla.tf:
     preset: ./dist/index.js
-    presetConfig:
-      extension: -schema.json
     schema: ./examples/schema.graphql
     plugins:
       - ./dist/index.js
     config:
-      hostname: 'https://schema-examples.com'
+      hostname: https://schema-examples.com
