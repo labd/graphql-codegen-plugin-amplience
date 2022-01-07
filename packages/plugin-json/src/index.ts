@@ -1,15 +1,15 @@
 import {
+  PluginFunction,
+  PluginValidateFn,
+  Types
+} from '@graphql-codegen/plugin-helpers'
+import {
   hasDirective,
   isObjectTypeDefinitionNode,
   maybeDirective,
   maybeDirectiveValue,
   schemaPrepend
-} from '@amplience-codegen/common'
-import {
-  PluginFunction,
-  PluginValidateFn,
-  Types
-} from '@graphql-codegen/plugin-helpers'
+} from 'amplience-graphql-codegen-common'
 import { paramCase } from 'change-case'
 import { EnumValueNode, ObjectTypeDefinitionNode } from 'graphql'
 import { dirname } from 'path'

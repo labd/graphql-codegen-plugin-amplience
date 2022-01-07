@@ -1,7 +1,7 @@
 import {
   hasDirective,
   isObjectTypeDefinitionNode
-} from '@amplience-codegen/common'
+} from 'amplience-graphql-codegen-common'
 import { getCachedDocumentNodeFromSchema } from '@graphql-codegen/plugin-helpers'
 import fs from 'fs'
 import { buildSchema } from 'graphql'

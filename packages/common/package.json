@@ -1,5 +1,5 @@
 {
-  "name": "@amplience-codegen/common",
+  "name": "amplience-graphql-codegen-common",
   "version": "0.1.0",
   "module": "dist/common.esm.js",
   "private": true,
@@ -35,5 +35,9 @@
       "path": "dist/common.esm.js",
       "limit": "10 KB"
     }
-  ]
+  ],
+  "dependencies": {
+    "change-case": "^4.1.2",
+    "graphql": "^15.6.0"
+  }
 }

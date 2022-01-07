@@ -8,7 +8,7 @@ import {
   switchArray,
   typeName,
   typeUri
-} from '@amplience-codegen/common'
+} from 'amplience-graphql-codegen-common'
 import { capitalCase, paramCase } from 'change-case'
 import {
   FieldDefinitionNode,

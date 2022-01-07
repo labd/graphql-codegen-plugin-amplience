@@ -1,15 +1,15 @@
 import {
-  maybeDirective,
-  maybeDirectiveValue,
-  schemaPrepend,
-  typeUri
-} from '@amplience-codegen/common'
-import {
   getCachedDocumentNodeFromSchema,
   PluginFunction,
   PluginValidateFn,
   Types
 } from '@graphql-codegen/plugin-helpers'
+import {
+  maybeDirective,
+  maybeDirectiveValue,
+  schemaPrepend,
+  typeUri
+} from 'amplience-graphql-codegen-common'
 import { capitalCase, paramCase, snakeCase } from 'change-case'
 import {
   BooleanValueNode,

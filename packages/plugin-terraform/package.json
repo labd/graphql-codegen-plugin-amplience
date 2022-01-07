@@ -1,8 +1,8 @@
 {
-  "name": "@amplience-codegen/terraform",
+  "name": "amplience-graphql-codegen-terraform",
   "author": "Lab Digital",
   "version": "0.1.0",
-  "module": "dist/terraform.esm.js",
+  "module": "dist/amplience-graphql-codegen-terraform.esm.js",
   "private": true,
   "license": "MIT",
   "main": "dist/index.js",
@@ -31,16 +31,16 @@
   },
   "size-limit": [
     {
-      "path": "dist/terraform.cjs.production.min.js",
+      "path": "dist/amplience-graphql-codegen-terraform.cjs.production.min.js",
       "limit": "10 KB"
     },
     {
-      "path": "dist/terraform.esm.js",
+      "path": "dist/amplience-graphql-codegen-terraform.esm.js",
       "limit": "10 KB"
     }
   ],
   "dependencies": {
-    "@amplience-codegen/common": "^0.1.0",
+    "amplience-graphql-codegen-common": "^0.1.0",
     "@graphql-codegen/plugin-helpers": "^2.1.1",
     "change-case": "^4.1.2",
     "graphql": "^15.6.0",
