@@ -31,12 +31,6 @@ export type PluginConfig = {
    */
   hostname?: string
   /**
-   * The directory all schema JSONs are located.
-   *
-   * @default .
-   */
-  schemaDirectory: string
-  /**
    *
    */
   visualization?: string
@@ -175,4 +169,6 @@ export const validate: PluginValidateFn<any> = async (
 }
 
 const maybeArg = (value: string) =>
-  value.startsWith('var') ? arg(value) : value
+  ['var.', 'local.'].some(prefix => value.startsWith(prefix))
+    ? arg(value)
+    : value

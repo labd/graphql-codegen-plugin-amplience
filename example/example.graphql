@@ -1,4 +1,4 @@
-type Base @amplience {
+type Base @amplience(visualizations: true) {
   text: String!
     @text(minLength: 2, maxLength: 4, format: markdown)
     @example(items: ["one example", "another example"])
@@ -22,6 +22,10 @@ type Base @amplience {
   referencedB: B @reference
 }
 
+type TestSlot @amplience(validationLevel: SLOT) {
+  name: String
+}
+
 enum Enum {
   a
   b
@@ -37,7 +41,7 @@ type B @amplience {
   b: String!
 }
 
-type Localized @amplience {
+type Localized @amplience(repository: "website2") {
   string: String! @localized
   boolean: Boolean! @localized
   Int: Boolean! @localized

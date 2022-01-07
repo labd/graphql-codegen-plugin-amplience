@@ -1,12 +1,21 @@
 # GraphQL Codegen Amplience
 
-Collection of packages to create Amplience schema's and Terraform resources for Amplience.
+This repository contains 2 plugins for Graphql codegen to generate Amplience JSON schemas and Terraform resources for Amplience out of a Graphql schema.
 
-# Requirements
 
-yarn with node 16
+## AmplienceJSON plugin
+
+For more details see the [plugin folder](/packages/json)
+
+## Terraform plugin
+
+This plugin requires the JSON plugin as well.
+
+For more details see the [plugin folder](/packages/terraform)
 
 # Development
+
+Assuming you have yarn installed with node 16, run:
 
 ```bash
 yarn

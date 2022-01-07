@@ -135,6 +135,21 @@
         }
       ]
     },
+    "referencedB": {
+      "allOf": [
+        {
+          "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content-reference"
+        },
+        {
+          "properties": {
+            "contentType": {
+              "enum": ["https://schema-examples.com/b"]
+            }
+          }
+        }
+      ],
+      "title": "Referenced B"
+    },
     "union": {
       "title": "Union",
       "allOf": [
@@ -182,6 +197,7 @@
     "a",
     "bs",
     "union",
-    "linkedA"
+    "linkedA",
+    "referencedB"
   ]
 }

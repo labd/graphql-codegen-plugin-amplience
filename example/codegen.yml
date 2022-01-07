@@ -1,14 +1,14 @@
 overwrite: true
-schema: ./examples/schema.graphql
+schema: ./schema.graphql
 hooks:
   afterAllFileWrite:
     - terraform fmt
     - prettier --write
 generates:
-  examples/output/bla.tf:
+  examples/output/example.tf:
     plugins:
-      - '@amplience-codegen/json'
-      - '@amplience-codegen/terraform'
+      - amplience-graphql-codegen-json
+      - amplience-graphql-codegen-terraform
     config:
       hostname: https://schema-examples.com
       # using a terraform variable:
@@ -25,4 +25,4 @@ generates:
         slot1: var.variables["SLOT_REPO1_ID"]
         # or directly:
         slot2: '12312412412'
-    preset: '@amplience-codegen/json'
+    preset: amplience-graphql-codegen-json

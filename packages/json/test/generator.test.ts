@@ -8,7 +8,7 @@ import { buildSchema } from 'graphql'
 import { addToSchema } from '../src/index'
 import { contentTypeSchemaBody } from '../src/lib/amplience-schema-transformers'
 
-it.each([{ graphqlFile: 'base', jsons: ['base', 'localized'] }])(
+it.each([{ graphqlFile: 'base', jsons: ['a', 'b', 'base', 'localized'] }])(
   'correct JSON files for $graphql',
   ({ graphqlFile, jsons }) => {
     const schema = buildSchema(
@@ -20,18 +20,21 @@ it.each([{ graphqlFile: 'base', jsons: ['base', 'localized'] }])(
       .filter(isObjectTypeDefinitionNode)
       .filter(d => hasDirective(d, 'amplience'))
 
-    const result = contentTypes.map(type =>
+    const results = contentTypes.map(type =>
       contentTypeSchemaBody(type, schema, 'https://schema-examples.com')
     )
 
-    for (const [i, json] of jsons.entries()) {
+    for (const json of jsons) {
       const contentTypeSchema = readJson(
         `./test/testdata/expected/${json}.json`
       )
+      const result = results.find(
+        r => r.$id === `https://schema-examples.com/${json}`
+      )
       if (process.env.LOG) {
-        console.log(JSON.stringify(pruned(result[i]), null, 2))
+        console.log(JSON.stringify(pruned(result), null, 2))
       }
-      expect(pruned(result[i])).toEqual(contentTypeSchema)
+      expect(pruned(result)).toEqual(contentTypeSchema)
     }
   }
 )

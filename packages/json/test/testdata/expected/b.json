@@ -1,0 +1,15 @@
+{
+  "$id": "https://schema-examples.com/b",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "allOf": [
+    { "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content" }
+  ],
+  "title": "B",
+  "description": "B",
+  "type": "object",
+  "properties": {
+    "b": { "title": "B", "type": "string" }
+  },
+  "propertyOrder": ["b"],
+  "required": ["b"]
+}

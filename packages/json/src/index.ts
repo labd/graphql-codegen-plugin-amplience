@@ -19,9 +19,9 @@ export type PluginConfig = {
   /**
    * The hostname
    *
-   * @example 'https://schema-examples.com'
+   * @default 'https://schema-examples.com'
    */
-  hostname: string
+  hostname?: string
 }
 
 export type PresetConfig = {}
@@ -31,7 +31,7 @@ export const addToSchema = schemaPrepend.loc?.source.body
 export const plugin: PluginFunction<PluginConfig> = (
   schema,
   _documents,
-  config,
+  { hostname = 'https://schema-examples.com' },
   info
 ) => {
   const node = info?.pluginContext?.typeNode as ObjectTypeDefinitionNode
@@ -42,12 +42,7 @@ export const plugin: PluginFunction<PluginConfig> = (
       'validationLevel'
     )?.value === 'HIERARCHY'
 
-  const result = contentTypeSchemaBody(
-    node,
-    schema,
-    config.hostname,
-    isHierarchy
-  )
+  const result = contentTypeSchemaBody(node, schema, hostname, isHierarchy)
 
   return JSON.stringify(result)
 }
@@ -55,14 +50,10 @@ export const plugin: PluginFunction<PluginConfig> = (
 export const validate: PluginValidateFn<PluginConfig> = async (
   _schema,
   _documents,
-  config,
+  _config,
   _outputFile
 ) => {
-  if (config.hostname === undefined) {
-    throw new Error(
-      `Plugin "amplience" requires a hostname to be set in the config!`
-    )
-  }
+  //
 }
 
 export const preset: Types.OutputPreset<PresetConfig> = {
