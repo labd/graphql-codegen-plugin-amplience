@@ -1,0 +1,39 @@
+{
+  "name": "@amplience-codegen/common",
+  "version": "0.1.0",
+  "module": "dist/common.esm.js",
+  "private": true,
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "size-limit": [
+    {
+      "path": "dist/common.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/common.esm.js",
+      "limit": "10 KB"
+    }
+  ]
+}

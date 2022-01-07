@@ -1,0 +1,40 @@
+{
+  "name": "@amplience-codegen/json",
+  "author": "Lab Digital",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "module": "dist/json.esm.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test --passWithNoTests",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why",
+    "example": "graphql-codegen --config examples/codegen.yml"
+  },
+  "size-limit": [
+    {
+      "path": "dist/json.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/json.esm.js",
+      "limit": "10 KB"
+    }
+  ],
+  "dependencies": {
+    "@amplience-codegen/common": "^0.1.0"
+  }
+}

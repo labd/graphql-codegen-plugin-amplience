@@ -4,6 +4,6 @@ module.exports = {
   rules: {
     'import/order': 'off',
     parserOptions: 'off',
-    'parserOptions.project': 'off',
-  },
+    'parserOptions.project': 'off'
+  }
 }

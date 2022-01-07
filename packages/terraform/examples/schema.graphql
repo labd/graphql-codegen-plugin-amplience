@@ -1,0 +1,20 @@
+type Test @amplience {
+  name: String
+}
+
+# Use a different repository than the default (first) repository.
+type TestOtherRepository @amplience(repository: "website2") {
+  name: String
+}
+
+type TestSlot @amplience(validationLevel: SLOT) {
+  name: String
+}
+
+type TestVisualizations @amplience(visualizations: true) {
+  name: String
+}
+
+type NotATest {
+  name: String!
+}
