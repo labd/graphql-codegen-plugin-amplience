@@ -40,8 +40,8 @@ type B @amplience {
 type Localized @amplience {
   string: String! @localized
   boolean: Boolean! @localized
-  Int: Boolean! @localized
-  Float: Boolean! @localized
+  int: Int! @localized
+  float: Float! @localized
   image: AmplienceImage! @localized
   video: AmplienceVideo! @localized
 }

@@ -1,12 +1,13 @@
 # amplience-graphql-codegen-terraform
 
-Plugin for GraphQL Codegen that outputs your schema to Amplience resources in Terraform.
+This is a plugin for GraphQL Codegen that outputs your schema to Amplience resources in Terraform.
 
-It will look for types with an `@amplience` directive and generates Terraform resources that create Amplience Content Types.
+It will look for types with an `@amplience` directive and generate Terraform resources that create Amplience Content Types.
+This terraform code is dependent on the [Amplience Terraform provider](https://registry.terraform.io/providers/labd/amplience/latest).
 
-This plugin requires `amplience-graphql-codegen-json` to generate the necessary JSON files the terraform code refers to.
+Furthermore, this plugin requires `amplience-graphql-codegen-json` to generate the necessary JSON files the terraform code refers to.
 
-For an example output see [the example output terraform file](/packages/terraform/examples/output/example.tf).
+For an example output see [the example output terraform file](examples/output/example.tf).
 
 For more information on the Amplience Terraform provider, see the documentation on the [terraform registry](https://registry.terraform.io/providers/labd/amplience/latest/docs).
 
@@ -37,6 +38,7 @@ generates:
 ```
 
 The `hostname` is optional and will default to `https://schema-examples.com`.
+This is a prefix that is used to define the JSON schema resources and should be a URL.
 The `visualization` is also optional.
 
 The values for the `visualization`, the `content_repositories`, and the `slot_repositories` can either be a direct value,
@@ -45,7 +47,6 @@ an environment variable using the `${MY_VAR}` syntax, or a reference to a terraf
 # Your Graphql file
 
 Basic example:
-
 
 ```graphql
 type MyContentType @amplience {

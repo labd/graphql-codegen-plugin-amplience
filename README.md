@@ -1,6 +1,6 @@
 # GraphQL Codegen Amplience
 
-This repository contains 2 plugins for Graphql codegen to generate Amplience JSON schemas and Terraform resources for Amplience out of a Graphql schema.
+This repository contains 2 plugins for Graphql codegen to generate Amplience JSON schemas and Terraform resources for Amplience Content Types out of a Graphql schema.
 
 
 ## AmplienceJSON plugin

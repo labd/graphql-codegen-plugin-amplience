@@ -37,7 +37,7 @@
         }
       }
     },
-    "Int": {
+    "int": {
       "title": "Int",
       "allOf": [
         {
@@ -49,14 +49,14 @@
           "items": {
             "properties": {
               "value": {
-                "type": "boolean"
+                "type": "integer"
               }
             }
           }
         }
       }
     },
-    "Float": {
+    "float": {
       "title": "Float",
       "allOf": [
         {
@@ -68,7 +68,7 @@
           "items": {
             "properties": {
               "value": {
-                "type": "boolean"
+                "type": "number"
               }
             }
           }
@@ -92,6 +92,6 @@
       ]
     }
   },
-  "propertyOrder": ["string", "boolean", "Int", "Float", "image", "video"],
-  "required": ["string", "boolean", "Int", "Float", "image", "video"]
+  "propertyOrder": ["string", "boolean", "int", "float", "image", "video"],
+  "required": ["string", "boolean", "int", "float", "image", "video"]
 }
