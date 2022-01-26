@@ -16,6 +16,7 @@
       "format": "markdown",
       "minLength": 2,
       "maxLength": 4,
+      "pattern": "/[\\w\\-]+",
       "examples": ["one example", "another example"]
     },
     "optionalText": {

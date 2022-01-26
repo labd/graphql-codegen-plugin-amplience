@@ -170,6 +170,7 @@ export const ampliencePropertyType = (
 
         ...ifValue(maybeDirective(prop, 'text'), d => ({
           format: maybeDirectiveValue<StringValueNode>(d, 'format')?.value,
+          pattern: maybeDirectiveValue<StringValueNode>(d, 'pattern')?.value,
           minLength: ifValue(
             maybeDirectiveValue<IntValueNode>(d, 'minLength')?.value,
             Number

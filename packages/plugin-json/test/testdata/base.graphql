@@ -1,6 +1,6 @@
 type Base @amplience {
   text: String!
-    @text(minLength: 2, maxLength: 4, format: markdown)
+    @text(minLength: 2, maxLength: 4, format: markdown, pattern: "/[\\w\\-]+")
     @example(items: ["one example", "another example"])
   optionalText: String
   textList: [String!]! @list(minItems: 1, maxItems: 10)

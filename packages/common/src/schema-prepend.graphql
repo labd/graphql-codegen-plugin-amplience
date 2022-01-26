@@ -6,6 +6,7 @@ directive @text(
   minLength: Int
   maxLength: Int
   format: String
+  pattern: String
 ) on FIELD_DEFINITION
 directive @number(minimum: Int, maximum: Int) on FIELD_DEFINITION
 directive @list(minItems: Int, maxItems: Int) on FIELD_DEFINITION
