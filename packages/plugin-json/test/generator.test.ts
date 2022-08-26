@@ -1,6 +1,6 @@
 import {
   hasDirective,
-  isObjectTypeDefinitionNode
+  isObjectTypeDefinitionNode,
 } from 'amplience-graphql-codegen-common'
 import { getCachedDocumentNodeFromSchema } from '@graphql-codegen/plugin-helpers'
 import fs from 'fs'
@@ -18,9 +18,9 @@ it.each([{ graphqlFile: 'base', jsons: ['a', 'b', 'base', 'localized'] }])(
     const documentNode = getCachedDocumentNodeFromSchema(schema)
     const contentTypes = documentNode.definitions
       .filter(isObjectTypeDefinitionNode)
-      .filter(d => hasDirective(d, 'amplience'))
+      .filter((d) => hasDirective(d, 'amplience'))
 
-    const results = contentTypes.map(type =>
+    const results = contentTypes.map((type) =>
       contentTypeSchemaBody(type, schema, 'https://schema-examples.com')
     )
 
@@ -29,7 +29,7 @@ it.each([{ graphqlFile: 'base', jsons: ['a', 'b', 'base', 'localized'] }])(
         `./test/testdata/expected/${json}.json`
       )
       const result = results.find(
-        r => r.$id === `https://schema-examples.com/${json}`
+        (r) => r.$id === `https://schema-examples.com/${json}`
       )
       if (process.env.LOG) {
         console.log(JSON.stringify(pruned(result), null, 2))

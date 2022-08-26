@@ -14,18 +14,16 @@
     "node": ">=16"
   },
   "scripts": {
-    "start": "tsdx watch",
-    "build": "tsdx build",
-    "test": "tsdx test --passWithNoTests",
-    "lint": "tsdx lint",
-    "prepare": "tsdx build",
+    "start": "tsup --watch",
+    "build": "tsup",
+    "lint": "eslint",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "example": "graphql-codegen --config examples/codegen.yml"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "tsdx lint"
+      "pre-commit": "eslint"
     }
   },
   "size-limit": [
