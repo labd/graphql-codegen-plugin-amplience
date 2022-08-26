@@ -39,8 +39,8 @@
     }
   ],
   "dependencies": {
-    "amplience-graphql-codegen-common": "^0.1.0",
     "@graphql-codegen/plugin-helpers": "^2.1.1",
+    "amplience-graphql-codegen-common": "^0.1.0",
     "change-case": "^4.1.2",
     "graphql": "^15.6.0",
     "terraform-generator": "^5.1.0"
