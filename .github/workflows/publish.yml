@@ -13,15 +13,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - run: yarn
       - run: yarn build
-      # - run: npm login
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish ./packages/common/dist
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish ./packages/plugin-json/dist
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish ./packages/plugin-terraform/dist
+      - run: yarn lerna publish --no-private patch -y
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

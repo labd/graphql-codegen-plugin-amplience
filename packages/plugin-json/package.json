@@ -10,9 +10,6 @@
   "files": [
     "dist"
   ],
-  "publishConfig": {
-    "directory": "dist"
-  },
   "engines": {
     "node": ">=16"
   },
