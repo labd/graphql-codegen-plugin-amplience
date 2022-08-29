@@ -1,4 +1,3 @@
-import graphqlLoaderPlugin from '@luckycatfactory/esbuild-graphql-loader'
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
@@ -9,5 +8,4 @@ export default defineConfig({
   sourcemap: true,
   format: ['cjs', 'esm', 'iife'],
   outDir: 'dist',
-  esbuildPlugins: [(graphqlLoaderPlugin as any).default()],
 })
