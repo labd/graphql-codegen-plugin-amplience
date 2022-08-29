@@ -1,17 +1,23 @@
 {
   "name": "amplience-graphql-codegen-json",
   "author": "Lab Digital",
-  "version": "0.1.3",
+  "version": "0.1.3.2",
   "private": false,
   "license": "MIT",
-  "module": "dist/index.mjs",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "module": "index.mjs",
+  "main": "index.js",
+  "typings": "index.d.ts",
   "files": [
-    "dist"
+    "."
   ],
   "engines": {
     "node": ">=16"
+  },
+  "exports": {
+    ".": {
+      "require": "./index.js",
+      "import": "./index.mjs"
+    }
   },
   "scripts": {
     "start": "tsup --watch",
@@ -24,16 +30,6 @@
     "analyze": "size-limit --why",
     "example": "graphql-codegen --config examples/codegen.yml"
   },
-  "size-limit": [
-    {
-      "path": "dist/amplience-graphql-codegen-json.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/amplience-graphql-codegen-json.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "^2.1.1",
     "amplience-graphql-codegen-common": "^0.1.0",
