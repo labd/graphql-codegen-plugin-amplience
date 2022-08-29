@@ -1,14 +1,14 @@
 import {
   PluginFunction,
   PluginValidateFn,
-  Types
+  Types,
 } from '@graphql-codegen/plugin-helpers'
 import {
   hasDirective,
   isObjectTypeDefinitionNode,
   maybeDirective,
   maybeDirectiveValue,
-  schemaPrepend
+  schemaPrepend,
 } from 'amplience-graphql-codegen-common'
 import { paramCase } from 'change-case'
 import { EnumValueNode, ObjectTypeDefinitionNode } from 'graphql'
@@ -26,7 +26,7 @@ export type PluginConfig = {
 
 export type PresetConfig = {}
 
-export const addToSchema = schemaPrepend.loc?.source.body
+export const addToSchema = schemaPrepend.loc?.source?.body
 
 export const plugin: PluginFunction<PluginConfig> = (
   schema,
@@ -57,18 +57,18 @@ export const validate: PluginValidateFn<PluginConfig> = async (
 }
 
 export const preset: Types.OutputPreset<PresetConfig> = {
-  buildGeneratesSection: options =>
+  buildGeneratesSection: (options) =>
     options.schema.definitions
       .filter(isObjectTypeDefinitionNode)
-      .filter(d => hasDirective(d, 'amplience'))
-      .map(node => ({
+      .filter((d) => hasDirective(d, 'amplience'))
+      .map((node) => ({
         ...options,
         filename: `${dirname(options.baseOutputDir)}/schemas/${paramCase(
           node.name.value
         )}.json`,
 
         pluginContext: {
-          typeNode: node
-        }
-      }))
+          typeNode: node,
+        },
+      })),
 }

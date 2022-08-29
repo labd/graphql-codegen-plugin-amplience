@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "private": false,
   "license": "MIT",
-  "module": "dist/amplience-graphql-codegen-json.esm.js",
+  "module": "dist/index.mjs",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "files": [
@@ -18,7 +18,7 @@
     "build": "tsup",
     "test": "jest",
     "lint": "eslint",
-    "prepare": "tsup src/index.ts",
+    "prepare": "tsup",
     "size": "size-limit",
     "analyze": "size-limit --why",
     "example": "graphql-codegen --config examples/codegen.yml"

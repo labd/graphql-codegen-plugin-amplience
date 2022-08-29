@@ -2,7 +2,7 @@
   "name": "amplience-graphql-codegen-terraform",
   "author": "Lab Digital",
   "version": "0.1.0",
-  "module": "dist/amplience-graphql-codegen-terraform.esm.js",
+  "module": "dist/index.mjs",
   "private": false,
   "license": "MIT",
   "main": "dist/index.js",
@@ -26,16 +26,6 @@
       "pre-commit": "eslint"
     }
   },
-  "size-limit": [
-    {
-      "path": "dist/amplience-graphql-codegen-terraform.cjs.production.min.js",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/amplience-graphql-codegen-terraform.esm.js",
-      "limit": "10 KB"
-    }
-  ],
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "^2.1.1",
     "amplience-graphql-codegen-common": "^0.1.0",
