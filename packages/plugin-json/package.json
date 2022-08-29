@@ -22,9 +22,6 @@
     "postbuild": "cp package.json dist",
     "test": "jest",
     "lint": "eslint",
-    "prepare": "tsup",
-    "size": "size-limit",
-    "analyze": "size-limit --why",
     "example": "graphql-codegen --config examples/codegen.yml"
   },
   "dependencies": {
@@ -32,5 +29,6 @@
     "amplience-graphql-codegen-common": "^0.1.5",
     "change-case": "^4.1.2",
     "graphql": "^15.6.0"
-  }
+  },
+  "gitHead": "8ec548b31ea77c5bdde92f010d48d30f98be4a91"
 }

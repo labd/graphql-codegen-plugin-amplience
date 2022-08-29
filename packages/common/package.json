@@ -20,13 +20,12 @@
     "start": "tsup --watch",
     "build": "tsup",
     "postbuild": "cp package.json dist",
-    "lint": "eslint",
-    "size": "size-limit",
-    "analyze": "size-limit --why"
+    "lint": "eslint"
   },
   "dependencies": {
     "change-case": "^4.1.2",
     "graphql": "^15.6.0",
     "graphql-tag": "^2.12.6"
-  }
+  },
+  "gitHead": "8ec548b31ea77c5bdde92f010d48d30f98be4a91"
 }
