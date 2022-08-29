@@ -14,9 +14,15 @@ jobs:
           scope: '@labdigital'
       - run: yarn
       - run: yarn build
-      - run: npm login
+      # - run: npm login
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm publish ./packages/common/dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm publish ./packages/plugin-json/dist
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - run: npm publish ./packages/plugin-terraform/dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
