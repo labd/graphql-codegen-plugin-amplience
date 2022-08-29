@@ -14,7 +14,8 @@
     "lint": "lerna run lint -- --fix",
     "build": "lerna run build",
     "size": "lerna run size",
-    "analyze": "lerna run analyze"
+    "analyze": "lerna run analyze",
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist"
   },
   "prettier": {
     "semi": false,
