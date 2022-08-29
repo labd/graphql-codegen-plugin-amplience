@@ -4,20 +4,17 @@
   "version": "0.1.4",
   "private": false,
   "license": "MIT",
-  "module": "index.mjs",
-  "main": "index.js",
-  "typings": "index.d.ts",
+  "module": "dist/index.mjs",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "files": [
-    "."
+    "dist"
   ],
+  "publishConfig": {
+    "directory": "dist"
+  },
   "engines": {
     "node": ">=16"
-  },
-  "exports": {
-    ".": {
-      "require": "./index.js",
-      "import": "./index.mjs"
-    }
   },
   "scripts": {
     "start": "tsup --watch",
