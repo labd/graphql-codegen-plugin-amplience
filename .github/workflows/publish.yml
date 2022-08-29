@@ -13,6 +13,9 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
           scope: '@labdigital'
       - run: yarn
-      - run: yarn lerna publish minor -y
+      - run: yarn build
+      - run: npm publish ./packages/common/dist
+      - run: npm publish ./packages/plugin-json/dist
+      - run: npm publish ./packages/plugin-terraform/dist
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

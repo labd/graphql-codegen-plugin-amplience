@@ -16,6 +16,7 @@
   "scripts": {
     "start": "tsup --watch",
     "build": "tsup",
+    "postbuild": "cp package.json dist",
     "test": "jest",
     "lint": "eslint",
     "prepare": "tsup",

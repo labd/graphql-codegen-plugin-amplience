@@ -21,6 +21,7 @@
   "scripts": {
     "start": "tsup --watch",
     "build": "tsup",
+    "postbuild": "cp package.json dist",
     "lint": "eslint",
     "size": "size-limit",
     "analyze": "size-limit --why"
