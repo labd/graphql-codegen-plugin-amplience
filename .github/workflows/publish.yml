@@ -14,6 +14,7 @@ jobs:
           scope: '@labdigital'
       - run: yarn
       - run: yarn build
+      - run: npm login
       - run: npm publish ./packages/common/dist
       - run: npm publish ./packages/plugin-json/dist
       - run: npm publish ./packages/plugin-terraform/dist
