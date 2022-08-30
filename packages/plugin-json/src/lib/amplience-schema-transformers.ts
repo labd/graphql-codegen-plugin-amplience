@@ -371,7 +371,7 @@ export const filterableTrait = (type: ObjectTypeDefinitionNode) => {
   if (filterableProps.length > 5)
     throw new Error('max @filterable tags can be five')
   const filterCombinations = combinations(
-    filterableProps.map(s => `/${s.name}`)
+    filterableProps.map(s => `/${s.name.value}`)
   )
 
   return {
