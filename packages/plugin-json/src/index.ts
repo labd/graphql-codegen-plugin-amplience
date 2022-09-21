@@ -22,6 +22,11 @@ export type PluginConfig = {
    * @default 'https://schema-examples.com'
    */
   hostname?: string
+  /**
+   * The suffix for the schema file generated if needed
+   *
+   */
+  schemaSuffix?: string
 }
 
 export type PresetConfig = {}
@@ -43,7 +48,6 @@ export const plugin: PluginFunction<PluginConfig> = (
     )?.value === 'HIERARCHY'
 
   const result = contentTypeSchemaBody(node, schema, hostname, isHierarchy)
-
   return JSON.stringify(result)
 }
 
@@ -65,7 +69,9 @@ export const preset: Types.OutputPreset<PresetConfig> = {
         ...options,
         filename: `${dirname(options.baseOutputDir)}/schemas/${paramCase(
           node.name.value
-        )}.json`,
+        )}${
+          options.config.schemaSuffix ? '-' + options.config.schemaSuffix : ''
+        }.json`,
 
         pluginContext: {
           typeNode: node,
