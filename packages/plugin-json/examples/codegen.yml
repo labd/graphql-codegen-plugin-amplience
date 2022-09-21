@@ -10,3 +10,4 @@ generates:
       - ./dist/index.js
     config:
       hostname: https://schema-examples.com
+      schemaSuffix: ''
