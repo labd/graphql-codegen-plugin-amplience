@@ -7,7 +7,7 @@ import {
   maybeDirectiveValue,
   switchArray,
   typeName,
-  typeUri
+  typeUri,
 } from 'amplience-graphql-codegen-common'
 import { capitalCase, paramCase } from 'change-case'
 import {
@@ -22,7 +22,7 @@ import {
   StringValueNode,
   TypeDefinitionNode,
   TypeNode,
-  UnionTypeDefinitionNode
+  UnionTypeDefinitionNode,
 } from 'graphql'
 import { AmplienceContentTypeSchemaBody, AmpliencePropertyType } from './types'
 
@@ -45,24 +45,24 @@ export const contentTypeSchemaBody = (
   'trait:filterable': filterableTrait(type),
   type: 'object',
   properties: {
-    ...objectProperties(type, schema, schemaHost)
+    ...objectProperties(type, schema, schemaHost),
   },
   propertyOrder:
     type.fields
-      ?.filter(field =>
+      ?.filter((field) =>
         ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
-          term => !hasDirective(field, term)
+          (term) => !hasDirective(field, term)
         )
       )
-      .map(field => field.name.value) ?? [],
+      .map((field) => field.name.value) ?? [],
   required: type.fields
-    ?.filter(field =>
+    ?.filter((field) =>
       ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
-        term => !hasDirective(field, term)
+        (term) => !hasDirective(field, term)
       )
     )
-    .filter(field => field.type.kind === 'NonNullType')
-    .map(n => n.name.value)
+    .filter((field) => field.type.kind === 'NonNullType')
+    .map((n) => n.name.value),
 })
 
 /**
@@ -76,44 +76,47 @@ export const objectProperties = (
   Object.fromEntries(
     type.fields
       // Children can not be available as a field on the object itself
-      ?.filter(prop =>
-        ['children', 'ignoreAmplience'].every(term => !hasDirective(prop, term))
+      ?.filter((prop) =>
+        ['children', 'ignoreAmplience'].every(
+          (term) => !hasDirective(prop, term)
+        )
       )
-      .map(prop => [
+      .map((prop) => [
         prop.name.value,
         {
           title: capitalCase(prop.name.value),
           description: prop.description?.value,
           ...switchArray<AmpliencePropertyType>(prop.type, {
-            ifArray: subType => ({
+            ifArray: (subType) => ({
               type: 'array',
               minItems: ifValue(
                 ifValue(
                   maybeDirective(prop, 'list'),
-                  d => maybeDirectiveValue<IntValueNode>(d, 'minItems')?.value
+                  (d) => maybeDirectiveValue<IntValueNode>(d, 'minItems')?.value
                 ),
                 Number
               ),
               maxItems: ifValue(
                 ifValue(
                   maybeDirective(prop, 'list'),
-                  d => maybeDirectiveValue<IntValueNode>(d, 'maxItems')?.value
+                  (d) => maybeDirectiveValue<IntValueNode>(d, 'maxItems')?.value
                 ),
                 Number
               ),
               items: ampliencePropertyType(prop, subType, schema, schemaHost),
-              const: arrayConstValues(prop)
+              const: arrayConstValues(prop),
             }),
-            other: type => ampliencePropertyType(prop, type, schema, schemaHost)
-          })
-        }
+            other: (type) =>
+              ampliencePropertyType(prop, type, schema, schemaHost),
+          }),
+        },
       ]) ?? []
   )
 
 const arrayConstValues = (prop: FieldDefinitionNode) =>
-  ifValue(maybeDirective(prop, 'const'), d =>
+  ifValue(maybeDirective(prop, 'const'), (d) =>
     maybeDirectiveValue<ListValueNode>(d, 'items')?.values.map(
-      v => (v as StringValueNode)?.value
+      (v) => (v as StringValueNode)?.value
     )
   )
 
@@ -136,7 +139,7 @@ export const ampliencePropertyType = (
     if (isEnumType(node) && node.astNode) {
       return {
         type: 'string',
-        enum: node.astNode.values?.map(v => v.name.value)
+        enum: node.astNode.values?.map((v) => v.name.value),
       }
     }
     if (isObjectType(node) && node.astNode) {
@@ -153,7 +156,7 @@ export const ampliencePropertyType = (
   // Handle primitive types.
   switch (typeName(type)) {
     case 'String':
-      const constValue = ifValue(maybeDirective(prop, 'const'), d =>
+      const constValue = ifValue(maybeDirective(prop, 'const'), (d) =>
         maybeDirectiveValue<StringValueNode>(d, 'item')
       )?.value
 
@@ -161,14 +164,14 @@ export const ampliencePropertyType = (
       if (constValue) {
         return {
           type: 'string',
-          const: constValue
+          const: constValue,
         }
       }
 
       return checkLocalized(prop, type, {
         type: 'string',
 
-        ...ifValue(maybeDirective(prop, 'text'), d => ({
+        ...ifValue(maybeDirective(prop, 'text'), (d) => ({
           format: maybeDirectiveValue<StringValueNode>(d, 'format')?.value,
           pattern: maybeDirectiveValue<StringValueNode>(d, 'pattern')?.value,
           minLength: ifValue(
@@ -178,13 +181,13 @@ export const ampliencePropertyType = (
           maxLength: ifValue(
             maybeDirectiveValue<IntValueNode>(d, 'maxLength')?.value,
             Number
-          )
+          ),
         })),
-        examples: ifValue(maybeDirective(prop, 'example'), d =>
+        examples: ifValue(maybeDirective(prop, 'example'), (d) =>
           maybeDirectiveValue<ListValueNode>(d, 'items')?.values.map(
-            v => (v as StringValueNode)?.value
+            (v) => (v as StringValueNode)?.value
           )
-        )
+        ),
       })
     case 'Boolean':
       return checkLocalized(prop, type, { type: 'boolean' })
@@ -192,7 +195,7 @@ export const ampliencePropertyType = (
     case 'Float':
       return checkLocalized(prop, type, {
         type: typeName(type) === 'Float' ? 'number' : 'integer',
-        ...ifValue(maybeDirective(prop, 'number'), d => ({
+        ...ifValue(maybeDirective(prop, 'number'), (d) => ({
           format: maybeDirectiveValue<StringValueNode>(d, 'format')?.value,
           minimum: ifValue(
             maybeDirectiveValue<IntValueNode>(d, 'minimum')?.value,
@@ -201,8 +204,8 @@ export const ampliencePropertyType = (
           maximum: ifValue(
             maybeDirectiveValue<IntValueNode>(d, 'maximum')?.value,
             Number
-          )
-        }))
+          ),
+        })),
       })
     case 'AmplienceImage':
     case 'AmplienceVideo':
@@ -247,10 +250,10 @@ const inlineObject = (
 ) => ({
   type: 'object',
   properties: objectProperties(type, schema, schemaHost),
-  propertyOrder: type.fields?.map(n => n.name.value),
+  propertyOrder: type.fields?.map((n) => n.name.value),
   required: type.fields
-    ?.filter(field => field.type.kind === 'NonNullType')
-    .map(field => field.name.value)
+    ?.filter((field) => field.type.kind === 'NonNullType')
+    .map((field) => field.name.value),
 })
 
 const enumProperties = (
@@ -260,11 +263,11 @@ const enumProperties = (
   properties: {
     contentType: {
       enum: (typeOrUnion.kind === 'UnionTypeDefinition'
-        ? (((typeOrUnion.types ?? []) as unknown) as TypeDefinitionNode[])
+        ? ((typeOrUnion.types ?? []) as unknown as TypeDefinitionNode[])
         : [typeOrUnion]
-      ).map(t => typeUri(t, schemaHost))
-    }
-  }
+      ).map((t) => typeUri(t, schemaHost)),
+    },
+  },
 })
 
 /**
@@ -288,7 +291,7 @@ export const AMPLIENCE_TYPE = {
     AmplienceVideo:
       'http://bigcontent.io/cms/schema/v1/localization#/definitions/localized-video',
     String:
-      'http://bigcontent.io/cms/schema/v1/localization#/definitions/localized-string'
+      'http://bigcontent.io/cms/schema/v1/localization#/definitions/localized-string',
   },
   CORE: {
     LocalizedValue:
@@ -303,12 +306,12 @@ export const AMPLIENCE_TYPE = {
     ContentLink:
       'http://bigcontent.io/cms/schema/v1/core#/definitions/content-link',
     HierarchyNode:
-      'http://bigcontent.io/cms/schema/v2/hierarchy#/definitions/hierarchy-node'
-  }
+      'http://bigcontent.io/cms/schema/v2/hierarchy#/definitions/hierarchy-node',
+  },
 }
 
 export const refType = (ref: string, ...other: object[]) => ({
-  allOf: [{ $ref: ref }, ...other]
+  allOf: [{ $ref: ref }, ...other],
 })
 
 export const localized = (value: AmpliencePropertyType) => ({
@@ -317,11 +320,11 @@ export const localized = (value: AmpliencePropertyType) => ({
     values: {
       items: {
         properties: {
-          value
-        }
-      }
-    }
-  }
+          value,
+        },
+      },
+    },
+  },
 })
 
 /**
@@ -330,14 +333,14 @@ export const localized = (value: AmpliencePropertyType) => ({
  */
 export const sortableTrait = (type: ObjectTypeDefinitionNode) =>
   ifNotEmpty(
-    type.fields?.filter(m => hasDirective(m, 'sortable')) ?? [],
-    items => ({
+    type.fields?.filter((m) => hasDirective(m, 'sortable')) ?? [],
+    (items) => ({
       sortBy: [
         {
           key: 'default',
-          paths: items.map(n => `/${n.name}`)
-        }
-      ]
+          paths: items.map((n) => `/${n.name}`),
+        },
+      ],
     })
   )
 
@@ -353,9 +356,9 @@ export const hierarchyTrait = (
   childContentTypes: [
     typeUri(type, schemaHost),
     ...(type.fields
-      ?.filter(m => hasDirective(m, 'children'))
-      .map(n => `${schemaHost}/${paramCase(n.name.value)}`) ?? [])
-  ]
+      ?.filter((m) => hasDirective(m, 'children'))
+      .map((n) => `${schemaHost}/${paramCase(n.name.value)}`) ?? []),
+  ],
 })
 
 /**
@@ -366,15 +369,15 @@ export const hierarchyTrait = (
  */
 export const filterableTrait = (type: ObjectTypeDefinitionNode) => {
   const filterableProps =
-    type.fields?.filter(m => hasDirective(m, 'filterable')) ?? []
+    type.fields?.filter((m) => hasDirective(m, 'filterable')) ?? []
   if (filterableProps.length === 0) return undefined
   if (filterableProps.length > 5)
     throw new Error('max @filterable tags can be five')
   const filterCombinations = combinations(
-    filterableProps.map(s => `/${s.name.value}`)
+    filterableProps.map((s) => `/${s.name.value}`)
   )
 
   return {
-    filterBy: filterCombinations.map(paths => ({ paths }))
+    filterBy: filterCombinations.map((paths) => ({ paths })),
   }
 }
