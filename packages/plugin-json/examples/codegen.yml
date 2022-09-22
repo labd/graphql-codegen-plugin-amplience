@@ -5,9 +5,9 @@ hooks:
 generates:
   examples/output/bla.tf:
     preset: ./dist/index.js
-    schema: ./examples/schema.graphql
+    schema: ./examples/amplience.graphql
     plugins:
       - ./dist/index.js
     config:
-      hostname: https://schema-examples.com
-      schemaSuffix: ''
+      hostname: https://amplience.fg-services.net
+      schemaSuffix: 'schema'
