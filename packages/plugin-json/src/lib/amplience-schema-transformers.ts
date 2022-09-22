@@ -8,6 +8,7 @@ import {
   switchArray,
   typeName,
   typeUri,
+  typeUriInline,
 } from 'amplience-graphql-codegen-common'
 import { capitalCase, paramCase } from 'change-case'
 import {
@@ -34,36 +35,42 @@ export const contentTypeSchemaBody = (
   schema: GraphQLSchema,
   schemaHost: string,
   hierarchy?: boolean
-): AmplienceContentTypeSchemaBody => ({
-  $id: typeUri(type, schemaHost),
-  $schema: 'http://json-schema.org/draft-07/schema#',
-  ...refType(AMPLIENCE_TYPE.CORE.Content),
-  title: capitalCase(type.name.value),
-  description: type.description?.value ?? capitalCase(type.name.value),
-  'trait:sortable': sortableTrait(type),
-  'trait:hierarchy': hierarchy ? hierarchyTrait(type, schemaHost) : undefined,
-  'trait:filterable': filterableTrait(type),
-  type: 'object',
-  properties: {
-    ...objectProperties(type, schema, schemaHost),
-  },
-  propertyOrder:
-    type.fields
+): AmplienceContentTypeSchemaBody => {
+  return {
+    $id: typeUri(type, schemaHost),
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    ...refType(AMPLIENCE_TYPE.CORE.Content),
+    title: capitalCase(type.name.value),
+    description: type.description?.value ?? capitalCase(type.name.value),
+    'trait:sortable': sortableTrait(type),
+    'trait:hierarchy': hierarchy ? hierarchyTrait(type, schemaHost) : undefined,
+    'trait:filterable': filterableTrait(type),
+    type: 'object',
+    properties: {
+      ...objectProperties(type, schema, schemaHost),
+    },
+    propertyOrder:
+      type.fields
+        ?.filter((field) => {
+          // console.log('Filter ', field)
+          return ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
+            (term) => !hasDirective(field, term)
+          )
+        })
+        .map((field) => {
+          // console.log('Map ', field)
+          return field.name.value
+        }) ?? [],
+    required: type.fields
       ?.filter((field) =>
         ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
           (term) => !hasDirective(field, term)
         )
       )
-      .map((field) => field.name.value) ?? [],
-  required: type.fields
-    ?.filter((field) =>
-      ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
-        (term) => !hasDirective(field, term)
-      )
-    )
-    .filter((field) => field.type.kind === 'NonNullType')
-    .map((n) => n.name.value),
-})
+      .filter((field) => field.type.kind === 'NonNullType')
+      .map((n) => n.name.value),
+  }
+}
 
 /**
  * Returns the properties that go inside Amplience `{type: 'object', properties: ...}`
@@ -130,7 +137,6 @@ export const ampliencePropertyType = (
   schemaHost: string
 ): AmpliencePropertyType => {
   const node = schema.getType(typeName(type))
-
   // Handle non-primitive types.
   if (node) {
     if (isUnionType(node) && node.astNode) {
@@ -148,6 +154,12 @@ export const ampliencePropertyType = (
       }
       if (hasDirective(prop, 'reference')) {
         return contentReference(node.astNode, schemaHost)
+      }
+      if (hasDirective(prop, 'inline')) {
+        return inlineContent(node.astNode, schemaHost)
+      }
+      if (hasDirective(prop, 'inlineLink')) {
+        return inlineLink(node.astNode, schemaHost)
       }
       return inlineObject(node.astNode, schema, schemaHost)
     }
@@ -230,18 +242,22 @@ const contentReference = (type: ObjectTypeDefinitionNode, schemaHost: string) =>
     enumProperties(type, schemaHost)
   )
 
+const inlineLink = (
+  type: UnionTypeDefinitionNode | ObjectTypeDefinitionNode,
+  schemaHost: string
+) => {
+  return refType(typeUriInline(type, schemaHost))
+}
+
 const contentLink = (
   type: UnionTypeDefinitionNode | ObjectTypeDefinitionNode,
   schemaHost: string
 ) => refType(AMPLIENCE_TYPE.CORE.ContentLink, enumProperties(type, schemaHost))
 
-// const inlineContentLink = (
-//   type: TypeDefinitionNodeReference,
-//   schemaHost: string
-// ) => ({
-//   type: 'object',
-//   ...refType(typeUri(type, schemaHost)),
-// })
+const inlineContent = (type: ObjectTypeDefinitionNode, schemaHost: string) => ({
+  type: 'object',
+  ...refType(typeUri(type, schemaHost)),
+})
 
 const inlineObject = (
   type: ObjectTypeDefinitionNode,
