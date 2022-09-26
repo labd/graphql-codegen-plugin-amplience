@@ -2,6 +2,7 @@
   "name": "amplience-graphql-codegen",
   "author": "Lab digital",
   "private": true,
+  "version": "0.1.1-kelvin",
   "license": "MIT",
   "engines": {
     "node": ">=16"
