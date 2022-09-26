@@ -36,7 +36,7 @@ export const contentTypeSchemaBody = (
   schemaHost: string,
   hierarchy?: boolean
 ): AmplienceContentTypeSchemaBody => {
-  return {
+  const amplienceContentTypeSchema: AmplienceContentTypeSchemaBody = {
     $id: typeUri(type, schemaHost),
     $schema: 'http://json-schema.org/draft-07/schema#',
     ...refType(AMPLIENCE_TYPE.CORE.Content),
@@ -70,6 +70,9 @@ export const contentTypeSchemaBody = (
       .filter((field) => field.type.kind === 'NonNullType')
       .map((n) => n.name.value),
   }
+  const ref = refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0]
+  if (hierarchy) amplienceContentTypeSchema.allOf.push(ref)
+  return amplienceContentTypeSchema
 }
 
 /**
