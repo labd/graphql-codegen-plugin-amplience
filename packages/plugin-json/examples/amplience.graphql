@@ -130,14 +130,14 @@ type BrandLink implements LocalizablePageLink {
 }
 
 type BannerColumnBlock @amplience {
-  column: [ColumnBlock]! @list(minItems: 2, maxItems: 4) @inline
-  allLink: LocalizablePageLink @inline
+  column: [ColumnBlock]! @list(minItems: 2, maxItems: 4) @refLink
+  allLink: LocalizablePageLink @refLink
 }
 
 type ColumnBlock @amplience {
   title: String @localized
   content: String @localized @text(format: markdown)
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
   image: AmplienceImage
   imageMobile: AmplienceImage
   imageAlt: String @localized
@@ -164,12 +164,12 @@ type BrandListBlock @amplience {
 type BrandBlock @amplience {
   logo: AmplienceImage!
   logoAlt: String @localized
-  link: LocalizablePageLink! @inline
+  link: LocalizablePageLink! @refLink
 }
 
 type CardsBlock @amplience {
   title: String @localized
-  viewAllLink: LocalizablePageLink @inline
+  viewAllLink: LocalizablePageLink @refLink
   cards: [Card]! @list(minItems: 1)
 }
 
@@ -177,7 +177,7 @@ type Card {
   title: String @localized
   image: AmplienceImage
   paragraph: String @localized
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
 }
 
 type CategoryMenuBlock @amplience {
@@ -190,8 +190,8 @@ type CategoryMenuColumn {
 
 type CategoryMenuGroup {
   title: String @localized
-  links: [LocalizablePageLink]! @list(minItems: 1) @inline
-  allLink: LocalizablePageLink @link @inline
+  links: [LocalizablePageLink]! @list(minItems: 1) @refLink
+  allLink: LocalizablePageLink @link @refLink
 }
 
 type CollectionBannerBlock @amplience {
@@ -199,7 +199,7 @@ type CollectionBannerBlock @amplience {
   subtitle: String @localized
   description: String! @localized
   image: AmplienceImage!
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
 }
 
 type CollectionCarouselBlock @amplience {
@@ -227,13 +227,13 @@ type ContentSliderBlock @amplience {
 type ContentSliderItem {
   title: String! @localized
   image: AmplienceImage!
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
 }
 
 type ContentTileBlock @amplience {
   title: String! @localized
   content: String! @localized @text(format: markdown)
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
   image: AmplienceImage
   imageAlt: String @localized
 }
@@ -264,7 +264,7 @@ type FeaturedBlock @amplience {
   image: AmplienceImage!
   title: String @localized
   content: String @localized
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
 }
 
 type FrequentlyAskedQuestionsBlock @amplience {
@@ -285,7 +285,7 @@ type GenericContentGridBlock @amplience {
 type GenericContentGridItem {
   title: String! @localized
   image: AmplienceImage!
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
 }
 
 type IconWithTextBlock @amplience {
@@ -367,10 +367,10 @@ type ProductsBlock @amplience {
 type PromotionBanner @amplience {
   title: String! @localized
   subtitle: String @localized
-  tag: Tag @inline
+  tag: Tag @refLink
   thumbnail: AmplienceImage
   thumbnailAlt: String @localized
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
 }
 
 type QuickLinksBlock @amplience {
@@ -380,7 +380,7 @@ type QuickLinksBlock @amplience {
 
 type QuickLinkBlock {
   text: String! @localized
-  link: LocalizablePageLink @inline
+  link: LocalizablePageLink @refLink
 }
 
 type SeoTextBlock @amplience {
@@ -393,7 +393,7 @@ type SeoTextColumn {
 
 type SimpleCategoryMenuBlock @amplience {
   title: String @localized
-  links: [LocalizablePageLink]! @list(minItems: 1) @inline
+  links: [LocalizablePageLink]! @list(minItems: 1) @refLink
 }
 
 type Tag @amplience {
@@ -456,7 +456,7 @@ type LocalizablePageLink @amplience {
 }
 
 type ContentColumnsBlock @amplience {
-  contentColumns: [ContentColumn]! @list(minItems: 1, maxItems: 4) @inline
+  contentColumns: [ContentColumn]! @list(minItems: 1, maxItems: 4) @refLink
   backgroundColor: BackgroundColor
   """
   Allow this section on the page to be linked to with #thisAnchorId
@@ -540,7 +540,7 @@ type LocalizablePageLink @amplience {
 """
 A Unique Selling Point
 """
-type Usp @partial @amplience {
+type Usp @amplience {
   """
   The label that will be displayed for this USP
   """
@@ -560,7 +560,7 @@ type Usp @partial @amplience {
 }
 
 type SiteHeader @amplience {
-  usps: [Usp]! @inlineLink
+  usps: [Usp]!
   """
   The colour of the top part of the USP (Hexadecimal value)
   """
@@ -640,7 +640,7 @@ type TopLevelMenuNode implements BaseMenuNode
   """
   Link to a page or URL
   """
-  link: OptionalLink @inline
+  link: OptionalLink @refLink
   """
   Image (only visible in special cases such as in a featured submenu)
   """
@@ -689,7 +689,7 @@ type ChildMenuNode implements BaseMenuNode
   """
   Link to a page or URL
   """
-  link: OptionalLink @inline
+  link: OptionalLink @refLink
   """
   Image (only visible in special cases such as in a featured submenu)
   """
@@ -712,7 +712,7 @@ type ChildMenuNode implements BaseMenuNode
   extraClassNames: [String]
 }
 
-type SideMenu @amplience @partial {
+type SideMenu @amplience {
   """
   Title of Side Menu
   """
@@ -721,15 +721,15 @@ type SideMenu @amplience @partial {
   Small Image, commonly a brand logo
   """
   image: AmplienceImage
-  sideMenuItem: [SideMenuItem] @inlineLink
+  sideMenuItem: [SideMenuItem]
 }
 
-type SideMenuItem implements BaseMenuNode @amplience @partial {
+type SideMenuItem implements BaseMenuNode @amplience {
   """
   Link to a page or URL
   """
-  link: OptionalLink @inline
-  childMenuNode: [SideMenuSubItem] @inlineLink
+  link: OptionalLink @refLink
+  childMenuNode: [SideMenuSubItem]
   """
   Display order in which menu item should be displayed
   """
@@ -745,7 +745,7 @@ type SideMenuItem implements BaseMenuNode @amplience @partial {
   """
   Link to a page or URL
   """
-  link: OptionalLink @inline
+  link: OptionalLink @refLink
   """
   Image (only visible in special cases such as in a featured submenu)
   """
@@ -768,7 +768,7 @@ type SideMenuItem implements BaseMenuNode @amplience @partial {
   extraClassNames: [String]
 }
 
-type SideMenuSubItem implements BaseMenuNode @amplience @partial {
+type SideMenuSubItem implements BaseMenuNode @amplience {
   """
   Display order in which menu item should be displayed
   """
@@ -784,7 +784,7 @@ type SideMenuSubItem implements BaseMenuNode @amplience @partial {
   """
   Link to a page or URL
   """
-  link: OptionalLink @inline
+  link: OptionalLink @refLink
   """
   Image (only visible in special cases such as in a featured submenu)
   """
@@ -810,7 +810,7 @@ type SideMenuSubItem implements BaseMenuNode @amplience @partial {
 # pages
 type ProductListPage @amplience {
   meta: ProductListPageMeta! @link
-  content: ProductListPageContent! @inline
+  content: ProductListPageContent! @refLink
 }
 
 type PageMeta {
@@ -842,11 +842,11 @@ type ProductListPageMeta implements PageMeta @amplience {
   categoryCode: String!
   categoryCodePrefixed: String! @filterable
   parentCategoryCode: String
-  parentHierarchy: [ProductListPageMetaBase]! @list(minItems: 0) @inline
+  parentHierarchy: [ProductListPageMetaBase]! @list(minItems: 0) @refLink
   branchNumber: Int!
   defaultSortOrder: String @text(minLength: 1, maxLength: 25) @filterable
   isNoNav: Int @number(minimum: 0, maximum: 1)
-  filters: [ProductListPageFilter] @inline
+  filters: [ProductListPageFilter] @refLink
   # Page Meta
   path: String!
   storeKey: String!
@@ -896,7 +896,7 @@ type ProductListPageContent @amplience {
 
 type ContentPage @amplience {
   # skip in GQL
-  meta: PageMeta! @inline
+  meta: PageMeta! @refLink
   content: ContentPageContent! @reference
 }
 
@@ -917,28 +917,28 @@ type BrandPageContent @amplience {
   topContentSlot: BlocksSlot @link
   middleContentSlot: BlocksSlot @link
   bottomContentSlot: BlocksSlot @link
-  sidebarMenu: SideMenu @inlineLink
+  sidebarMenu: SideMenu
 }
 
 type SportPageContent @amplience {
   topContentSlot: BlocksSlot @link
   middleContentSlot: BlocksSlot @link
   bottomContentSlot: BlocksSlot @link
-  sidebarMenu: SideMenu @inlineLink
+  sidebarMenu: SideMenu
 }
 
 type OfferPageContent @amplience {
   topContentSlot: BlocksSlot @link
   middleContentSlot: BlocksSlot @link
   bottomContentSlot: BlocksSlot @link
-  sidebarMenu: SideMenu @inlineLink
+  sidebarMenu: SideMenu
 }
 
 type DefaultPageContent @amplience {
   topContentSlot: BlocksSlot @link
   middleContentSlot: BlocksSlot @link
   bottomContentSlot: BlocksSlot @link
-  sidebarMenu: SideMenu @inlineLink
+  sidebarMenu: SideMenu
 }
 
 union ContentValue =
@@ -1252,6 +1252,6 @@ type CategoryMeta @amplience {
   prettyURL: String
   isNoNav: Int @number(minimum: 0, maximum: 1)
   breadcrumb: String
-  filters: [CategoryFilter] @inline
-  parentHierarchy: [BaseCategory] @list(minItems: 0) @inline
+  filters: [CategoryFilter] @refLink
+  parentHierarchy: [BaseCategory] @list(minItems: 0) @refLink
 }
