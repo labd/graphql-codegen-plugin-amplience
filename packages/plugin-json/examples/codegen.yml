@@ -5,14 +5,17 @@ hooks:
 generates:
   examples/output/bla.tf:
     preset: ./dist/index.js
-    schema: ./examples/amplience.graphql
+    schema:
+      - ./examples/amplience.graphql
     plugins:
       - ./dist/index.js
     config:
       hostname: https://amplience.fg-services.net
       schemaSuffix: "schema"
   examples/output/generated.ts:
-    schema: ./examples/amplience.graphql
+    schema:
+      - ./examples/amplience.graphql
+      - ./examples/schema.graphql
     plugins:
       - typescript
       - typescript-operations

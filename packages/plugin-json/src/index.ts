@@ -47,20 +47,7 @@ export const plugin: PluginFunction<PluginConfig> = (
       'validationLevel'
     )?.value === 'HIERARCHY'
 
-  const isPartial = !!maybeDirective(node, 'partial')
-  const iconUrl = maybeDirectiveValue<EnumValueNode>(
-    maybeDirective(node, 'icon')!, // We check for the amplience directive in the preset function below
-    'url'
-  )?.value
-
-  const result = contentTypeSchemaBody(
-    node,
-    schema,
-    hostname,
-    isHierarchy,
-    isPartial,
-    iconUrl
-  )
+  const result = contentTypeSchemaBody(node, schema, hostname, isHierarchy)
   return JSON.stringify(result)
 }
 

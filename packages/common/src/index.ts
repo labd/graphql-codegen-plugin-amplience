@@ -22,7 +22,7 @@ export const schemaPrepend = gql`
   directive @const(item: String, items: [String!]) on FIELD_DEFINITION
   directive @link on FIELD_DEFINITION
   directive @reference on FIELD_DEFINITION
-  directive @inline on FIELD_DEFINITION
+  directive @refLink on FIELD_DEFINITION
   directive @localized on FIELD_DEFINITION
   directive @example(items: [String!]) on FIELD_DEFINITION
 
@@ -45,12 +45,8 @@ export const schemaPrepend = gql`
     visualizations: [Visualization!]
   ) on OBJECT
 
-  directive @partial on OBJECT
   directive @icon(url: String!) on OBJECT
 `
 
 export const typeUri = (type: TypeDefinitionNode, schemaHost: string) =>
   `${schemaHost}/${paramCase(type.name.value)}`
-
-export const typeUriInline = (type: TypeDefinitionNode, schemaHost: string) =>
-  `${typeUri(type, schemaHost)}#/definitions/${paramCase(type.name.value)}`
