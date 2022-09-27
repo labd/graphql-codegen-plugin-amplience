@@ -44,6 +44,9 @@ export const schemaPrepend = gql`
     validationLevel: ValidationLevel
     visualizations: [Visualization!]
   ) on OBJECT
+
+  directive @partial on OBJECT
+  directive @icon(url: String!) on OBJECT
 `
 
 export const typeUri = (type: TypeDefinitionNode, schemaHost: string) =>

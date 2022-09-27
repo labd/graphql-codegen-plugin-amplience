@@ -33,4 +33,5 @@ export interface AmplienceContentTypeSchemaBody {
   definitions?: { [name: string]: AmpliencePropertyType }
   propertyOrder?: string[]
   required?: string[]
+  icon?: string
 }

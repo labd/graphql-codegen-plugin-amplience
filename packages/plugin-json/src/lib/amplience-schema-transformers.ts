@@ -34,31 +34,39 @@ export const contentTypeSchemaBody = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
   schemaHost: string,
-  hierarchy?: boolean
+  hierarchy?: boolean,
+  isPartial?: boolean,
+  iconUrl?: string
 ): AmplienceContentTypeSchemaBody => {
+  if (isPartial)
+    return partialContentTypeSchemaBody(
+      type,
+      schema,
+      schemaHost,
+      hierarchy,
+      iconUrl
+    )
   const amplienceContentTypeSchema: AmplienceContentTypeSchemaBody = {
     $id: typeUri(type, schemaHost),
     $schema: 'http://json-schema.org/draft-07/schema#',
     ...refType(AMPLIENCE_TYPE.CORE.Content),
     title: capitalCase(type.name.value),
+    properties: {
+      ...objectProperties(type, schema, schemaHost),
+    },
     description: type.description?.value ?? capitalCase(type.name.value),
     'trait:sortable': sortableTrait(type),
     'trait:hierarchy': hierarchy ? hierarchyTrait(type, schemaHost) : undefined,
     'trait:filterable': filterableTrait(type),
     type: 'object',
-    properties: {
-      ...objectProperties(type, schema, schemaHost),
-    },
     propertyOrder:
       type.fields
         ?.filter((field) => {
-          // console.log('Filter ', field)
           return ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
             (term) => !hasDirective(field, term)
           )
         })
         .map((field) => {
-          // console.log('Map ', field)
           return field.name.value
         }) ?? [],
     required: type.fields
@@ -72,6 +80,61 @@ export const contentTypeSchemaBody = (
   }
   const ref = refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0]
   if (hierarchy) amplienceContentTypeSchema.allOf.push(ref)
+  if (iconUrl) amplienceContentTypeSchema.icon = iconUrl
+  return amplienceContentTypeSchema
+}
+
+export const partialContentTypeSchemaBody = (
+  type: ObjectTypeDefinitionNode,
+  schema: GraphQLSchema,
+  schemaHost: string,
+  hierarchy?: boolean,
+  iconUrl?: string
+): AmplienceContentTypeSchemaBody => {
+  const schemaKey = paramCase(type.name.value)
+  const amplienceContentTypeSchema: AmplienceContentTypeSchemaBody = {
+    $id: typeUri(type, schemaHost),
+    $schema: 'http://json-schema.org/draft-07/schema#',
+    ...refType(AMPLIENCE_TYPE.CORE.Content),
+    definitions: {
+      [schemaKey]: {
+        properties: {
+          ...objectProperties(type, schema, schemaHost),
+        },
+        title: capitalCase(type.name.value),
+        type: 'object',
+        propertyOrder:
+          type.fields
+            ?.filter((field) => {
+              return [
+                'ignoreAmplience',
+                ...(hierarchy ? ['children'] : []),
+              ].every((term) => !hasDirective(field, term))
+            })
+            .map((field) => {
+              return field.name.value
+            }) ?? [],
+        required: type.fields
+          ?.filter((field) =>
+            ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
+              (term) => !hasDirective(field, term)
+            )
+          )
+          .filter((field) => field.type.kind === 'NonNullType')
+          .map((n) => n.name.value),
+      },
+    },
+    description: type.description?.value ?? capitalCase(type.name.value),
+    'trait:sortable': sortableTrait(type),
+    'trait:hierarchy': hierarchy ? hierarchyTrait(type, schemaHost) : undefined,
+    'trait:filterable': filterableTrait(type),
+    title: capitalCase(type.name.value),
+    type: 'object',
+  }
+  const ref = refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0]
+  if (hierarchy) amplienceContentTypeSchema.allOf.push(ref)
+  if (iconUrl) amplienceContentTypeSchema.icon = iconUrl
+
   return amplienceContentTypeSchema
 }
 
@@ -357,7 +420,7 @@ export const sortableTrait = (type: ObjectTypeDefinitionNode) =>
       sortBy: [
         {
           key: 'default',
-          paths: items.map((n) => `/${n.name}`),
+          paths: items.map((n) => `/${n.name.value}`),
         },
       ],
     })
