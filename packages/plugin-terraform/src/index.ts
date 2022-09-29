@@ -2,13 +2,13 @@ import {
   getCachedDocumentNodeFromSchema,
   PluginFunction,
   PluginValidateFn,
-  Types
+  Types,
 } from '@graphql-codegen/plugin-helpers'
 import {
   maybeDirective,
   maybeDirectiveValue,
   schemaPrepend,
-  typeUri
+  typeUri,
 } from 'amplience-graphql-codegen-common'
 import { capitalCase, paramCase, snakeCase } from 'change-case'
 import {
@@ -16,7 +16,7 @@ import {
   EnumValueNode,
   GraphQLSchema,
   StringValueNode,
-  visit
+  visit,
 } from 'graphql'
 import { extname } from 'path'
 import { arg, fn, map, TerraformGenerator } from 'terraform-generator'
@@ -52,6 +52,7 @@ export type PluginConfig = {
    * ```
    */
   slot_repositories?: { [name: string]: string }
+  schemaSuffix?: string
 }
 
 export const plugin: PluginFunction<PluginConfig> = (
@@ -61,18 +62,19 @@ export const plugin: PluginFunction<PluginConfig> = (
     hostname = 'https://schema-examples.com',
     visualization,
     content_repositories,
-    slot_repositories
+    slot_repositories,
+    schemaSuffix,
   }
 ) => {
   const astNode = getCachedDocumentNodeFromSchema(schema)
   const tfg = new TerraformGenerator({
-    required_providers: { amplience: map({ source: 'labd/amplience' }) }
+    required_providers: { amplience: map({ source: 'labd/amplience' }) },
   })
 
   const contentRepositories = content_repositories
     ? Object.entries(content_repositories).map(([name, value]) =>
         tfg.data('amplience_content_repository', snakeCase(name), {
-          id: maybeArg(value)
+          id: maybeArg(value),
         })
       )
     : undefined
@@ -80,14 +82,14 @@ export const plugin: PluginFunction<PluginConfig> = (
   const slotRepositories = slot_repositories
     ? Object.entries(slot_repositories).map(([name, value]) =>
         tfg.data('amplience_slot_repository', snakeCase(name), {
-          id: maybeArg(value)
+          id: maybeArg(value),
         })
       )
     : undefined
 
   visit(astNode, {
     leave: {
-      ObjectTypeDefinition: node => {
+      ObjectTypeDefinition: (node) => {
         const directive = maybeDirective(node, 'amplience')
         if (!directive) return null
 
@@ -100,10 +102,12 @@ export const plugin: PluginFunction<PluginConfig> = (
         const schema = tfg.resource('amplience_content_type_schema', name, {
           body: fn(
             'file',
-            `\${path.module}/schemas/${paramCase(node.name.value)}.json`
+            `\${path.module}/schemas/${paramCase(node.name.value)}${
+              schemaSuffix ? '-' + schemaSuffix : ''
+            }.json`
           ),
           schema_id: typeUri(node, hostname),
-          validation_level: isSlot ? 'SLOT' : 'CONTENT_TYPE'
+          validation_level: isSlot ? 'SLOT' : 'CONTENT_TYPE',
         })
 
         const shouldVisualize = maybeDirectiveValue<BooleanValueNode>(
@@ -120,9 +124,9 @@ export const plugin: PluginFunction<PluginConfig> = (
               ? {
                   label: 'Visualization',
                   templated_uri: maybeArg(visualization),
-                  default: true
+                  default: true,
                 }
-              : undefined
+              : undefined,
         })
         const repositoryName = maybeDirectiveValue<StringValueNode>(
           directive,
@@ -133,23 +137,23 @@ export const plugin: PluginFunction<PluginConfig> = (
           tfg.resource('amplience_content_type_assignment', name, {
             content_type_id: contentType.id,
             repository_id: (
-              contentRepositories.find(r => r.name === repositoryName) ??
+              contentRepositories.find((r) => r.name === repositoryName) ??
               contentRepositories[0]
-            ).id
+            ).id,
           })
         }
         if (slotRepositories && isSlot) {
           tfg.resource('amplience_content_type_assignment', name, {
             content_type_id: contentType.id,
             repository_id: (
-              slotRepositories.find(r => r.name === repositoryName) ??
+              slotRepositories.find((r) => r.name === repositoryName) ??
               slotRepositories[0]
-            ).id
+            ).id,
           })
         }
         return null
-      }
-    }
+      },
+    },
   })
 
   return tfg.generate().tf
@@ -169,6 +173,6 @@ export const validate: PluginValidateFn<any> = async (
 }
 
 const maybeArg = (value: string) =>
-  ['var.', 'local.'].some(prefix => value.startsWith(prefix))
+  ['var.', 'local.'].some((prefix) => value.startsWith(prefix))
     ? arg(value)
     : value

@@ -8,8 +8,8 @@ generates:
     plugins:
       - ./dist/index.js
     config:
-      hostname: 'https://schema-examples.com'
-      visualization: var.variables["VISUALIZATION_HOST"]
+      hostname: "https://schema-examples.com"
+      visualization: "https://somewhere-with-visualization"
       content_repositories:
         website1: var.variables["CONTENT_REPO1_ID"]
         website2: var.variables["CONTENT_REPO2_ID"]
