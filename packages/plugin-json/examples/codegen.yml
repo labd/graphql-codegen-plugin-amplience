@@ -6,38 +6,37 @@ generates:
   examples/output/bla.tf:
     preset: ./dist/index.js
     schema:
-      - ./examples/amplience.graphql
+      - ./examples/schema.graphql
     plugins:
       - ./dist/index.js
     config:
-      hostname: https://amplience.fg-services.net
+      hostname: https://schema-examples.com
       schemaSuffix: "schema"
-  examples/output/generated.ts:
-    schema:
-      - ./examples/amplience.graphql
-      - ./examples/schema.graphql
-    plugins:
-      - typescript
-      - typescript-operations
-      - typed-document-node
-    hooks:
-      afterOneFileWrite:
-        - prettier --write
-    config:
-      maybeValue: T | undefined
-      enumsAsTypes: false
-      noNamespaces: false
-      preResolveTypes: false
-      onlyOperationTypes: false
-      skipTypename: false
-      scalars:
-        Set: string[]
-        Time: number
-        Date: string
-        DateTime: string
-        Json: "{ [key: string]: any } | string | string[] | { [key: string]: any }[]"
-        KeyReferenceInput: string
-        Locale: string
-        AmplienceImage: string
-        AmplienceVideo: string
-        AmplienceLocalizedString: string
+  # examples/output/generated.ts:
+  #   schema:
+  #     - ./examples/schema.graphql
+  #   plugins:
+  #     - typescript
+  #     - typescript-operations
+  #     - typed-document-node
+  #   hooks:
+  #     afterOneFileWrite:
+  #       - prettier --write
+  #   config:
+  #     maybeValue: T | undefined
+  #     enumsAsTypes: false
+  #     noNamespaces: false
+  #     preResolveTypes: false
+  #     onlyOperationTypes: false
+  #     skipTypename: false
+  #     scalars:
+  #       Set: string[]
+  #       Time: number
+  #       Date: string
+  #       DateTime: string
+  #       Json: "{ [key: string]: any } | string | string[] | { [key: string]: any }[]"
+  #       KeyReferenceInput: string
+  #       Locale: string
+  #       AmplienceImage: string
+  #       AmplienceVideo: string
+  #       AmplienceLocalizedString: string
