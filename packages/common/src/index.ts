@@ -22,7 +22,6 @@ export const schemaPrepend = gql`
   directive @const(item: String, items: [String!]) on FIELD_DEFINITION
   directive @link on FIELD_DEFINITION
   directive @reference on FIELD_DEFINITION
-  directive @refLink on FIELD_DEFINITION
   directive @localized on FIELD_DEFINITION
   directive @example(items: [String!]) on FIELD_DEFINITION
 
