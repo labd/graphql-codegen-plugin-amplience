@@ -154,9 +154,6 @@ export const ampliencePropertyType = (
       if (hasDirective(prop, 'reference')) {
         return contentReference(node.astNode, schemaHost)
       }
-      if (hasDirective(prop, 'refLink')) {
-        return refLinkContent(node.astNode, schemaHost)
-      }
       return inlineObject(node.astNode, schema, schemaHost)
     }
   }
@@ -243,13 +240,13 @@ const contentLink = (
   schemaHost: string
 ) => refType(AMPLIENCE_TYPE.CORE.ContentLink, enumProperties(type, schemaHost))
 
-const refLinkContent = (
-  type: ObjectTypeDefinitionNode,
-  schemaHost: string
-) => ({
-  type: 'object',
-  ...refType(typeUri(type, schemaHost)),
-})
+// const refLinkContent = (
+//   type: ObjectTypeDefinitionNode,
+//   schemaHost: string
+// ) => ({
+//   type: 'object',
+//   ...refType(typeUri(type, schemaHost)),
+// })
 
 const inlineObject = (
   type: ObjectTypeDefinitionNode,
