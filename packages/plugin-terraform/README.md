@@ -59,7 +59,9 @@ It will be assigned to the first repository (e.g. website1).
 
 You can change the repository and its validationLevel by specifying those as arguments.
 Please note that if you use a `SLOT` validation level, you should refer to one within the `slot_repositories` or otherwise it will default to the first slot repository.
-You can also enable visualizations for this type by setting that argument to true.
+You can also enable `visualizations for this type by setting that argument to true.
+
+Optionally, you can also add `@icon(url: 'some-test-url')`. This will add icon support for the Amplience content-type
 
 A full example you can see below:
 

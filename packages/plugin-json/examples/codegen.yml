@@ -11,31 +11,37 @@ generates:
       - ./dist/index.js
     config:
       hostname: https://schema-examples.com
-  # examples/output/generated.ts:
-  #   schema:
-  #     - ./examples/schema.graphql
-  #   plugins:
-  #     - typescript
-  #     - typescript-operations
-  #     - typed-document-node
-  #   hooks:
-  #     afterOneFileWrite:
-  #       - prettier --write
-  #   config:
-  #     maybeValue: T | undefined
-  #     enumsAsTypes: false
-  #     noNamespaces: false
-  #     preResolveTypes: false
-  #     onlyOperationTypes: false
-  #     skipTypename: false
-  #     scalars:
-  #       Set: string[]
-  #       Time: number
-  #       Date: string
-  #       DateTime: string
-  #       Json: "{ [key: string]: any } | string | string[] | { [key: string]: any }[]"
-  #       KeyReferenceInput: string
-  #       Locale: string
-  #       AmplienceImage: string
-  #       AmplienceVideo: string
-  #       AmplienceLocalizedString: string
+      # install the following package if you wish to generate typescript from your schema
+      # @graphql-codegen/typed-document-node",
+      # @graphql-codegen/typescript,
+      # @graphql-codegen/typescript-operations,
+      # @graphql-typed-document-node/core
+
+      # examples/output/generated.ts:
+      #   schema:
+      #     - ./examples/schema.graphql
+      #   plugins:
+      #     - typescript
+      #     - typescript-operations
+      #     - typed-document-node
+      #   hooks:
+      #     afterOneFileWrite:
+      #       - prettier --write
+      #   config:
+      #     maybeValue: T | undefined
+      #     enumsAsTypes: false
+      #     noNamespaces: false
+      #     preResolveTypes: false
+      #     onlyOperationTypes: false
+      #     skipTypename: false
+      #     scalars:
+      #       Set: string[]
+      #       Time: number
+      #       Date: string
+      #       DateTime: string
+      #       Json: "{ [key: string]: any } | string | string[] | { [key: string]: any }[]"
+      #       KeyReferenceInput: string
+      #       Locale: string
+      #       AmplienceImage: string
+      #       AmplienceVideo: string
+      #       AmplienceLocalizedString: string
