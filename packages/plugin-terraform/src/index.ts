@@ -115,9 +115,15 @@ export const plugin: PluginFunction<PluginConfig> = (
           'visualizations'
         )?.value
 
+        const iconUrl = maybeDirectiveValue<EnumValueNode>(
+          maybeDirective(node, 'icon')!,
+          'url'
+        )?.value
+
         const contentType = tfg.resource('amplience_content_type', name, {
           content_type_uri: schema.attr('schema_id'),
           label: capitalCase(node.name.value),
+          icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
           status: 'ACTIVE',
           visualization:
             shouldVisualize && visualization
@@ -127,6 +133,7 @@ export const plugin: PluginFunction<PluginConfig> = (
                   default: true,
                 }
               : undefined,
+          card: [{}], // TODO
         })
         const repositoryName = maybeDirectiveValue<StringValueNode>(
           directive,
