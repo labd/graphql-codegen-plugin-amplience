@@ -5,6 +5,7 @@ import {
   Types,
 } from '@graphql-codegen/plugin-helpers'
 import {
+  hasDirective,
   maybeDirective,
   maybeDirectiveValue,
   schemaPrepend,
@@ -115,10 +116,12 @@ export const plugin: PluginFunction<PluginConfig> = (
           'visualizations'
         )?.value
 
-        const iconUrl = maybeDirectiveValue<EnumValueNode>(
-          maybeDirective(node, 'icon')!,
-          'url'
-        )?.value
+        const iconUrl = hasDirective(node, 'icon')
+          ? maybeDirectiveValue<EnumValueNode>(
+              maybeDirective(node, 'icon')!,
+              'url'
+            )?.value
+          : undefined
 
         const contentType = tfg.resource('amplience_content_type', name, {
           content_type_uri: schema.attr('schema_id'),
@@ -133,7 +136,6 @@ export const plugin: PluginFunction<PluginConfig> = (
                   default: true,
                 }
               : undefined,
-          card: [{}], // TODO
         })
         const repositoryName = maybeDirectiveValue<StringValueNode>(
           directive,

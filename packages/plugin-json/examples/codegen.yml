@@ -36,10 +36,10 @@ generates:
       #     skipTypename: false
       #     scalars:
       #       Set: string[]
-      #       Time: number
+      #       Time: string
       #       Date: string
       #       DateTime: string
-      #       Json: "{ [key: string]: any } | string | string[] | { [key: string]: any }[]"
+      #       Json: "{ [key: string]: any } | string | string[] | { [key: string]: any | boolean | boolean[] | number | number[]}[]"
       #       KeyReferenceInput: string
       #       Locale: string
       #       AmplienceImage: string
