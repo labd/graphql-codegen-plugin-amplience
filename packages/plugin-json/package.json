@@ -1,31 +1,31 @@
 {
+  "name": "amplience-graphql-codegen-json",
   "author": "Lab Digital",
+  "version": "0.1.8",
+  "private": false,
+  "license": "MIT",
+  "module": "dist/index.mjs",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "start": "tsup --watch",
+    "build": "tsup",
+    "postbuild": "cp package.json dist",
+    "test": "jest",
+    "lint": "eslint",
+    "example": "graphql-codegen --config examples/codegen.yml"
+  },
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "^2.1.1",
     "amplience-graphql-codegen-common": "^0.1.8",
     "change-case": "^4.1.2",
     "graphql": "^15.6.0"
   },
-  "engines": {
-    "node": ">=16"
-  },
-  "files": [
-    "dist"
-  ],
-  "gitHead": "8ec548b31ea77c5bdde92f010d48d30f98be4a91",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "name": "amplience-graphql-codegen-json",
-  "private": false,
-  "scripts": {
-    "build": "tsup",
-    "example": "graphql-codegen --config examples/codegen.yml",
-    "lint": "eslint",
-    "postbuild": "cp package.json dist",
-    "start": "tsup --watch",
-    "test": "jest"
-  },
-  "typings": "dist/index.d.ts",
-  "version": "0.1.8"
+  "gitHead": "8ec548b31ea77c5bdde92f010d48d30f98be4a91"
 }

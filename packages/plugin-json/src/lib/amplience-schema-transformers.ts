@@ -34,43 +34,41 @@ export const contentTypeSchemaBody = (
   schema: GraphQLSchema,
   schemaHost: string,
   hierarchy?: boolean
-): AmplienceContentTypeSchemaBody => {
-  const amplienceContentTypeSchema: AmplienceContentTypeSchemaBody = {
-    $id: typeUri(type, schemaHost),
-    $schema: 'http://json-schema.org/draft-07/schema#',
-    ...refType(AMPLIENCE_TYPE.CORE.Content),
-    title: capitalCase(type.name.value),
-    properties: {
-      ...objectProperties(type, schema, schemaHost),
-    },
-    description: type.description?.value ?? capitalCase(type.name.value),
-    'trait:sortable': sortableTrait(type),
-    'trait:hierarchy': hierarchy ? hierarchyTrait(type, schemaHost) : undefined,
-    'trait:filterable': filterableTrait(type),
-    type: 'object',
-    propertyOrder:
-      type.fields
-        ?.filter((field) => {
-          return ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
-            (term) => !hasDirective(field, term)
-          )
-        })
-        .map((field) => {
-          return field.name.value
-        }) ?? [],
-    required: type.fields
-      ?.filter((field) =>
-        ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
+): AmplienceContentTypeSchemaBody => ({
+  $id: typeUri(type, schemaHost),
+  $schema: 'http://json-schema.org/draft-07/schema#',
+  ...refType(AMPLIENCE_TYPE.CORE.Content),
+  title: capitalCase(type.name.value),
+  properties: {
+    ...objectProperties(type, schema, schemaHost),
+  },
+  description: type.description?.value ?? capitalCase(type.name.value),
+  'trait:sortable': sortableTrait(type),
+  'trait:hierarchy': hierarchy ? hierarchyTrait(type, schemaHost) : undefined,
+  'trait:filterable': filterableTrait(type),
+  type: 'object',
+  propertyOrder:
+    type.fields
+      ?.filter((field) => {
+        return ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
           (term) => !hasDirective(field, term)
         )
+      })
+      .map((field) => {
+        return field.name.value
+      }) ?? [],
+  required: type.fields
+    ?.filter((field) =>
+      ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
+        (term) => !hasDirective(field, term)
       )
-      .filter((field) => field.type.kind === 'NonNullType')
-      .map((n) => n.name.value),
-  }
-  const ref = refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0]
-  if (hierarchy) amplienceContentTypeSchema.allOf.push(ref)
-  return amplienceContentTypeSchema
-}
+    )
+    .filter((field) => field.type.kind === 'NonNullType')
+    .map((n) => n.name.value),
+  ...(hierarchy
+    ? { allOf: [refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0]] }
+    : {}),
+})
 /**
  * Returns the properties that go inside Amplience `{type: 'object', properties: ...}`
  */
