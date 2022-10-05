@@ -70,7 +70,7 @@ status = "ACTIVE"
 
 resource "amplience_content_type_assignment" "test_slot"{
 content_type_id = amplience_content_type.test_slot.id
-repository_id = data.amplience_content_repository.website1.id
+repository_id = data.amplience_content_repository.slot1.id
 }
 
 resource "amplience_content_type_schema" "test_visualizations"{

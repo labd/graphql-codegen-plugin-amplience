@@ -21,6 +21,7 @@ export const plugin: PluginFunction<PluginConfig> = (
     hostname = 'https://schema-examples.com',
     visualization,
     content_repositories,
+    slot_repositories,
     schemaSuffix,
   }
 ) => {
@@ -40,6 +41,13 @@ export const plugin: PluginFunction<PluginConfig> = (
         })
       )
     : undefined
+  const slotRepositories = slot_repositories
+    ? Object.entries(slot_repositories).map(([name, value]) =>
+        tfg.data('amplience_content_repository', snakeCase(name), {
+          id: maybeArg(value),
+        })
+      )
+    : undefined
 
   // For each GraphQl object type, add corresponding resources to the terraform generator.
   visit(astNode, {
@@ -47,6 +55,7 @@ export const plugin: PluginFunction<PluginConfig> = (
       leave: createObjectTypeVisitor({
         tfg,
         contentRepositories,
+        slotRepositories,
         hostname,
         visualization,
         schemaSuffix,

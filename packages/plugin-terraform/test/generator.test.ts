@@ -40,10 +40,17 @@ it.each([{ graphqlFile: 'base' }])(
       content_repositories: {
         website1: 'var.variables["CONTENT_REPO1_ID"]',
         website2: 'var.variables["CONTENT_REPO2_ID"]',
+      },
+      slot_repositories: {
         slot1: 'var.variables["SLOT_REPO1_ID"]',
         slot2: 'var.variables["SLOT_REPO2_ID"]',
       },
     })
+
+    // Note: the terraform generator does output the terraform code with ugly formatting.
+    // Normally we can deal with this by configuring "prettier" in the codegen config.
+    // But in this unittest we test the raw result.
+    // Therefore the expected output is also formatted ugly.
 
     expect(terraformResult).toEqual(expected + '\n')
   }
