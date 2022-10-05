@@ -5,63 +5,14 @@ import {
   PluginValidateFn,
   Types,
 } from '@graphql-codegen/plugin-helpers'
-import {
-  hasDirective,
-  maybeDirective,
-  maybeDirectiveValue,
-  schemaPrepend,
-  typeUri,
-} from 'amplience-graphql-codegen-common'
-import { capitalCase, paramCase, snakeCase } from 'change-case'
-import {
-  BooleanValueNode,
-  EnumValueNode,
-  GraphQLSchema,
-  StringValueNode,
-  visit,
-} from 'graphql'
-import { arg, fn, map, TerraformGenerator } from 'terraform-generator'
+import { schemaPrepend } from 'amplience-graphql-codegen-common'
+import { snakeCase } from 'change-case'
+import { GraphQLSchema, visit } from 'graphql'
+import { map, TerraformGenerator } from 'terraform-generator'
+import { createObjectTypeVisitor, maybeArg } from './lib/visitor'
+import { PluginConfig } from './lib/config'
 
 export const addToSchema = schemaPrepend.loc?.source.body
-
-type VisualizationType = {
-  for_each?: string
-  label: string
-  templated_uri: string
-  default: boolean
-}
-
-export type PluginConfig = {
-  /**
-   * The hostname used for the Amplience JSON schema IDs.
-   *
-   * @default https://schema-examples.com
-   */
-  hostname?: string
-  /**
-   *
-   */
-  visualization?: VisualizationType[]
-  /**
-   * @example
-   * ```yml
-   * content_repositories:
-   *   content_brand1: 123123
-   *   content_brand2: 234234
-   * ```
-   */
-  content_repositories?: { [name: string]: string }
-  /**
-   * @example
-   * ```yml
-   * slot_repositories:
-   *   slot_brand1: 123123
-   *   slot_brand2: 234234
-   * ```
-   */
-  slot_repositories?: { [name: string]: string }
-  schemaSuffix?: string
-}
 
 export const plugin: PluginFunction<PluginConfig> = (
   schema: GraphQLSchema,
@@ -70,15 +21,18 @@ export const plugin: PluginFunction<PluginConfig> = (
     hostname = 'https://schema-examples.com',
     visualization,
     content_repositories,
-    slot_repositories,
     schemaSuffix,
   }
 ) => {
   const astNode = getCachedDocumentNodeFromSchema(schema)
+
+  // This class can build a terraform file string.
   const tfg = new TerraformGenerator({
     required_providers: { amplience: map({ source: 'labd/amplience' }) },
   })
 
+  // To connect the Amplience content type resources to the correct Amplience repository,
+  // we first generate the terraform repositories as terraform data.
   const contentRepositories = content_repositories
     ? Object.entries(content_repositories).map(([name, value]) =>
         tfg.data('amplience_content_repository', snakeCase(name), {
@@ -87,113 +41,27 @@ export const plugin: PluginFunction<PluginConfig> = (
       )
     : undefined
 
-  const slotRepositories = slot_repositories
-    ? Object.entries(slot_repositories).map(([name, value]) =>
-        tfg.data('amplience_content_repository', snakeCase(name), {
-          id: maybeArg(value),
-        })
-      )
-    : undefined
-
-  const dynamicVisualization = (visualization: Required<VisualizationType>) => {
-    return {
-      for_each: arg(visualization.for_each),
-      content: {
-        label: maybeArg(visualization.label, 'visualization'),
-        templated_uri: maybeArg(visualization.templated_uri, 'visualization'),
-        default: visualization.default,
-      },
-    }
-  }
-
+  // For each GraphQl object type, add corresponding resources to the terraform generator.
   visit(astNode, {
     ObjectTypeDefinition: {
-      leave: (node) => {
-        const directive = maybeDirective(node, 'amplience')
-        if (!directive) return null
-
-        const name = snakeCase(node.name.value)
-
-        const isSlot =
-          maybeDirectiveValue<EnumValueNode>(directive, 'validationLevel')
-            ?.value === 'SLOT'
-
-        const schema = tfg.resource('amplience_content_type_schema', name, {
-          body: fn(
-            'file',
-            `\${path.module}/schemas/${paramCase(node.name.value)}${
-              schemaSuffix ? '-' + schemaSuffix : ''
-            }.json`
-          ),
-          schema_id: typeUri(node, hostname),
-          validation_level: isSlot ? 'SLOT' : 'CONTENT_TYPE',
-        })
-
-        const shouldVisualize = maybeDirectiveValue<BooleanValueNode>(
-          directive,
-          'visualizations'
-        )?.value
-
-        const iconUrl = hasDirective(node, 'icon')
-          ? maybeDirectiveValue<EnumValueNode>(
-              maybeDirective(node, 'icon')!,
-              'url'
-            )?.value
-          : undefined
-
-        const forEachVisualization = visualization?.find((v) => v.for_each) as
-          | Required<VisualizationType>
-          | undefined
-
-        const contentType = tfg.resource('amplience_content_type', name, {
-          content_type_uri: schema.attr('schema_id'),
-          label: capitalCase(node.name.value),
-          icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
-          status: 'ACTIVE',
-          'dynamic"visualization"':
-            shouldVisualize && forEachVisualization
-              ? dynamicVisualization(forEachVisualization)
-              : undefined,
-          visualization:
-            shouldVisualize && visualization
-              ? visualization.filter((v) => !v.for_each)
-              : undefined,
-        })
-        const repositoryName = maybeDirectiveValue<StringValueNode>(
-          directive,
-          'repository'
-        )?.value
-
-        if (contentRepositories && !isSlot) {
-          tfg.resource('amplience_content_type_assignment', name, {
-            content_type_id: contentType.id,
-            repository_id: (
-              contentRepositories.find((r) => r.name === repositoryName) ??
-              contentRepositories[0]
-            ).id,
-          })
-        }
-        if (slotRepositories && isSlot) {
-          tfg.resource('amplience_content_type_assignment', name, {
-            content_type_id: contentType.id,
-            repository_id: (
-              slotRepositories.find((r) => r.name === repositoryName) ??
-              slotRepositories[0]
-            ).id,
-          })
-        }
-        return null
-      },
+      leave: createObjectTypeVisitor({
+        tfg,
+        contentRepositories,
+        hostname,
+        visualization,
+        schemaSuffix,
+      }),
     },
   })
 
+  // Return the terraform file string
   return tfg.generate().tf
 }
 
 export const validate: PluginValidateFn<any> = async (
   _schema: GraphQLSchema,
   _documents: Types.DocumentFile[],
-  _config: PluginConfig,
+  config: PluginConfig,
   outputFile: string
 ) => {
   if (extname(outputFile) !== '.tf') {
@@ -201,9 +69,19 @@ export const validate: PluginValidateFn<any> = async (
       `Plugin "amplience-terraform" requires output extension to be ".tf"!`
     )
   }
+  if (config.visualization) {
+    if (config.visualization.filter((v) => v.for_each).length > 1) {
+      throw new Error(
+        `You can only have 1 item with a for_each property in your visualization list.`
+      )
+    }
+    if (
+      config.visualization.filter((v) => v.default).length > 1 ||
+      config.visualization.some((v) => v.default && v.for_each)
+    ) {
+      throw new Error(
+        `You can only set 1 item, which may not be a for_each-item to be the default.`
+      )
+    }
+  }
 }
-
-const maybeArg = (value: string, ...prefixes: string[]) =>
-  ['var.', 'local.', ...prefixes].some((prefix) => value.startsWith(prefix))
-    ? arg(value)
-    : value

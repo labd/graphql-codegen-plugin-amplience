@@ -4,6 +4,7 @@
 
   "compilerOptions": {
     "noEmit": false,
+    "declarationMap": true,
     "outDir": "./dist"
   }
 }

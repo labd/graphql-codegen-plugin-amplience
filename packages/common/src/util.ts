@@ -20,5 +20,12 @@ export const combinations = (array: string[]): string[][] => {
       results.push(prefix.concat(value))
     }
   }
-  return results.filter(c => c.length).sort((a, b) => a.length - b.length)
+  return results.filter((c) => c.length).sort((a, b) => a.length - b.length)
 }
+
+export type Ensure<T extends {}, K extends keyof T> = T &
+  Record<K, NonNullable<T[K]>>
+export const hasProperty =
+  <T extends {}, K extends keyof T>(prop: K) =>
+  (obj: T): obj is Ensure<T, K> =>
+    Boolean(obj[prop])

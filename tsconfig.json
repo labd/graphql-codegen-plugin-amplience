@@ -30,5 +30,6 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "downlevelIteration": true
-  }
+  },
+  "include": ["**/*.ts"]
 }
