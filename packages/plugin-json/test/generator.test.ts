@@ -9,7 +9,7 @@ import { addToSchema } from '../src/index'
 import { contentTypeSchemaBody } from '../src/lib/amplience-schema-transformers'
 
 it.each([{ graphqlFile: 'base', jsons: ['a', 'b', 'base', 'localized'] }])(
-  'correct JSON files for $graphql',
+  'correct JSON files for $graphqlFile',
   ({ graphqlFile, jsons }) => {
     const schema = buildSchema(
       addToSchema +

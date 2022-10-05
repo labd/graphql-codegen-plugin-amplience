@@ -3,8 +3,8 @@ import { buildSchema } from 'graphql'
 import { addToSchema, plugin } from '../src/index'
 
 it.each([{ graphqlFile: 'base' }])(
-  'correct JSON files for $graphql',
-  ({ graphqlFile }) => {
+  'correct Terraform file for $graphqlFile',
+  async ({ graphqlFile }) => {
     const schema = buildSchema(
       addToSchema +
         fs.readFileSync(`./test/testdata/${graphqlFile}.graphql`, 'utf8')
@@ -14,7 +14,7 @@ it.each([{ graphqlFile: 'base' }])(
       'utf8'
     )
 
-    const terraformResult = plugin(schema, [], {
+    const terraformResult = await plugin(schema, [], {
       hostname: 'https://schema-examples.com',
       visualization: [
         {
@@ -52,6 +52,8 @@ it.each([{ graphqlFile: 'base' }])(
     // But in this unittest we test the raw result.
     // Therefore the expected output is also formatted ugly.
 
-    expect(terraformResult).toEqual(expected + '\n')
+    expect(terraformResult.toString().replace(/\r/g, '')).toEqual(
+      expected.replace(/\r/g, '') + '\n'
+    )
   }
 )
