@@ -9,7 +9,17 @@ generates:
       - ./dist/index.js
     config:
       hostname: "https://schema-examples.com"
-      visualization: var.variables["VISUALIZATION_HOST"]
+      visualization:
+        - for_each: var.variables["VISUALIZATION_HOST"]
+          label: visualization.key
+          templated_uri: "${visualization.value}/preview/with-layout?vse={{vse.domain}}&content={{content.sys.id}}"
+          default: false
+        - label: Localhost with layout
+          templatedUri: http://localhost:3000/preview/with-layout?vse={{vse.domain}}&content={{content.sys.id}}
+          default: false
+        - label: Localhost without layout
+          templatedUri: http://localhost:3000/preview/without-layout?vse={{vse.domain}}&content={{content.sys.id}}
+          default: false
       content_repositories:
         website1: var.variables["CONTENT_REPO1_ID"]
         website2: var.variables["CONTENT_REPO2_ID"]

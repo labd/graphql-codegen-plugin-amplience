@@ -24,6 +24,13 @@ import { arg, fn, map, TerraformGenerator } from 'terraform-generator'
 
 export const addToSchema = schemaPrepend.loc?.source.body
 
+type VisualizationType = {
+  for_each?: string
+  label: string
+  templated_uri: string
+  default: boolean
+}
+
 export type PluginConfig = {
   /**
    * The hostname used for the Amplience JSON schema IDs.
@@ -34,7 +41,7 @@ export type PluginConfig = {
   /**
    *
    */
-  visualization?: string
+  visualization?: VisualizationType[]
   /**
    * @example
    * ```yml
@@ -82,15 +89,26 @@ export const plugin: PluginFunction<PluginConfig> = (
 
   const slotRepositories = slot_repositories
     ? Object.entries(slot_repositories).map(([name, value]) =>
-        tfg.data('amplience_slot_repository', snakeCase(name), {
+        tfg.data('amplience_content_repository', snakeCase(name), {
           id: maybeArg(value),
         })
       )
     : undefined
 
+  const dynamicVisualization = (visualization: Required<VisualizationType>) => {
+    return {
+      for_each: arg(visualization.for_each),
+      content: {
+        label: maybeArg(visualization.label, 'visualization'),
+        templated_uri: maybeArg(visualization.templated_uri, 'visualization'),
+        default: visualization.default,
+      },
+    }
+  }
+
   visit(astNode, {
-    leave: {
-      ObjectTypeDefinition: (node) => {
+    ObjectTypeDefinition: {
+      leave: (node) => {
         const directive = maybeDirective(node, 'amplience')
         if (!directive) return null
 
@@ -123,18 +141,22 @@ export const plugin: PluginFunction<PluginConfig> = (
             )?.value
           : undefined
 
+        const forEachVisualization = visualization?.find((v) => v.for_each) as
+          | Required<VisualizationType>
+          | undefined
+
         const contentType = tfg.resource('amplience_content_type', name, {
           content_type_uri: schema.attr('schema_id'),
           label: capitalCase(node.name.value),
           icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
           status: 'ACTIVE',
+          'dynamic"visualization"':
+            shouldVisualize && forEachVisualization
+              ? dynamicVisualization(forEachVisualization)
+              : undefined,
           visualization:
             shouldVisualize && visualization
-              ? {
-                  label: 'Visualization',
-                  templated_uri: maybeArg(visualization),
-                  default: true,
-                }
+              ? visualization.filter((v) => !v.for_each)
               : undefined,
         })
         const repositoryName = maybeDirectiveValue<StringValueNode>(
@@ -181,7 +203,7 @@ export const validate: PluginValidateFn<any> = async (
   }
 }
 
-const maybeArg = (value: string) =>
-  ['var.', 'local.'].some((prefix) => value.startsWith(prefix))
+const maybeArg = (value: string, ...prefixes: string[]) =>
+  ['var.', 'local.', ...prefixes].some((prefix) => value.startsWith(prefix))
     ? arg(value)
     : value
