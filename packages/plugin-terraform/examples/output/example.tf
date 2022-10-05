@@ -14,11 +14,11 @@ data "amplience_content_repository" "website2" {
   id = var.variables["CONTENT_REPO2_ID"]
 }
 
-data "amplience_slot_repository" "slot1" {
+data "amplience_content_repository" "slot1" {
   id = var.variables["SLOT_REPO1_ID"]
 }
 
-data "amplience_slot_repository" "slot2" {
+data "amplience_content_repository" "slot2" {
   id = var.variables["SLOT_REPO2_ID"]
 }
 
@@ -70,7 +70,7 @@ resource "amplience_content_type" "test_slot" {
 
 resource "amplience_content_type_assignment" "test_slot" {
   content_type_id = amplience_content_type.test_slot.id
-  repository_id   = data.amplience_slot_repository.slot1.id
+  repository_id   = data.amplience_content_repository.slot1.id
 }
 
 resource "amplience_content_type_schema" "test_visualizations" {
@@ -83,10 +83,23 @@ resource "amplience_content_type" "test_visualizations" {
   content_type_uri = amplience_content_type_schema.test_visualizations.schema_id
   label            = "Test Visualizations"
   status           = "ACTIVE"
+  dynamic "visualization" {
+    for_each = var.variables["VISUALIZATION_HOST"]
+    content {
+      label         = visualization.key
+      templated_uri = "${visualization.value}/preview/with-layout?vse={{vse.domain}}&content={{content.sys.id}}"
+      default       = false
+    }
+  }
   visualization {
-    label         = "Visualization"
-    templated_uri = var.variables["VISUALIZATION_HOST"]
-    default       = true
+    label        = "Localhost with layout"
+    templatedUri = "http://localhost:3000/preview/with-layout?vse={{vse.domain}}&content={{content.sys.id}}"
+    default      = false
+  }
+  visualization {
+    label        = "Localhost without layout"
+    templatedUri = "http://localhost:3000/preview/without-layout?vse={{vse.domain}}&content={{content.sys.id}}"
+    default      = false
   }
 }
 

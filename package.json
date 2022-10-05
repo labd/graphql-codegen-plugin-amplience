@@ -26,22 +26,21 @@
     }
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.18.9",
-    "@babel/preset-typescript": "^7.18.6",
     "@graphql-codegen/cli": "^2.2.0",
     "@labd/eslint-config": "^0.5.2",
     "@size-limit/preset-small-lib": "^8.0.1",
-    "@types/jest": "^28.1.8",
-    "eslint": "^8.23.0",
+    "@types/jest": "^29.1.1",
+    "@types/node": "^18.8.2",
+    "eslint": "^7",
+    "graphql": "^16.5.0",
     "husky": "^8.0.1",
-    "jest": "^29.0.1",
+    "jest": "^29.1.2",
     "lerna": "^5.4.3",
-    "rollup-plugin-graphql": "^0.1.0",
     "size-limit": "^8.0.1",
-    "ts-jest": "^28.0.8",
+    "ts-jest": "^29.0.3",
     "tslib": "^2.3.1",
     "tsup": "^6.2.3",
-    "typescript": "^4.4.3"
+    "typescript": "^4.8.4"
   },
   "workspaces": [
     "packages/*"

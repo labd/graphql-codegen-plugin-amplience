@@ -1,17 +1,11 @@
 {
   "typescript.tsdk": "./node_modules/typescript/lib",
   "editor.codeActionsOnSave": {
-    "source.fixAll": true,
-    "source.organizeImports": true
+    "source.fixAll": true
   },
   "eslint.validate": ["typescript", "javascript"],
   "eslint.packageManager": "yarn",
   "typescript.updateImportsOnFileMove.enabled": "always",
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "cSpell.words": ["amplience", "codegen", "typedefs"],
-  "eslint.options": {
-    "parserOptions": {
-      "project": ["${workspaceFolder}/tsconfig.json"]
-    }
-  }
+  "cSpell.words": ["amplience", "codegen", "typedefs"]
 }

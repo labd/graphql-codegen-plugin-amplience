@@ -6,31 +6,31 @@ import {
   ObjectValueNode,
   TypeDefinitionNode,
   TypeNode,
-  ValueNode
+  ValueNode,
 } from 'graphql'
 
 export const hasDirective = (
   symbol: FieldDefinitionNode | TypeDefinitionNode,
   name: string
-) => symbol.directives?.some(t => t.name.value === name)
+) => symbol.directives?.some((t) => t.name.value === name)
 
 export const maybeDirective = (
   symbol: FieldDefinitionNode | TypeDefinitionNode,
   name: string
-) => symbol.directives?.find(t => t.name.value === name)
+) => symbol.directives?.find((t) => t.name.value === name)
 
 export const maybeDirectiveValue = <T extends ValueNode>(
   directive: DirectiveNode,
   argument: string
 ) =>
-  directive?.arguments?.find(t => t.name.value === argument)?.value as
+  directive?.arguments?.find((t) => t.name.value === argument)?.value as
     | T
     | undefined
 
 export const maybeFieldValue = <T extends ValueNode>(
   node: ObjectValueNode,
   field: string
-) => node.fields.find(f => f.name.value === field)?.value as T | undefined
+) => node.fields.find((f) => f.name.value === field)?.value as T | undefined
 
 export const isObjectTypeDefinitionNode = (
   definitionNode: DefinitionNode
@@ -45,6 +45,8 @@ export const typeName = (type: TypeNode): string => {
       return type.name.value
     case 'NonNullType':
       return typeName(type.type)
+    default:
+      throw new Error(type.kind)
   }
 }
 
@@ -52,7 +54,7 @@ export const switchArray = <T>(
   type: TypeNode,
   {
     ifArray,
-    other
+    other,
   }: { ifArray: (subType: TypeNode) => T; other: (type: TypeNode) => T }
 ) =>
   type.kind === 'ListType'

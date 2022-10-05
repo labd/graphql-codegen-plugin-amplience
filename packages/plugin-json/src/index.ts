@@ -1,3 +1,4 @@
+import { dirname } from 'path'
 import {
   PluginFunction,
   PluginValidateFn,
@@ -12,7 +13,6 @@ import {
 } from 'amplience-graphql-codegen-common'
 import { paramCase } from 'change-case'
 import { EnumValueNode, ObjectTypeDefinitionNode } from 'graphql'
-import { dirname } from 'path'
 import { contentTypeSchemaBody } from './lib/amplience-schema-transformers'
 
 export type PluginConfig = {

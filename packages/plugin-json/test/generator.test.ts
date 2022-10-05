@@ -1,9 +1,9 @@
+import fs from 'fs'
 import {
   hasDirective,
   isObjectTypeDefinitionNode,
 } from 'amplience-graphql-codegen-common'
 import { getCachedDocumentNodeFromSchema } from '@graphql-codegen/plugin-helpers'
-import fs from 'fs'
 import { buildSchema } from 'graphql'
 import { addToSchema } from '../src/index'
 import { contentTypeSchemaBody } from '../src/lib/amplience-schema-transformers'

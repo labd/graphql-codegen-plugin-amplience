@@ -1,3 +1,4 @@
+import { extname } from 'path'
 import {
   getCachedDocumentNodeFromSchema,
   PluginFunction,
@@ -19,7 +20,6 @@ import {
   StringValueNode,
   visit,
 } from 'graphql'
-import { extname } from 'path'
 import { arg, fn, map, TerraformGenerator } from 'terraform-generator'
 
 export const addToSchema = schemaPrepend.loc?.source.body

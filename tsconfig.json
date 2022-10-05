@@ -4,7 +4,7 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esNext",
-    "lib": ["dom", "esnext"],
+    "lib": ["esnext"],
     "importHelpers": true,
     // output .d.ts declaration files for consumers
     "declaration": true,

@@ -1,7 +1,6 @@
 import { paramCase } from 'change-case'
 import { TypeDefinitionNode } from 'graphql'
 import { gql } from 'graphql-tag'
-// import schema from './schema-prepend.graphql'
 
 export * from './graphql'
 export * from './util'
