@@ -70,7 +70,7 @@ resource "amplience_content_type" "test_slot" {
 
 resource "amplience_content_type_assignment" "test_slot" {
   content_type_id = amplience_content_type.test_slot.id
-  repository_id   = data.amplience_content_repository.website1.id
+  repository_id   = data.amplience_content_repository.slot1.id
 }
 
 resource "amplience_content_type_schema" "test_visualizations" {
@@ -92,14 +92,14 @@ resource "amplience_content_type" "test_visualizations" {
     }
   }
   visualization {
-    label        = "Localhost with layout"
+    label         = "Localhost with layout"
     templated_uri = "http://localhost:3000/preview/with-layout?vse={{vse.domain}}&content={{content.sys.id}}"
-    default      = false
+    default       = false
   }
   visualization {
-    label        = "Localhost without layout"
+    label         = "Localhost without layout"
     templated_uri = "http://localhost:3000/preview/without-layout?vse={{vse.domain}}&content={{content.sys.id}}"
-    default      = false
+    default       = false
   }
 }
 
@@ -107,3 +107,4 @@ resource "amplience_content_type_assignment" "test_visualizations" {
   content_type_id = amplience_content_type.test_visualizations.id
   repository_id   = data.amplience_content_repository.website1.id
 }
+
