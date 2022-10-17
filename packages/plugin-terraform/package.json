@@ -1,7 +1,7 @@
 {
   "name": "amplience-graphql-codegen-terraform",
   "author": "Lab Digital",
-  "version": "0.2.1",
+  "version": "1.0.0",
   "private": false,
   "license": "MIT",
   "module": "dist/index.mjs",
