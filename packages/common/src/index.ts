@@ -1,44 +1,9 @@
 import { paramCase } from 'change-case'
 import { TypeDefinitionNode } from 'graphql'
-import { gql } from 'graphql-tag'
 
 export * from './graphql'
 export * from './util'
-
-export const schemaPrepend = gql`
-  scalar AmplienceImage
-  scalar AmplienceVideo
-
-  # Field directives
-  directive @text(
-    minLength: Int
-    maxLength: Int
-    format: String
-    pattern: String
-  ) on FIELD_DEFINITION
-  directive @number(minimum: Int, maximum: Int) on FIELD_DEFINITION
-  directive @list(minItems: Int, maxItems: Int) on FIELD_DEFINITION
-  directive @const(item: String, items: [String!]) on FIELD_DEFINITION
-  directive @link on FIELD_DEFINITION
-  directive @reference on FIELD_DEFINITION
-  directive @localized on FIELD_DEFINITION
-  directive @example(items: [String!]) on FIELD_DEFINITION
-
-  enum ValidationLevel {
-    SLOT
-    CONTENT_TYPE
-    HIERARCHY
-  }
-
-  # Object directives
-  directive @amplience(
-    repository: String
-    validationLevel: ValidationLevel
-    visualizations: Boolean
-  ) on OBJECT
-
-  directive @icon(url: String!) on OBJECT
-`
+export * from './directives'
 
 export const typeUri = (type: TypeDefinitionNode, schemaHost: string) =>
   `${schemaHost}/${paramCase(type.name.value)}`

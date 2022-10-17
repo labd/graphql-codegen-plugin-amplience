@@ -2,7 +2,7 @@
 
 This is a plugin for GraphQL Codegen that outputs your schema to Amplience resources in Terraform.
 
-It will look for types with an `@amplience` directive and generate Terraform resources that create Amplience Content Types.
+It will look for types with an `@amplienceContentType` directive and generate Terraform resources that create Amplience Content Types.
 This terraform code is dependent on the [Amplience Terraform provider](https://registry.terraform.io/providers/labd/amplience/latest).
 
 Furthermore, this plugin requires `amplience-graphql-codegen-json` to generate the necessary JSON files the terraform code refers to.
@@ -49,7 +49,7 @@ an environment variable using the `${MY_VAR}` syntax, or a reference to a terraf
 Basic example:
 
 ```graphql
-type MyContentType @amplience {
+type MyContentType @amplienceContentType {
     ...
 }
 ```
@@ -66,10 +66,11 @@ Optionally, you can also add `@icon(url: 'some-test-url')`. This will add icon s
 A full example you can see below:
 
 ```graphql
-type MyContentType @amplience(
+type MyContentType @amplienceContentType(
     repository: "slot2", # To overwrite the default repository (first)
-    validationLevel: SLOT, # Can either be CONTENT_TYPE (default), SLOT, or HIERARCHY
+    kind: SLOT, # Can either be CONTENT_TYPE (default), SLOT, or HIERARCHY
     visualizations: true, # If true, it will add the visualizations defined in the codegen.yml
+    icon: "http://example.com/icon.png"
 ) {
     ...
 }

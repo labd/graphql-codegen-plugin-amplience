@@ -1,4 +1,4 @@
-type Test @amplience {
+type Test @amplienceContentType {
   """
   This a description
   """
@@ -7,7 +7,7 @@ type Test @amplience {
   bla: Int!
 }
 
-type Test2 @amplience {
+type Test2 @amplienceContentType {
   name: String
   test: Test
 

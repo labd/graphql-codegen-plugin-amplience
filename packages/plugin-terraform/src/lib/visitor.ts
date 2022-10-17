@@ -38,14 +38,13 @@ export const createObjectTypeVisitor =
     schemaSuffix?: string
   }) =>
   (node: ObjectTypeDefinitionNode) => {
-    const directive = maybeDirective(node, 'amplience')
+    const directive = maybeDirective(node, 'amplienceContentType')
     if (!directive) return null
 
     const name = snakeCase(node.name.value)
 
     const isSlot =
-      maybeDirectiveValue<EnumValueNode>(directive, 'validationLevel')
-        ?.value === 'SLOT'
+      maybeDirectiveValue<EnumValueNode>(directive, 'kind')?.value === 'SLOT'
 
     const schema = tfg.resource('amplience_content_type_schema', name, {
       body: fn(
@@ -63,9 +62,8 @@ export const createObjectTypeVisitor =
       'visualizations'
     )?.value
 
-    const iconDirective = maybeDirective(node, 'icon')
-    const iconUrl = iconDirective
-      ? maybeDirectiveValue<EnumValueNode>(iconDirective, 'url')?.value
+    const iconUrl = directive
+      ? maybeDirectiveValue<StringValueNode>(directive, 'icon')?.value
       : undefined
 
     const dynamicVisualization = visualization?.find(hasProperty('for_each'))

@@ -2,7 +2,7 @@
 
 This is a plugin for GraphQL codegen that generates Amplience JSON schemas from your Graphql schema.
 
-This plugin will look for Graphql types within your schema that contain an `@amplience` directive and generate a JSON schema file for each type.
+This plugin will look for Graphql types within your schema that contain an `@amplienceContentType` directive and generate a JSON schema file for each type.
 
 For more information on the Amplience JSON schemas see the documentation on [amplience.com](https://amplience.com/docs/integration/contenttypes.html).
 
@@ -21,13 +21,12 @@ generates:
       - amplience-graphql-codegen-json
     config:
       hostname: https://schema-examples.com
-
 ```
 
 The `hostname` is optional and will default to `https://schema-examples.com`.
 
 ```graphql
-type MyContentType @amplience {
+type MyContentType @amplienceContentType {
   """
   This a description for the "name" property.
   """
@@ -38,14 +37,13 @@ type MyContentType @amplience {
 
 This will generate 1 json schema file named `terraform/schemas/my-content-type.json` describing the content type with 2 properties of which `age` is required.
 
-
 # Fields
 
 Besides primitive types, lists and enums, you can also use your custom types.
 These custom types will be generated as inline types by default.
 To create content _links_, use the `@link` directive as shown below.
 Alternatively, to create content _references_, use the `@reference` directive as shown below.
-Please keep in mind that linked or referenced types also need an `@amplience` directive, otherwise the linked field will link to a nonexisting content type.
+Please keep in mind that linked or referenced types also need an `@amplienceContentType` directive, otherwise the linked field will link to a nonexisting content type.
 
 Union types are always linked so no `@link` directive is necessary.
 
@@ -57,109 +55,99 @@ This plugin adds 2 basic Amplience Scalars that you can use:
 - AmplienceVideo
 
 ```graphql
-type MyContentType @amplience {
+type MyContentType @amplienceContentType {
   image: AmplienceImage!
   video: AmplienceVideo!
 }
 ```
 
-
 # Field directives
 
 To further enhance the properties in the JSON schemas, you can add directives to the fields.
 
-## @text
+## @amplienceText
 
 Only works on `String` types.
 
 ```graphql
-type MyContentType @amplience {
+type MyContentType @amplienceContentType {
   description: String!
-    @text(minLength: 2, maxLength: 4, format: markdown)
+    @amplienceText(
+      minLength: 2
+      maxLength: 4
+      format: markdown
+      examples: ["fireman", "musician"]
+    )
 }
 ```
 
-## @number
+## @amplienceNumber
 
 Only works on `Int` and `Float` types.
 
-
 ```graphql
-type MyContentType @amplience {
-  rating: Int!
-    @number(minimum: 0, maximum: 10)
+type MyContentType @amplienceContentType {
+  rating: Int! @amplienceNumber(minimum: 0, maximum: 10)
 }
 ```
 
-## @list
+## @amplienceList
 
 Only works on list types.
 
 ```graphql
-type MyContentType @amplience {
-  name: [String!] @list(minItems: 1, maxItems: 10)
+type MyContentType @amplienceContentType {
+  name: [String!] @amplienceList(minItems: 1, maxItems: 10)
 }
 ```
 
-## @localized
+## @amplienceLocalized
 
 Works on `String`, `Int`, `Float`, `Boolean`, `AmplienceImage`, and `AmplienceVideo`.
 
 ```graphql
-type MyContentType @amplience {
-  name: String! @localized
+type MyContentType @amplienceContentType {
+  name: String! @amplienceLocalized
 }
 ```
 
-## @link
-
-Only works on custom types.
-
-
-```graphql
-type MyContentType @amplience {
-  other: OtherContentType @link
-}
-
-type OtherContentType @amplience {
-  name: String!
-}
-```
-
-## @reference
+## @amplienceLink
 
 Only works on custom types.
 
 ```graphql
-type MyContentType @amplience {
-  other: OtherContentType @reference
+type MyContentType @amplienceContentType {
+  other: OtherContentType @amplienceLink
 }
 
-type OtherContentType @amplience {
+type OtherContentType @amplienceContentType {
   name: String!
 }
 ```
 
-## @const
+## @amplienceReference
+
+Only works on custom types.
+
+```graphql
+type MyContentType @amplienceContentType {
+  other: OtherContentType @amplienceReference
+}
+
+type OtherContentType @amplienceContentType {
+  name: String!
+}
+```
+
+## @amplienceConst
 
 Only works on `String!` and `[String!]!` types.
 
 > Note that for a string list, you should use the `items` argument, whereas for a regular string, you should use the `item` argument.
 
 ```graphql
-type MyContentType @amplience {
-  constString: String @const(item: "const")
-  constArray: [String!]! @const(items: ["this", "is", "const"])
-}
-```
-
-## @example
-
-Only works on `String`.
-
-```graphql
-type MyContentType @amplience {
-  occupation: String!
-   @example(items: ["fireman", "musician"])
+type MyContentType @amplienceContentType {
+  constString: String @amplienceConst(item: "const")
+  constArray: [String!]! @amplienceConst(items: ["this", "is", "const"])
 }
 ```

@@ -56,7 +56,7 @@ export const preset: Types.OutputPreset<PresetConfig> = {
   buildGeneratesSection: (options) =>
     options.schema.definitions
       .filter(isObjectTypeDefinitionNode)
-      .filter((d) => hasDirective(d, 'amplience'))
+      .filter((d) => hasDirective(d, 'amplienceContentType'))
       .map((node) => ({
         ...options,
         filename: `${dirname(options.baseOutputDir)}/schemas/${paramCase(

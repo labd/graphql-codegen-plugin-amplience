@@ -19,7 +19,7 @@ it.each([
   const documentNode = getCachedDocumentNodeFromSchema(schema)
   const contentTypes = documentNode.definitions
     .filter(isObjectTypeDefinitionNode)
-    .filter((d) => hasDirective(d, 'amplience'))
+    .filter((d) => hasDirective(d, 'amplienceContentType'))
 
   const results = contentTypes.map((type) =>
     contentTypeSchemaBody(type, schema, 'https://schema-examples.com')
@@ -38,7 +38,13 @@ it.each([
 })
 
 /** Removes all undefined properties */
-const pruned = <T>(object: T): Partial<T> => JSON.parse(JSON.stringify(object))
+const pruned = <T>(object: T): Partial<T> => {
+  try {
+    return JSON.parse(JSON.stringify(object))
+  } catch {
+    throw new Error(`Could not prune ${JSON.stringify(object)}`)
+  }
+}
 
 // slot with content link
 // or content type with content reference

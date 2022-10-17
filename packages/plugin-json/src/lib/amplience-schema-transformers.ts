@@ -89,14 +89,14 @@ export const objectProperties = (
               type: 'array',
               minItems: ifValue(
                 ifValue(
-                  maybeDirective(prop, 'list'),
+                  maybeDirective(prop, 'amplienceList'),
                   (d) => maybeDirectiveValue<IntValueNode>(d, 'minItems')?.value
                 ),
                 Number
               ),
               maxItems: ifValue(
                 ifValue(
-                  maybeDirective(prop, 'list'),
+                  maybeDirective(prop, 'amplienceList'),
                   (d) => maybeDirectiveValue<IntValueNode>(d, 'maxItems')?.value
                 ),
                 Number
@@ -113,19 +113,19 @@ export const objectProperties = (
 
 const isHierarchy = (type: ObjectTypeDefinitionNode) =>
   maybeDirectiveValue<EnumValueNode>(
-    maybeDirective(type, 'amplience')!,
-    'validationLevel'
+    maybeDirective(type, 'amplienceContentType')!,
+    'kind'
   )?.value === 'HIERARCHY'
 
 const isAmplienceProperty = (
   type: ObjectTypeDefinitionNode,
   field: FieldDefinitionNode
 ) =>
-  !hasDirective(field, 'ignoreAmplience') &&
+  !hasDirective(field, 'amplienceIgnore') &&
   (!isHierarchy(type) || field.name.value !== 'children')
 
 const arrayConstValues = (prop: FieldDefinitionNode) =>
-  ifValue(maybeDirective(prop, 'const'), (d) =>
+  ifValue(maybeDirective(prop, 'amplienceConst'), (d) =>
     maybeDirectiveValue<ListValueNode>(d, 'items')?.values.map(
       (v) => (v as StringValueNode)?.value
     )
@@ -153,10 +153,10 @@ export const ampliencePropertyType = (
       }
     }
     if (isObjectType(node) && node.astNode) {
-      if (hasDirective(prop, 'link')) {
+      if (hasDirective(prop, 'amplienceLink')) {
         return contentLink(node.astNode, schemaHost)
       }
-      if (hasDirective(prop, 'reference')) {
+      if (hasDirective(prop, 'amplienceReference')) {
         return contentReference(node.astNode, schemaHost)
       }
       return inlineObject(node.astNode, schema, schemaHost)
@@ -166,7 +166,7 @@ export const ampliencePropertyType = (
   // Handle primitive types.
   switch (typeName(type)) {
     case 'String':
-      const constValue = ifValue(maybeDirective(prop, 'const'), (d) =>
+      const constValue = ifValue(maybeDirective(prop, 'amplienceConst'), (d) =>
         maybeDirectiveValue<StringValueNode>(d, 'item')
       )?.value
 
@@ -181,7 +181,7 @@ export const ampliencePropertyType = (
       return checkLocalized(prop, type, {
         type: 'string',
 
-        ...ifValue(maybeDirective(prop, 'text'), (d) => ({
+        ...ifValue(maybeDirective(prop, 'amplienceText'), (d) => ({
           format: maybeDirectiveValue<StringValueNode>(d, 'format')?.value,
           pattern: maybeDirectiveValue<StringValueNode>(d, 'pattern')?.value,
           minLength: ifValue(
@@ -192,12 +192,11 @@ export const ampliencePropertyType = (
             maybeDirectiveValue<IntValueNode>(d, 'maxLength')?.value,
             Number
           ),
+          examples: maybeDirectiveValue<ListValueNode>(
+            d,
+            'examples'
+          )?.values.map((v) => (v as StringValueNode)?.value),
         })),
-        examples: ifValue(maybeDirective(prop, 'example'), (d) =>
-          maybeDirectiveValue<ListValueNode>(d, 'items')?.values.map(
-            (v) => (v as StringValueNode)?.value
-          )
-        ),
       })
     case 'Boolean':
       return checkLocalized(prop, type, { type: 'boolean' })
@@ -205,7 +204,7 @@ export const ampliencePropertyType = (
     case 'Float':
       return checkLocalized(prop, type, {
         type: typeName(type) === 'Float' ? 'number' : 'integer',
-        ...ifValue(maybeDirective(prop, 'number'), (d) => ({
+        ...ifValue(maybeDirective(prop, 'amplienceNumber'), (d) => ({
           format: maybeDirectiveValue<StringValueNode>(d, 'format')?.value,
           minimum: ifValue(
             maybeDirectiveValue<IntValueNode>(d, 'minimum')?.value,
@@ -219,7 +218,7 @@ export const ampliencePropertyType = (
       })
     case 'AmplienceImage':
     case 'AmplienceVideo':
-      return hasDirective(prop, 'localized')
+      return hasDirective(prop, 'amplienceLocalized')
         ? refType(
             AMPLIENCE_TYPE.LOCALIZED[
               typeName(type) as 'AmplienceImage' | 'AmplienceVideo'
@@ -288,7 +287,7 @@ export const checkLocalized = (
   type: TypeNode,
   result: AmpliencePropertyType
 ) =>
-  hasDirective(prop, 'localized')
+  hasDirective(prop, 'amplienceLocalized')
     ? prop.directives?.length === 1 && typeName(type) === 'String'
       ? refType(AMPLIENCE_TYPE.LOCALIZED.String)
       : localized(result)
@@ -338,12 +337,12 @@ export const localized = (value: AmpliencePropertyType) => ({
 })
 
 /**
- * Returns sortable trait path for amplience based on properties containing the `@sortable` tag
+ * Returns sortable trait path for amplience based on properties containing the `@amplienceSortable` tag
  * @returns Object that can be pushed to `trait:sortable` directly
  */
 export const sortableTrait = (type: ObjectTypeDefinitionNode) =>
   ifNotEmpty(
-    type.fields?.filter((m) => hasDirective(m, 'sortable')) ?? [],
+    type.fields?.filter((m) => hasDirective(m, 'amplienceSortable')) ?? [],
     (items) => ({
       sortBy: [
         {
@@ -378,22 +377,23 @@ export const hierarchyTrait = (
 })
 
 /**
- * Returns filterable trait path for amplience based on properties containing the `@filterable` tag.
+ * Returns filterable trait path for amplience based on properties containing the `@amplienceFilterable` tag.
  * Generates all possible combinations of the tags for multi-path filtering. Note Amplience only supports
  * multi-path filtering up to 5 paths.
  * @returns Object that can be pushed to `trait:filterable` directly
  */
 export const filterableTrait = (type: ObjectTypeDefinitionNode) => {
   const filterableProps =
-    type.fields?.filter((m) => hasDirective(m, 'filterable')) ?? []
+    type.fields?.filter((m) => hasDirective(m, 'amplienceFilterable')) ?? []
+
   if (filterableProps.length === 0) return undefined
+
   if (filterableProps.length > 5)
-    throw new Error('max @filterable tags can be five')
-  const filterCombinations = combinations(
-    filterableProps.map((s) => `/${s.name.value}`)
-  )
+    throw new Error('max @amplienceFilterable tags can be five')
 
   return {
-    filterBy: filterCombinations.map((paths) => ({ paths })),
+    filterBy: combinations(filterableProps.map((s) => `/${s.name.value}`)).map(
+      (paths) => ({ paths })
+    ),
   }
 }

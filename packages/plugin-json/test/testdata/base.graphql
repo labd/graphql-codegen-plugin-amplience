@@ -1,25 +1,30 @@
-type Base @amplience {
+type Base @amplienceContentType {
   text: String!
-    @text(minLength: 2, maxLength: 4, format: markdown, pattern: "/[\\w\\-]+")
-    @example(items: ["one example", "another example"])
+    @amplienceText(
+      minLength: 2
+      maxLength: 4
+      format: markdown
+      pattern: "/[\\w\\-]+"
+      examples: ["one example", "another example"]
+    )
   optionalText: String
-  textList: [String!]! @list(minItems: 1, maxItems: 10)
-  integer: Int! @number(minimum: 0, maximum: 10)
+  textList: [String!]! @amplienceList(minItems: 1, maxItems: 10)
+  integer: Int! @amplienceNumber(minimum: 0, maximum: 10)
   optionalInteger: Int
-  float: Float! @number(minimum: 0, maximum: 10)
+  float: Float! @amplienceNumber(minimum: 0, maximum: 10)
   optionalFloat: Float
   boolean: Boolean!
   optionalBoolean: Boolean
-  constString: String @const(item: "const")
-  constArray: [String!]! @const(items: ["this", "is", "const"])
+  constString: String @amplienceConst(item: "const")
+  constArray: [String!]! @amplienceConst(items: ["this", "is", "const"])
   image: AmplienceImage!
   video: AmplienceVideo!
   enum: Enum
   a: A
   bs: [B]
   union: Union
-  linkedA: A @link
-  referencedB: B @reference
+  linkedA: A @amplienceLink
+  referencedB: B @amplienceReference
 }
 
 enum Enum {
@@ -29,19 +34,19 @@ enum Enum {
 
 union Union = A | B
 
-type A @amplience {
+type A @amplienceContentType {
   a: String!
 }
 
-type B @amplience {
+type B @amplienceContentType {
   b: String!
 }
 
-type Localized @amplience {
-  string: String! @localized
-  boolean: Boolean! @localized
-  int: Int! @localized
-  float: Float! @localized
-  image: AmplienceImage! @localized
-  video: AmplienceVideo! @localized
+type Localized @amplienceContentType {
+  string: String! @amplienceLocalized
+  boolean: Boolean! @amplienceLocalized
+  int: Int! @amplienceLocalized
+  float: Float! @amplienceLocalized
+  image: AmplienceImage! @amplienceLocalized
+  video: AmplienceVideo! @amplienceLocalized
 }

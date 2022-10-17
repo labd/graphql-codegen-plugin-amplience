@@ -1,21 +1,21 @@
-type Test @amplience {
+type Test @amplienceContentType {
   name: String
 }
 
 # Use a different repository than the default (first) repository.
-type TestOtherRepository @amplience(repository: "website2") {
+type TestOtherRepository @amplienceContentType(repository: "website2") {
   name: String
 }
 
-type TestSlot @amplience(validationLevel: SLOT) {
+type TestSlot @amplienceContentType(kind: SLOT) {
   name: String
 }
 
-type TestVisualizations @amplience(visualizations: true) {
+type TestVisualizations @amplienceContentType(visualizations: true) {
   name: String
 }
 
-type TestIcon @icon(url: "icon.png") @amplience(visualizations: true) {
+type TestIcon @amplienceContentType(visualizations: true, icon: "icon.png") {
   name: String
 }
 
