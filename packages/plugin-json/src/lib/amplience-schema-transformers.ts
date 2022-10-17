@@ -66,7 +66,12 @@ export const contentTypeSchemaBody = (
     .filter((field) => field.type.kind === 'NonNullType')
     .map((n) => n.name.value),
   ...(hierarchy
-    ? { allOf: [refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0]] }
+    ? {
+        allOf: [
+          refType(AMPLIENCE_TYPE.CORE.Content).allOf[0],
+          refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0],
+        ],
+      }
     : {}),
 })
 /**
