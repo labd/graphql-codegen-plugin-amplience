@@ -1,0 +1,29 @@
+{
+  "$id": "https://schema-examples.com/child",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "allOf": [
+    {
+      "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content"
+    },
+    {
+      "$ref": "http://bigcontent.io/cms/schema/v2/hierarchy#/definitions/hierarchy-node"
+    }
+  ],
+  "title": "Child",
+  "properties": {
+    "title": {
+      "title": "Title",
+      "type": "string"
+    }
+  },
+  "description": "Child",
+  "trait:hierarchy": {
+    "childContentTypes": [
+      "https://schema-examples.com/child",
+      "https://schema-examples.com/leaf"
+    ]
+  },
+  "type": "object",
+  "propertyOrder": ["title"],
+  "required": ["title"]
+}

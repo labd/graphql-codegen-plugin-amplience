@@ -7,12 +7,10 @@ import {
 import {
   hasDirective,
   isObjectTypeDefinitionNode,
-  maybeDirective,
-  maybeDirectiveValue,
   schemaPrepend,
 } from 'amplience-graphql-codegen-common'
 import { paramCase } from 'change-case'
-import { EnumValueNode, ObjectTypeDefinitionNode } from 'graphql'
+import { ObjectTypeDefinitionNode } from 'graphql'
 import { contentTypeSchemaBody } from './lib/amplience-schema-transformers'
 
 export type PluginConfig = {
@@ -41,13 +39,7 @@ export const plugin: PluginFunction<PluginConfig> = (
 ) => {
   const node = info?.pluginContext?.typeNode as ObjectTypeDefinitionNode
 
-  const isHierarchy =
-    maybeDirectiveValue<EnumValueNode>(
-      maybeDirective(node, 'amplience')!, // We check for the amplience directive in the preset function below
-      'validationLevel'
-    )?.value === 'HIERARCHY'
-
-  const result = contentTypeSchemaBody(node, schema, hostname, isHierarchy)
+  const result = contentTypeSchemaBody(node, schema, hostname)
   return JSON.stringify(result)
 }
 

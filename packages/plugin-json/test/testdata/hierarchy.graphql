@@ -1,0 +1,38 @@
+# This is a regular content type with a property called 'children'.
+# This content type cannot be used as a node in a hierarchy,
+# but it contains hierarchy nodes as linked content items.
+type Root @amplience {
+  title: String!
+  children: [TopLevel]! @link
+}
+
+# This is a hierarchy node.
+# It can be used in the hierarchy as a child of other hierarchy nodes,
+# and it can have child nodes of type Child.
+# The property "children" is used to reference hierarchies
+# This property should be implemented in a resolver to fetch its children from Amplience.
+type TopLevel @amplience(validationLevel: HIERARCHY) {
+  title: String!
+  children: [Child]!
+}
+
+# You can have a union type as a hierarchy child
+union Item = Child | Leaf
+
+# This is a hierarchy node.
+# It can be used in the hierarchy as a child of other hierarchy nodes,
+# and it can have child nodes of type Child or Leaf.
+# The property "children" is used to reference hierarchies
+# This property should be implemented in a resolver to fetch its children from Amplience.
+type Child @amplience(validationLevel: HIERARCHY) {
+  title: String!
+  children: [Item]!
+}
+
+# This is a hierarchy node.
+# It can be used in the hierarchy as a child of other hierarchy nodes,
+# but it cannot have children because it does not have a "children" property.
+# That makes this a Leaf node.
+type Leaf @amplience(validationLevel: HIERARCHY) {
+  title: String!
+}

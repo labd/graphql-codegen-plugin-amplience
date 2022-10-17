@@ -8,9 +8,11 @@ import {
   switchArray,
   typeName,
   typeUri,
+  namedType,
 } from 'amplience-graphql-codegen-common'
 import { capitalCase, paramCase } from 'change-case'
 import {
+  EnumValueNode,
   FieldDefinitionNode,
   GraphQLSchema,
   IntValueNode,
@@ -32,8 +34,7 @@ import { AmplienceContentTypeSchemaBody, AmpliencePropertyType } from './types'
 export const contentTypeSchemaBody = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
-  schemaHost: string,
-  hierarchy?: boolean
+  schemaHost: string
 ): AmplienceContentTypeSchemaBody => ({
   $id: typeUri(type, schemaHost),
   $schema: 'http://json-schema.org/draft-07/schema#',
@@ -44,28 +45,20 @@ export const contentTypeSchemaBody = (
   },
   description: type.description?.value ?? capitalCase(type.name.value),
   'trait:sortable': sortableTrait(type),
-  'trait:hierarchy': hierarchy ? hierarchyTrait(type, schemaHost) : undefined,
+  'trait:hierarchy': isHierarchy(type)
+    ? hierarchyTrait(type, schema, schemaHost)
+    : undefined,
   'trait:filterable': filterableTrait(type),
   type: 'object',
   propertyOrder:
     type.fields
-      ?.filter((field) => {
-        return ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
-          (term) => !hasDirective(field, term)
-        )
-      })
-      .map((field) => {
-        return field.name.value
-      }) ?? [],
+      ?.filter((field) => isAmplienceProperty(type, field))
+      .map((field) => field.name.value) ?? [],
   required: type.fields
-    ?.filter((field) =>
-      ['ignoreAmplience', ...(hierarchy ? ['children'] : [])].every(
-        (term) => !hasDirective(field, term)
-      )
-    )
+    ?.filter((field) => isAmplienceProperty(type, field))
     .filter((field) => field.type.kind === 'NonNullType')
     .map((n) => n.name.value),
-  ...(hierarchy
+  ...(isHierarchy(type)
     ? {
         allOf: [
           refType(AMPLIENCE_TYPE.CORE.Content).allOf[0],
@@ -74,6 +67,7 @@ export const contentTypeSchemaBody = (
       }
     : {}),
 })
+
 /**
  * Returns the properties that go inside Amplience `{type: 'object', properties: ...}`
  */
@@ -84,12 +78,7 @@ export const objectProperties = (
 ): { [name: string]: AmpliencePropertyType } =>
   Object.fromEntries(
     type.fields
-      // Children can not be available as a field on the object itself
-      ?.filter((prop) =>
-        ['children', 'ignoreAmplience'].every(
-          (term) => !hasDirective(prop, term)
-        )
-      )
+      ?.filter((field) => isAmplienceProperty(type, field))
       .map((prop) => [
         prop.name.value,
         {
@@ -121,6 +110,19 @@ export const objectProperties = (
         },
       ]) ?? []
   )
+
+const isHierarchy = (type: ObjectTypeDefinitionNode) =>
+  maybeDirectiveValue<EnumValueNode>(
+    maybeDirective(type, 'amplience')!,
+    'validationLevel'
+  )?.value === 'HIERARCHY'
+
+const isAmplienceProperty = (
+  type: ObjectTypeDefinitionNode,
+  field: FieldDefinitionNode
+) =>
+  !hasDirective(field, 'ignoreAmplience') &&
+  (!isHierarchy(type) || field.name.value !== 'children')
 
 const arrayConstValues = (prop: FieldDefinitionNode) =>
   ifValue(maybeDirective(prop, 'const'), (d) =>
@@ -354,19 +356,25 @@ export const sortableTrait = (type: ObjectTypeDefinitionNode) =>
 
 /**
  * Returns hierarchy trait child content types with the current type and any other
- * types based on the `@children` tag
+ * types based on the `@children` tag.
  * @returns Object that can be pushed to the `trait:hierarchy` directly
  */
 export const hierarchyTrait = (
   type: ObjectTypeDefinitionNode,
+  schema: GraphQLSchema,
   schemaHost: string
 ) => ({
-  childContentTypes: [
-    typeUri(type, schemaHost),
-    ...(type.fields
-      ?.filter((m) => hasDirective(m, 'children'))
-      .map((n) => `${schemaHost}/${paramCase(n.name.value)}`) ?? []),
-  ],
+  childContentTypes: type.fields
+    ?.filter((field) => field.name.value === 'children')
+    .map((field) => namedType(field.type))
+    .flatMap((type) => {
+      const node = schema.getType(typeName(type))
+
+      return isUnionType(node) && node.astNode
+        ? node.astNode.types ?? []
+        : [type]
+    })
+    .map((t) => `${schemaHost}/${paramCase(t.name.value)}`),
 })
 
 /**

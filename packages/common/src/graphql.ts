@@ -2,6 +2,7 @@ import {
   DefinitionNode,
   DirectiveNode,
   FieldDefinitionNode,
+  NamedTypeNode,
   ObjectTypeDefinitionNode,
   ObjectValueNode,
   TypeDefinitionNode,
@@ -37,14 +38,16 @@ export const isObjectTypeDefinitionNode = (
 ): definitionNode is ObjectTypeDefinitionNode =>
   definitionNode.kind === 'ObjectTypeDefinition'
 
-export const typeName = (type: TypeNode): string => {
+export const typeName = (type: TypeNode): string => namedType(type).name.value
+
+export const namedType = (type: TypeNode): NamedTypeNode => {
   switch (type.kind) {
     case 'ListType':
-      return typeName(type.type)
+      return namedType(type.type)
     case 'NamedType':
-      return type.name.value
+      return type
     case 'NonNullType':
-      return typeName(type.type)
+      return namedType(type.type)
     default:
       throw new Error(type.kind)
   }

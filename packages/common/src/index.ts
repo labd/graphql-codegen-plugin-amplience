@@ -30,17 +30,11 @@ export const schemaPrepend = gql`
     HIERARCHY
   }
 
-  type Visualization {
-    label: String!
-    templated_uri: String!
-    default: Boolean
-  }
-
   # Object directives
   directive @amplience(
     repository: String
     validationLevel: ValidationLevel
-    visualizations: [Visualization!]
+    visualizations: Boolean
   ) on OBJECT
 
   directive @icon(url: String!) on OBJECT
