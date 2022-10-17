@@ -12,9 +12,14 @@ generates:
     config:
       hostname: https://schema-examples.com
       # using a terraform variable:
-      visualization: var.variables["VISUALIZATION_HOST"]
-      # or directly:
-      # visualization: https://example.com/preview?vse={{vse.domain}}&content={{content.sys.id}}&locale={{locales}}
+      visualization:
+        - for_each: var.variables["VISUALIZATION_HOST"]
+          label: visualization.key
+          templated_uri: '${visualization.value}/preview?vse={{vse.domain}}&content={{content.sys.id}}'
+          default: false
+        - label: Example Preview
+          templated_uri: http://example.com/preview?vse={{vse.domain}}&content={{content.sys.id}}
+          default: false
       content_repositories:
         # using a terraform variable:
         website1: var.variables["CONTENT_REPO1_ID"]
