@@ -392,9 +392,6 @@ export const filterableTrait = (type: ObjectTypeDefinitionNode) => {
 
   if (filterableProps.length === 0) return undefined
 
-  if (filterableProps.length > 5)
-    throw new Error('max @amplienceFilterable tags can be five')
-
   return {
     filterBy: combinations(filterableProps.map((s) => `/${s.name.value}`)).map(
       (paths) => ({ paths })

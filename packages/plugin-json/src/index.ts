@@ -12,6 +12,11 @@ import {
 import { paramCase } from 'change-case'
 import { ObjectTypeDefinitionNode } from 'graphql'
 import { contentTypeSchemaBody } from './lib/amplience-schema-transformers'
+import {
+  getObjectTypeDefinitions,
+  getRequiredLocalizedFieldsReport,
+  getTooManyFiltersReport,
+} from './lib/validation'
 
 export type PluginConfig = {
   /**
@@ -43,13 +48,27 @@ export const plugin: PluginFunction<PluginConfig> = (
   return JSON.stringify(result)
 }
 
-export const validate: PluginValidateFn<PluginConfig> = async (
-  _schema,
+export const validate: PluginValidateFn<PluginConfig> = (
+  schema,
   _documents,
   _config,
   _outputFile
 ) => {
-  //
+  const types = getObjectTypeDefinitions(schema)
+  const requiredLocalizedFieldsReport = getRequiredLocalizedFieldsReport(types)
+
+  if (requiredLocalizedFieldsReport.length) {
+    throw new Error(
+      `Fields with '@amplienceLocalized' must be Nullable.\n\n${requiredLocalizedFieldsReport}`
+    )
+  }
+
+  const tooManyFiltersReport = getTooManyFiltersReport(types)
+  if (tooManyFiltersReport.length) {
+    throw new Error(
+      `Types can have no more than 5 fields with '@amplienceFiltered'.\n\n${tooManyFiltersReport}`
+    )
+  }
 }
 
 export const preset: Types.OutputPreset<PresetConfig> = {
