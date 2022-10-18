@@ -56,7 +56,11 @@ export const contentTypeSchemaBody = (
       .map((field) => field.name.value) ?? [],
   required: type.fields
     ?.filter((field) => isAmplienceProperty(type, field))
-    .filter((field) => field.type.kind === 'NonNullType')
+    .filter(
+      (field) =>
+        field.type.kind === 'NonNullType' ||
+        hasDirective(field, 'amplienceLocalized')
+    )
     .map((n) => n.name.value),
   ...(isHierarchy(type)
     ? {
