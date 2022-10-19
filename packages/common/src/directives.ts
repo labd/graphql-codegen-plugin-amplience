@@ -18,7 +18,7 @@ export const schemaPrepend = gql`
   directive @amplienceLink on FIELD_DEFINITION
   directive @amplienceReference on FIELD_DEFINITION
   directive @amplienceLocalized on FIELD_DEFINITION
-  directive @amplienceIgnore on FIELD_DEFINITION
+  directive @amplienceIgnore on FIELD_DEFINITION | SCALAR | OBJECT
   directive @amplienceSortable on FIELD_DEFINITION
   directive @amplienceFilterable on FIELD_DEFINITION
 
