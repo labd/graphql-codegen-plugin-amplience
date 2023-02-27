@@ -146,3 +146,56 @@ resource "amplience_content_type_assignment" "test_icon"{
 content_type_id = amplience_content_type.test_icon.id
 repository_id = data.amplience_content_repository.website1.id
 }
+
+resource "amplience_content_type_schema" "test_auto_sync_true"{
+body = file("${path.module}/schemas/test-auto-sync-true.json")
+schema_id = "https://schema-examples.com/test-auto-sync-true"
+validation_level = "CONTENT_TYPE"
+auto_sync = true
+}
+
+resource "amplience_content_type" "test_auto_sync_true"{
+content_type_uri = amplience_content_type_schema.test_auto_sync_true.schema_id
+label = "Test Auto Sync True"
+status = "ACTIVE"
+}
+
+resource "amplience_content_type_assignment" "test_auto_sync_true"{
+content_type_id = amplience_content_type.test_auto_sync_true.id
+repository_id = data.amplience_content_repository.website1.id
+}
+
+resource "amplience_content_type_schema" "test_auto_sync_false"{
+body = file("${path.module}/schemas/test-auto-sync-false.json")
+schema_id = "https://schema-examples.com/test-auto-sync-false"
+validation_level = "CONTENT_TYPE"
+auto_sync = false
+}
+
+resource "amplience_content_type" "test_auto_sync_false"{
+content_type_uri = amplience_content_type_schema.test_auto_sync_false.schema_id
+label = "Test Auto Sync False"
+status = "ACTIVE"
+}
+
+resource "amplience_content_type_assignment" "test_auto_sync_false"{
+content_type_id = amplience_content_type.test_auto_sync_false.id
+repository_id = data.amplience_content_repository.website1.id
+}
+
+resource "amplience_content_type_schema" "test_no_auto_sync"{
+body = file("${path.module}/schemas/test-no-auto-sync.json")
+schema_id = "https://schema-examples.com/test-no-auto-sync"
+validation_level = "CONTENT_TYPE"
+}
+
+resource "amplience_content_type" "test_no_auto_sync"{
+content_type_uri = amplience_content_type_schema.test_no_auto_sync.schema_id
+label = "Test No Auto Sync"
+status = "ACTIVE"
+}
+
+resource "amplience_content_type_assignment" "test_no_auto_sync"{
+content_type_id = amplience_content_type.test_no_auto_sync.id
+repository_id = data.amplience_content_repository.website1.id
+}

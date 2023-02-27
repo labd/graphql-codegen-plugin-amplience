@@ -34,5 +34,6 @@ export const schemaPrepend = gql`
     kind: ValidationLevel
     visualizations: Boolean
     icon: String
+    autoSync: Boolean
   ) on OBJECT
 `
