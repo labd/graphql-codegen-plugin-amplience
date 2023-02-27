@@ -66,6 +66,9 @@ You can also enable visualizations for this type by setting that argument to tru
 
 Optionally, you can also add `@icon(url: 'some-test-url')`. This will add icon support for the Amplience content-type
 
+Additionally, you can also add `autoSync` into the directive. This is an optional directive that accepts boolean. This will allow `autosync` to be in place. 
+**Note that this only available from Amplience Terraform Provider version >= 0.4.0**
+
 A full example you can see below:
 
 ```graphql
@@ -74,6 +77,7 @@ type MyContentType @amplienceContentType(
     kind: SLOT, # Can either be CONTENT_TYPE (default), SLOT, or HIERARCHY
     visualizations: true, # If true, it will add the visualizations defined in the codegen.yml
     icon: "http://example.com/icon.png"
+    autoSync: true # Optional field, if true, it will allow the content-type-schema to be sync-ed with the content-type automatically
 ) {
     ...
 }
