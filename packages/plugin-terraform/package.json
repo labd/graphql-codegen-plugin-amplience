@@ -1,7 +1,7 @@
 {
   "name": "amplience-graphql-codegen-terraform",
   "author": "Lab Digital",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": false,
   "license": "MIT",
   "module": "dist/index.mjs",
@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "^2.1.1",
-    "amplience-graphql-codegen-common": "^1.0.4",
+    "amplience-graphql-codegen-common": "^1.0.5",
     "change-case": "^4.1.2",
     "graphql": "^16.5.0",
     "terraform-generator": "^5.1.0"
