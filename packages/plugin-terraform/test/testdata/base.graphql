@@ -19,6 +19,18 @@ type TestIcon @amplienceContentType(visualizations: true, icon: "icon.png") {
   name: String
 }
 
+type TestAutoSyncTrue @amplienceContentType(autoSync: true) {
+  name: String
+}
+
+type TestAutoSyncFalse @amplienceContentType(autoSync: false) {
+  name: String
+}
+
+type TestNoAutoSync @amplienceContentType {
+  name: String
+}
+
 type NotATest {
   name: String!
 }

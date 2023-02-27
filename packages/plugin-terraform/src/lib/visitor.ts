@@ -46,6 +46,8 @@ export const createObjectTypeVisitor =
     const isSlot =
       maybeDirectiveValue<EnumValueNode>(directive, 'kind')?.value === 'SLOT'
 
+    const isAutoSync = maybeDirectiveValue<EnumValueNode>(directive, 'autoSync')?.value ?? undefined
+
     const schema = tfg.resource('amplience_content_type_schema', name, {
       body: fn(
         'file',
@@ -55,6 +57,7 @@ export const createObjectTypeVisitor =
       ),
       schema_id: typeUri(node, hostname),
       validation_level: isSlot ? 'SLOT' : 'CONTENT_TYPE',
+      auto_sync: isAutoSync
     })
 
     const shouldVisualize = maybeDirectiveValue<BooleanValueNode>(
