@@ -1,5 +1,9 @@
 type Test @amplienceContentType {
-  name: String
+  name: String,
+}
+
+type TestCard @amplienceContentType(card: "gallery")  {
+  name: String,
 }
 
 # Use a different repository than the default (first) repository.

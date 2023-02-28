@@ -69,12 +69,45 @@ export const createObjectTypeVisitor =
       ? maybeDirectiveValue<StringValueNode>(directive, 'icon')?.value
       : undefined
 
+      const cardType = directive
+        ? maybeDirectiveValue<StringValueNode>(directive, 'card')?.value
+        : undefined
+
+      let cardTypeValue;
+
+      switch (cardType) {
+        case 'photo':
+          cardTypeValue = { image: '', imageAlt: '' }
+          break;
+
+        case 'gallery':
+          cardTypeValue = { headline: '', image0: '', imageAlt0: '', image1: '', imageAlt1: '', image3: '', imageAlt3: '' }
+          break;
+
+        case 'summary':
+          cardTypeValue = { headline: '', image: '', imageAlt: '' }
+          break;
+
+        case 'text':
+          cardTypeValue = { headline: '' }
+          break;
+
+        case 'custom':
+          cardTypeValue = { cardUrl: '' }
+          break;
+
+        default:
+          cardTypeValue = {}
+          break;
+      }
+
     const dynamicVisualization = visualization?.find(hasProperty('for_each'))
 
     const contentType = tfg.resource('amplience_content_type', name, {
       content_type_uri: schema.attr('schema_id'),
       label: capitalCase(node.name.value),
       icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
+      card: cardTypeValue,
       status: 'ACTIVE',
       'dynamic"visualization"':
         shouldVisualize && dynamicVisualization
