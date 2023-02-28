@@ -1,9 +1,17 @@
 name: Publish
 on:
-  release:
-    types: [created]
+  pull_request:
+    branches:
+      - main
+    types: [closed]
+
+permissions:
+  contents: write # for checkout and tag
+  pull-requests: write # for comments
+  packages: write # for publish
+
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
