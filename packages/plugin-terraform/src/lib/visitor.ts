@@ -46,7 +46,7 @@ export const createObjectTypeVisitor =
     const isSlot =
       maybeDirectiveValue<EnumValueNode>(directive, 'kind')?.value === 'SLOT'
 
-    const isAutoSync = maybeDirectiveValue<EnumValueNode>(directive, 'autoSync')?.value
+    const isAutoSync = maybeDirectiveValue<EnumValueNode>(directive, 'autoSync')?.value ?? true
 
     const schema = tfg.resource('amplience_content_type_schema', name, {
       body: fn(
