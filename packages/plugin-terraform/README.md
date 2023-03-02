@@ -77,7 +77,7 @@ type MyContentType @amplienceContentType(
     kind: SLOT, # Can either be CONTENT_TYPE (default), SLOT, or HIERARCHY
     visualizations: true, # If true, it will add the visualizations defined in the codegen.yml
     icon: "http://example.com/icon.png"
-    autoSync: true # Optional field, defaulted to `true` if not specified, and it will allow content-type to be sync-ed automaticlaly
+    autoSync: true # Optional field, defaulted to `true` if not specified, and it will allow content-type to be sync-ed automatically
 ) {
     ...
 }
