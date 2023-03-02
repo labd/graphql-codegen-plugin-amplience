@@ -26,6 +26,7 @@ resource "amplience_content_type_schema" "test" {
   body             = file("${path.module}/schemas/test.json")
   schema_id        = "https://schema-examples.com/test"
   validation_level = "CONTENT_TYPE"
+  auto_sync        = true
 }
 
 resource "amplience_content_type" "test" {
@@ -79,6 +80,7 @@ resource "amplience_content_type_schema" "test_no_auto_sync" {
   body             = file("${path.module}/schemas/test-no-auto-sync.json")
   schema_id        = "https://schema-examples.com/test-no-auto-sync"
   validation_level = "CONTENT_TYPE"
+  auto_sync        = true
 }
 
 resource "amplience_content_type" "test_no_auto_sync" {
@@ -96,6 +98,7 @@ resource "amplience_content_type_schema" "test_other_repository" {
   body             = file("${path.module}/schemas/test-other-repository.json")
   schema_id        = "https://schema-examples.com/test-other-repository"
   validation_level = "CONTENT_TYPE"
+  auto_sync        = true
 }
 
 resource "amplience_content_type" "test_other_repository" {
@@ -113,6 +116,7 @@ resource "amplience_content_type_schema" "test_slot" {
   body             = file("${path.module}/schemas/test-slot.json")
   schema_id        = "https://schema-examples.com/test-slot"
   validation_level = "SLOT"
+  auto_sync        = true
 }
 
 resource "amplience_content_type" "test_slot" {
@@ -130,6 +134,7 @@ resource "amplience_content_type_schema" "test_visualizations" {
   body             = file("${path.module}/schemas/test-visualizations.json")
   schema_id        = "https://schema-examples.com/test-visualizations"
   validation_level = "CONTENT_TYPE"
+  auto_sync        = true
 }
 
 resource "amplience_content_type" "test_visualizations" {
