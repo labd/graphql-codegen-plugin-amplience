@@ -79,6 +79,9 @@ importers:
       graphql:
         specifier: ^16.5.0
         version: 16.6.0
+      graphql-tag:
+        specifier: ^2.12.6
+        version: 2.12.6(graphql@16.6.0)
 
   packages/plugin-terraform:
     dependencies:
