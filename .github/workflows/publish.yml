@@ -26,10 +26,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Install dependencies
-        run: yarn
+        run: pnpm install --frozen-lockfile
       - name: Build package
-        run: yarn build
+        run: pnpm build
       - name: Publish
-        run: yarn lerna publish --no-private patch -y
+        run: pnpm lerna publish --no-private patch -y
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
