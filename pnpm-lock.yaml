@@ -71,7 +71,7 @@ importers:
         specifier: ^2.1.1
         version: 2.7.1(graphql@16.6.0)
       amplience-graphql-codegen-common:
-        specifier: ^1.0.9
+        specifier: ^1.0.10
         version: link:../common
       change-case:
         specifier: ^4.1.2
@@ -89,7 +89,7 @@ importers:
         specifier: ^2.1.1
         version: 2.7.1(graphql@16.6.0)
       amplience-graphql-codegen-common:
-        specifier: ^1.0.9
+        specifier: ^1.0.10
         version: link:../common
       change-case:
         specifier: ^4.1.2
