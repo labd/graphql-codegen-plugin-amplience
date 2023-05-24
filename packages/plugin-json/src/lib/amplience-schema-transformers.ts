@@ -163,7 +163,8 @@ export const ampliencePropertyType = (
       if (hasDirective(prop, 'amplienceReference')) {
         return contentReference(node.astNode, schemaHost)
       }
-      return inlineObject(node.astNode, schema, schemaHost)
+
+      return inlineContentReference(node.astNode, schemaHost)
     }
   }
 
@@ -248,27 +249,6 @@ const contentLink = (
   schemaHost: string
 ) => refType(AMPLIENCE_TYPE.CORE.ContentLink, enumProperties(type, schemaHost))
 
-// const refLinkContent = (
-//   type: ObjectTypeDefinitionNode,
-//   schemaHost: string
-// ) => ({
-//   type: 'object',
-//   ...refType(typeUri(type, schemaHost)),
-// })
-
-const inlineObject = (
-  type: ObjectTypeDefinitionNode,
-  schema: GraphQLSchema,
-  schemaHost: string
-) => ({
-  type: 'object',
-  properties: objectProperties(type, schema, schemaHost),
-  propertyOrder: type.fields?.map((n) => n.name.value),
-  required: type.fields
-    ?.filter((field) => field.type.kind === 'NonNullType')
-    .map((field) => field.name.value),
-})
-
 const enumProperties = (
   typeOrUnion: TypeDefinitionNode,
   schemaHost: string
@@ -281,6 +261,16 @@ const enumProperties = (
       ).map((t) => typeUri(t, schemaHost)),
     },
   },
+})
+
+const inlineContentReference = (
+  type: ObjectTypeDefinitionNode,
+  schemaHost: string
+) => ({
+  type: 'object',
+  // use inline content (https://amplience.com/developers/docs/schema-reference/data-types/#inline-content)
+  // to prevent property duplication and enrich content type with meta data (e.g. schema name)
+  ...refType(typeUri(type, schemaHost)),
 })
 
 /**

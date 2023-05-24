@@ -81,28 +81,22 @@
     "a": {
       "title": "A",
       "type": "object",
-      "properties": {
-        "a": {
-          "title": "A",
-          "type": "string"
+      "allOf": [
+        {
+          "$ref": "https://schema-examples.com/a"
         }
-      },
-      "propertyOrder": ["a"],
-      "required": ["a"]
+      ]
     },
     "bs": {
       "title": "Bs",
       "type": "array",
       "items": {
         "type": "object",
-        "properties": {
-          "b": {
-            "title": "B",
-            "type": "string"
+        "allOf": [
+          {
+            "$ref": "https://schema-examples.com/b"
           }
-        },
-        "propertyOrder": ["b"],
-        "required": ["b"]
+        ]
       }
     },
     "image": {
