@@ -28,7 +28,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.2.0",
-    "@labd/eslint-config": "^0.5.2",
+    "@labdigital/eslint-config-node": "^0.0.5",
     "@size-limit/preset-small-lib": "^8.0.1",
     "@types/jest": "^29.1.1",
     "@types/node": "^18.8.2",
