@@ -14,10 +14,6 @@
     "build": "turbo build",
     "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist"
   },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true
-  },
   "husky": {
     "hooks": {
       "pre-commit": [
