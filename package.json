@@ -20,7 +20,10 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "eslint"
+      "pre-commit": [
+        "eslint",
+        "prettier '**/*.{tx,tsx,md}' --write"
+      ]
     }
   },
   "devDependencies": {
