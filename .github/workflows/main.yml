@@ -7,7 +7,6 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node: ['16.x']
         os: [ubuntu-latest, windows-latest, macOS-latest]
 
     steps:
@@ -17,10 +16,10 @@ jobs:
       - name: Set up PNPM
         uses: pnpm/action-setup@v2
 
-      - name: Use Node ${{ matrix.node }}
+      - name: Use Node
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: '18.x'
           cache: 'pnpm'
 
       - name: Install deps and build (with cache)

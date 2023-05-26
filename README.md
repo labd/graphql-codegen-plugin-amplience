@@ -14,7 +14,7 @@ For more details see the [Terraform plugin folder](/packages/plugin-terraform)
 
 # Development
 
-Assuming you have pnpm installed with node 16, run:
+Assuming you have pnpm installed with node 18, run:
 
 ```bash
 pnpm install
