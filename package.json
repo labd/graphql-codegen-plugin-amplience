@@ -22,7 +22,7 @@
     "hooks": {
       "pre-commit": [
         "eslint",
-        "prettier '**/*.{tx,tsx,md}' --write"
+        "prettier \"**/*.{tx,tsx,md}\" --write"
       ]
     }
   },
