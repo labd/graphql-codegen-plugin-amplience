@@ -1,11 +1,3 @@
-terraform {
-  required_providers {
-    amplience = {
-      source = "labd/amplience"
-    }
-  }
-}
-
 data "amplience_content_repository" "website1" {
   id = var.variables["CONTENT_REPO1_ID"]
 }

@@ -8,7 +8,7 @@ import {
 import { schemaPrepend } from 'amplience-graphql-codegen-common'
 import { snakeCase } from 'change-case'
 import { GraphQLSchema, visit } from 'graphql'
-import { map, TerraformGenerator } from 'terraform-generator'
+import { TerraformGenerator } from 'terraform-generator'
 import { createObjectTypeVisitor, maybeArg } from './lib/visitor'
 import { PluginConfig } from './lib/config'
 
@@ -28,9 +28,7 @@ export const plugin: PluginFunction<PluginConfig> = (
   const astNode = getCachedDocumentNodeFromSchema(schema)
 
   // This class can build a terraform file string.
-  const tfg = new TerraformGenerator({
-    required_providers: { amplience: map({ source: 'labd/amplience' }) },
-  })
+  const tfg = new TerraformGenerator()
 
   // To connect the Amplience content type resources to the correct Amplience repository,
   // we first generate the terraform repositories as terraform data.
