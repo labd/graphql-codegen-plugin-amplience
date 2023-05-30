@@ -61,4 +61,5 @@ export type PluginConfig = {
    */
   slot_repositories?: { [name: string]: string }
   schemaSuffix?: string
+  add_required_provider?: boolean
 }

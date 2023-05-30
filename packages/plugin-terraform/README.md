@@ -38,6 +38,7 @@ generates:
       slot_repositories:
         slot1: var.variables["SLOT_REPO1_ID"]
         slot2: var.variables["SLOT_REPO2_ID"]
+      add_required_provider: true # defaulted to true, will generate required_providers block, removed otherwise
 ```
 
 The `hostname` is optional and will default to `https://schema-examples.com`.
