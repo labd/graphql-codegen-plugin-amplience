@@ -14,22 +14,32 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Set up PNPM
+        uses: pnpm/action-setup@c3b53f6a16e57305370b4ae5a540c2077a1d50dd #v2.2.4
+
+      - name: Use Node
+        uses: actions/setup-node@v1
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
+
       - name: Git Identity
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Install dependencies
-        run: yarn
+        run: pnpm install --frozen-lockfile
+
       - name: Build package
-        run: yarn build
+        run: pnpm build
+
       - name: Publish
-        run: yarn lerna publish --no-private patch -y
+        run: pnpm lerna publish --no-private patch -y
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

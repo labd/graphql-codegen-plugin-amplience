@@ -1,5 +1,5 @@
 module.exports = {
   root: true,
-  extends: ['@labd'],
+  extends: ['@labdigital/eslint-config-node'],
   ignorePatterns: ['**/*.js'],
 }

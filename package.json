@@ -3,6 +3,7 @@
   "author": "Lab digital",
   "private": true,
   "license": "MIT",
+  "packageManager": "pnpm@8.5.1",
   "engines": {
     "node": ">=16"
   },
@@ -27,7 +28,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^2.2.0",
-    "@labd/eslint-config": "^0.5.2",
+    "@labdigital/eslint-config-node": "^0.0.5",
     "@size-limit/preset-small-lib": "^8.0.1",
     "@types/jest": "^29.1.1",
     "@types/node": "^18.8.2",
@@ -42,8 +43,5 @@
     "tslib": "^2.3.1",
     "tsup": "^6.2.3",
     "typescript": "^4.8.4"
-  },
-  "workspaces": [
-    "packages/*"
-  ]
+  }
 }
