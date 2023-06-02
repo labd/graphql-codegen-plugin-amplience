@@ -22,6 +22,7 @@ type Base @amplienceContentType {
   enum: Enum
   a: A
   bs: [B]
+  inlined: Inlined
   union: Union
   linkedA: A @amplienceLink
   referencedB: B @amplienceReference
@@ -40,6 +41,10 @@ type A @amplienceContentType {
 
 type B @amplienceContentType {
   b: String!
+}
+
+type Inlined {
+  inlined: String!
 }
 
 type Localized @amplienceContentType {

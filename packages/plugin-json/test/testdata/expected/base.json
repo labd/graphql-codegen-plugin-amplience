@@ -99,6 +99,18 @@
         ]
       }
     },
+    "inlined": {
+      "title": "Inlined",
+      "type": "object",
+      "properties": {
+        "inlined": {
+          "title": "Inlined",
+          "type": "string"
+        }
+      },
+      "propertyOrder": ["inlined"],
+      "required": ["inlined"]
+    },
     "image": {
       "title": "Image",
       "allOf": [
@@ -191,6 +203,7 @@
     "enum",
     "a",
     "bs",
+    "inlined",
     "union",
     "linkedA",
     "referencedB"
