@@ -33,7 +33,7 @@ generates:
           default: false
       content_repositories:
         website1: var.variables["CONTENT_REPO1_ID"] # A terraform variable.
-        website2: 12345678901234567890 # A direct content repo id value.
+        website2: 1234567890123456789 # A direct content repo id value.
         website3: ${WEBSITE_3} # A environment variable.
       slot_repositories:
         slot1: var.variables["SLOT_REPO1_ID"]
@@ -67,7 +67,7 @@ You can also enable visualizations for this type by setting that argument to tru
 
 Optionally, you can also add `@icon(url: 'some-test-url')`. This will add icon support for the Amplience content-type
 
-Additionally, you can also add `autoSync` into the directive. This is an optional directive that accepts boolean (defaulted to `true`). This will allow `autoSync` to be in place. 
+Additionally, you can also add `autoSync` into the directive. This is an optional directive that accepts boolean (defaulted to `true`). This will allow `autoSync` to be in place.
 **Note that this only available from Amplience Terraform Provider version >= 0.4.0**
 
 A full example you can see below:
