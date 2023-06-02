@@ -150,12 +150,14 @@ export const ampliencePropertyType = (
     if (isUnionType(node) && node.astNode) {
       return contentLink(node.astNode, schemaHost)
     }
+
     if (isEnumType(node) && node.astNode) {
       return {
         type: 'string',
         enum: node.astNode.values?.map((v) => v.name.value),
       }
     }
+
     if (isObjectType(node) && node.astNode) {
       if (hasDirective(prop, 'amplienceLink')) {
         return contentLink(node.astNode, schemaHost)
