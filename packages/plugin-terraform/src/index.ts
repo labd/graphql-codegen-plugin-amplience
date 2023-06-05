@@ -40,19 +40,26 @@ export const plugin: PluginFunction<PluginConfig> = (
   // To connect the Amplience content type resources to the correct Amplience repository,
   // we first generate the terraform repositories as terraform data.
   const contentRepositories = content_repositories
-    ? Object.entries(content_repositories).map(([name, value]) =>
-        tfg.data('amplience_content_repository', snakeCase(name), {
-          id: maybeArg(value),
-        })
-      )
+    ? Object.entries(content_repositories)
+        .filter(([name]) => name !== 'for_each')
+        .map(([name, value]) =>
+          tfg.data('amplience_content_repository', snakeCase(name), {
+            id: maybeArg(value),
+          })
+        )
     : undefined
   const slotRepositories = slot_repositories
-    ? Object.entries(slot_repositories).map(([name, value]) =>
-        tfg.data('amplience_content_repository', snakeCase(name), {
-          id: maybeArg(value),
-        })
-      )
+    ? Object.entries(slot_repositories)
+        .filter(([name]) => name !== 'for_each')
+        .map(([name, value]) =>
+          tfg.data('amplience_content_repository', snakeCase(name), {
+            id: maybeArg(value),
+          })
+        )
     : undefined
+
+  const slotRepositoriesMapVariable = slot_repositories?.for_each
+  const contentRepositoriesMapVariable = content_repositories?.for_each
 
   // For each GraphQl object type, add corresponding resources to the terraform generator.
   visit(astNode, {
@@ -61,6 +68,8 @@ export const plugin: PluginFunction<PluginConfig> = (
         tfg,
         contentRepositories,
         slotRepositories,
+        contentRepositoriesMapVariable,
+        slotRepositoriesMapVariable,
         hostname,
         visualization,
         schemaSuffix,

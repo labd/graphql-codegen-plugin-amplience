@@ -28,6 +28,8 @@ export const createObjectTypeVisitor =
     visualization,
     contentRepositories,
     slotRepositories,
+    contentRepositoriesMapVariable,
+    slotRepositoriesMapVariable,
     schemaSuffix,
   }: {
     tfg: TerraformGenerator
@@ -35,6 +37,8 @@ export const createObjectTypeVisitor =
     visualization?: VisualizationType[]
     contentRepositories?: Data[]
     slotRepositories?: Data[]
+    contentRepositoriesMapVariable?: string
+    slotRepositoriesMapVariable?: string
     schemaSuffix?: string
   }) =>
   (node: ObjectTypeDefinitionNode) => {
@@ -46,7 +50,8 @@ export const createObjectTypeVisitor =
     const isSlot =
       maybeDirectiveValue<EnumValueNode>(directive, 'kind')?.value === 'SLOT'
 
-    const isAutoSync = maybeDirectiveValue<EnumValueNode>(directive, 'autoSync')?.value ?? true
+    const isAutoSync =
+      maybeDirectiveValue<EnumValueNode>(directive, 'autoSync')?.value ?? true
 
     const schema = tfg.resource('amplience_content_type_schema', name, {
       body: fn(
@@ -57,7 +62,7 @@ export const createObjectTypeVisitor =
       ),
       schema_id: typeUri(node, hostname),
       validation_level: isSlot ? 'SLOT' : 'CONTENT_TYPE',
-      auto_sync: isAutoSync
+      auto_sync: isAutoSync,
     })
 
     const shouldVisualize = maybeDirectiveValue<BooleanValueNode>(
@@ -91,7 +96,7 @@ export const createObjectTypeVisitor =
       'repository'
     )?.value
 
-    if (contentRepositories && !isSlot) {
+    if (contentRepositories?.length && !isSlot) {
       tfg.resource('amplience_content_type_assignment', name, {
         content_type_id: contentType.id,
         repository_id: (
@@ -100,7 +105,7 @@ export const createObjectTypeVisitor =
         ).id,
       })
     }
-    if (slotRepositories && isSlot) {
+    if (slotRepositories?.length && isSlot) {
       tfg.resource('amplience_content_type_assignment', name, {
         content_type_id: contentType.id,
         repository_id: (
@@ -109,6 +114,23 @@ export const createObjectTypeVisitor =
         ).id,
       })
     }
+
+    if (contentRepositoriesMapVariable && !isSlot) {
+      tfg.resource('amplience_content_type_assignment', name, {
+        for_each: arg(contentRepositoriesMapVariable),
+        content_type_id: contentType.id,
+        repository_id: arg('each.value'),
+      })
+    }
+
+    if (slotRepositoriesMapVariable && isSlot) {
+      tfg.resource('amplience_content_type_assignment', name, {
+        for_each: arg(slotRepositoriesMapVariable),
+        content_type_id: contentType.id,
+        repository_id: arg('each.value'),
+      })
+    }
+
     return null
   }
 
