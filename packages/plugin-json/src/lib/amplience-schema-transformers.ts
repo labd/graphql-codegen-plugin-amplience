@@ -5,10 +5,10 @@ import {
   ifValue,
   maybeDirective,
   maybeDirectiveValue,
+  namedType,
   switchArray,
   typeName,
   typeUri,
-  namedType,
 } from 'amplience-graphql-codegen-common'
 import { capitalCase, paramCase } from 'change-case'
 import {
@@ -16,15 +16,15 @@ import {
   FieldDefinitionNode,
   GraphQLSchema,
   IntValueNode,
-  isEnumType,
-  isObjectType,
-  isUnionType,
   ListValueNode,
   ObjectTypeDefinitionNode,
   StringValueNode,
   TypeDefinitionNode,
   TypeNode,
   UnionTypeDefinitionNode,
+  isEnumType,
+  isObjectType,
+  isUnionType,
 } from 'graphql'
 import { AmplienceContentTypeSchemaBody, AmpliencePropertyType } from './types'
 
@@ -150,12 +150,14 @@ export const ampliencePropertyType = (
     if (isUnionType(node) && node.astNode) {
       return contentLink(node.astNode, schemaHost)
     }
+
     if (isEnumType(node) && node.astNode) {
       return {
         type: 'string',
         enum: node.astNode.values?.map((v) => v.name.value),
       }
     }
+
     if (isObjectType(node) && node.astNode) {
       if (hasDirective(prop, 'amplienceLink')) {
         return contentLink(node.astNode, schemaHost)
@@ -164,7 +166,11 @@ export const ampliencePropertyType = (
         return contentReference(node.astNode, schemaHost)
       }
 
-      return inlineContentReference(node.astNode, schemaHost)
+      if (hasDirective(node.astNode, 'amplienceContentType')) {
+        return inlineContentReference(node.astNode, schemaHost)
+      }
+
+      return inlineObject(node.astNode, schema, schemaHost)
     }
   }
 
@@ -261,6 +267,19 @@ const enumProperties = (
       ).map((t) => typeUri(t, schemaHost)),
     },
   },
+})
+
+const inlineObject = (
+  type: ObjectTypeDefinitionNode,
+  schema: GraphQLSchema,
+  schemaHost: string
+) => ({
+  type: 'object',
+  properties: objectProperties(type, schema, schemaHost),
+  propertyOrder: type.fields?.map((n) => n.name.value),
+  required: type.fields
+    ?.filter((field) => field.type.kind === 'NonNullType')
+    .map((field) => field.name.value),
 })
 
 const inlineContentReference = (
