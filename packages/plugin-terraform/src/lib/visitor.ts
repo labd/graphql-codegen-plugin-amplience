@@ -28,8 +28,8 @@ export const createObjectTypeVisitor =
     visualization,
     contentRepositories,
     slotRepositories,
-    contentRepositoriesMapVariable,
-    slotRepositoriesMapVariable,
+    contentRepositoriesForEach,
+    slotRepositoriesForEach,
     schemaSuffix,
   }: {
     tfg: TerraformGenerator
@@ -37,8 +37,8 @@ export const createObjectTypeVisitor =
     visualization?: VisualizationType[]
     contentRepositories?: Data[]
     slotRepositories?: Data[]
-    contentRepositoriesMapVariable?: string
-    slotRepositoriesMapVariable?: string
+    contentRepositoriesForEach?: string
+    slotRepositoriesForEach?: string
     schemaSuffix?: string
   }) =>
   (node: ObjectTypeDefinitionNode) => {
@@ -115,17 +115,17 @@ export const createObjectTypeVisitor =
       })
     }
 
-    if (contentRepositoriesMapVariable && !isSlot) {
+    if (contentRepositoriesForEach && !isSlot) {
       tfg.resource('amplience_content_type_assignment', name, {
-        for_each: arg(contentRepositoriesMapVariable),
+        for_each: arg(contentRepositoriesForEach),
         content_type_id: contentType.id,
         repository_id: arg('each.value'),
       })
     }
 
-    if (slotRepositoriesMapVariable && isSlot) {
+    if (slotRepositoriesForEach && isSlot) {
       tfg.resource('amplience_content_type_assignment', name, {
-        for_each: arg(slotRepositoriesMapVariable),
+        for_each: arg(slotRepositoriesForEach),
         content_type_id: contentType.id,
         repository_id: arg('each.value'),
       })

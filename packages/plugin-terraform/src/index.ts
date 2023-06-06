@@ -58,8 +58,8 @@ export const plugin: PluginFunction<PluginConfig> = (
         )
     : undefined
 
-  const slotRepositoriesMapVariable = slot_repositories?.for_each
-  const contentRepositoriesMapVariable = content_repositories?.for_each
+  const slotRepositoriesForEach = slot_repositories?.for_each
+  const contentRepositoriesForEach = content_repositories?.for_each
 
   // For each GraphQl object type, add corresponding resources to the terraform generator.
   visit(astNode, {
@@ -68,8 +68,8 @@ export const plugin: PluginFunction<PluginConfig> = (
         tfg,
         contentRepositories,
         slotRepositories,
-        contentRepositoriesMapVariable,
-        slotRepositoriesMapVariable,
+        contentRepositoriesForEach,
+        slotRepositoriesForEach,
         hostname,
         visualization,
         schemaSuffix,
