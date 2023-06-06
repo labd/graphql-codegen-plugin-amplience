@@ -107,4 +107,21 @@ export const validate: PluginValidateFn<any> = async (
       )
     }
   }
+  if (config.content_repositories) {
+    validateRepositoryConfig(config.content_repositories)
+  }
+
+  if (config.slot_repositories) {
+    validateRepositoryConfig(config.slot_repositories)
+  }
+}
+
+function validateRepositoryConfig(repositoryMap: { [name: string]: string }) {
+  const repositoryKeys = Object.keys(repositoryMap)
+
+  if (repositoryKeys.length > 1 && repositoryMap.for_each) {
+    throw new Error(
+      `for_each should not be used when multiple repositories are defined to prevent duplicate resources.`
+    )
+  }
 }
