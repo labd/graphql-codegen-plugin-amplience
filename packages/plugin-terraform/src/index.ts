@@ -40,19 +40,26 @@ export const plugin: PluginFunction<PluginConfig> = (
   // To connect the Amplience content type resources to the correct Amplience repository,
   // we first generate the terraform repositories as terraform data.
   const contentRepositories = content_repositories
-    ? Object.entries(content_repositories).map(([name, value]) =>
-        tfg.data('amplience_content_repository', snakeCase(name), {
-          id: maybeArg(value),
-        })
-      )
+    ? Object.entries(content_repositories)
+        .filter(([name]) => name !== 'for_each')
+        .map(([name, value]) =>
+          tfg.data('amplience_content_repository', snakeCase(name), {
+            id: maybeArg(value),
+          })
+        )
     : undefined
   const slotRepositories = slot_repositories
-    ? Object.entries(slot_repositories).map(([name, value]) =>
-        tfg.data('amplience_content_repository', snakeCase(name), {
-          id: maybeArg(value),
-        })
-      )
+    ? Object.entries(slot_repositories)
+        .filter(([name]) => name !== 'for_each')
+        .map(([name, value]) =>
+          tfg.data('amplience_content_repository', snakeCase(name), {
+            id: maybeArg(value),
+          })
+        )
     : undefined
+
+  const slotRepositoriesForEach = slot_repositories?.for_each
+  const contentRepositoriesForEach = content_repositories?.for_each
 
   // For each GraphQl object type, add corresponding resources to the terraform generator.
   visit(astNode, {
@@ -61,6 +68,8 @@ export const plugin: PluginFunction<PluginConfig> = (
         tfg,
         contentRepositories,
         slotRepositories,
+        contentRepositoriesForEach,
+        slotRepositoriesForEach,
         hostname,
         visualization,
         schemaSuffix,
@@ -97,5 +106,22 @@ export const validate: PluginValidateFn<any> = async (
         `You can only set 1 item, which may not be a for_each-item to be the default.`
       )
     }
+  }
+  if (config.content_repositories) {
+    validateRepositoryConfig(config.content_repositories)
+  }
+
+  if (config.slot_repositories) {
+    validateRepositoryConfig(config.slot_repositories)
+  }
+}
+
+function validateRepositoryConfig(repositoryMap: { [name: string]: string }) {
+  const repositoryKeys = Object.keys(repositoryMap)
+
+  if (repositoryKeys.length > 1 && repositoryMap.for_each) {
+    throw new Error(
+      `for_each should not be used when multiple repositories are defined to prevent duplicate resources.`
+    )
   }
 }

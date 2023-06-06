@@ -1,0 +1,31 @@
+type Test @amplienceContentType {
+  name: String
+}
+
+type TestSlot @amplienceContentType(kind: SLOT) {
+  name: String
+}
+
+type TestVisualizations @amplienceContentType(visualizations: true) {
+  name: String
+}
+
+type TestIcon @amplienceContentType(visualizations: true, icon: "icon.png") {
+  name: String
+}
+
+type TestAutoSyncTrue @amplienceContentType(autoSync: true) {
+  name: String
+}
+
+type TestAutoSyncFalse @amplienceContentType(autoSync: false) {
+  name: String
+}
+
+type TestNoAutoSync @amplienceContentType {
+  name: String
+}
+
+type NotATest {
+  name: String!
+}
