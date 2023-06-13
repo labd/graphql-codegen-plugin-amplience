@@ -1,7 +1,7 @@
 {
   "name": "amplience-graphql-codegen-common",
   "author": "Lab Digital",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "private": false,
   "license": "MIT",
   "module": "dist/index.mjs",
