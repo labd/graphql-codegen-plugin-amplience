@@ -12,7 +12,8 @@
     "test": "turbo test",
     "lint": "turbo lint -- --fix",
     "build": "turbo build",
-    "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist"
+    "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist",
+    "format": "prettier \"**/*.{tx,tsx,md}\" --write"
   },
   "husky": {
     "hooks": {
