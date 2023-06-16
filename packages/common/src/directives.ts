@@ -1,4 +1,4 @@
-import { gql } from 'graphql-tag'
+import { gql } from "graphql-tag";
 
 export const schemaPrepend = gql`
   scalar AmplienceImage
@@ -36,4 +36,4 @@ export const schemaPrepend = gql`
     icon: String
     autoSync: Boolean
   ) on OBJECT
-`
+`;

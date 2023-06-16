@@ -5,21 +5,21 @@ export type VisualizationType = {
    * for_each: var.visualizations
    * ```
    */
-  for_each?: string
+  for_each?: string;
   /**
    * @example
    * ```yml
    * label: Test environment
    * ```
    */
-  label: string
+  label: string;
   /**
    * @example
    * ```yml
    * templated_uri: "https://www.example.com/preview?vse={{vse.domain}}&content={{content.sys.id}}"
    * ```
    */
-  templated_uri: string
+  templated_uri: string;
   /**
    * Note: you can only have 1 marked as default, which may not also have a for_each property.
    *
@@ -28,8 +28,8 @@ export type VisualizationType = {
    * default: true
    * ```
    */
-  default?: boolean
-}
+  default?: boolean;
+};
 
 export type PluginConfig = {
   /**
@@ -37,11 +37,11 @@ export type PluginConfig = {
    *
    * @default https://schema-examples.com
    */
-  hostname?: string
+  hostname?: string;
   /**
    *
    */
-  visualization?: VisualizationType[]
+  visualization?: VisualizationType[];
   /**
    * @example
    * ```yml
@@ -50,7 +50,7 @@ export type PluginConfig = {
    *   content_brand2: 234234
    * ```
    */
-  content_repositories?: { [name: string]: string }
+  content_repositories?: { [name: string]: string };
   /**
    * @example
    * ```yml

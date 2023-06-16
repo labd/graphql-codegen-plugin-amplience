@@ -26,7 +26,7 @@ generates:
     plugins:
       - amplience-graphql-codegen-terraform
     config:
-      hostname: 'https://schema-examples.com'
+      hostname: "https://schema-examples.com"
       visualization:
         - label: Localhost with layout
           templated_uri: https://example.com/preview?vse={{vse.domain}}&content={{content.sys.id}}

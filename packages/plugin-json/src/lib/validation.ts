@@ -2,18 +2,18 @@ import {
   hasDirective,
   isObjectTypeDefinitionNode,
   isValue,
-} from 'amplience-graphql-codegen-common'
+} from "amplience-graphql-codegen-common";
 import {
   FieldDefinitionNode,
   GraphQLSchema,
   ObjectTypeDefinitionNode,
-} from 'graphql'
+} from "graphql";
 
 export const getObjectTypeDefinitions = (schema: GraphQLSchema) =>
   Object.values(schema.getTypeMap())
     .map((type) => type.astNode)
     .filter(isValue)
-    .filter(isObjectTypeDefinitionNode)
+    .filter(isObjectTypeDefinitionNode);
 
 export const getRequiredLocalizedFieldsReport = (
   types: ObjectTypeDefinitionNode[]
@@ -21,20 +21,20 @@ export const getRequiredLocalizedFieldsReport = (
   getFieldsReport(
     types.filter((type) => type.fields?.some(isNonNullLocalizedField)),
     isNonNullLocalizedField
-  )
+  );
 
 const isNonNullLocalizedField = (field: FieldDefinitionNode) =>
-  hasDirective(field, 'amplienceLocalized') &&
+  hasDirective(field, "amplienceLocalized") &&
   // String! @amplienceLocalized
-  ((field.type.kind === 'NonNullType' &&
-    field.type.type.kind === 'NamedType') ||
+  ((field.type.kind === "NonNullType" &&
+    field.type.type.kind === "NamedType") ||
     // [String!] @amplienceLocalized
-    (field.type.kind === 'ListType' &&
-      field.type.type.kind === 'NonNullType') ||
+    (field.type.kind === "ListType" &&
+      field.type.type.kind === "NonNullType") ||
     // [String!]! @amplienceLocalized
-    (field.type.kind === 'NonNullType' &&
-      field.type.type.kind === 'ListType' &&
-      field.type.type.type.kind === 'NonNullType'))
+    (field.type.kind === "NonNullType" &&
+      field.type.type.kind === "ListType" &&
+      field.type.type.type.kind === "NonNullType"));
 
 export const getTooManyFiltersReport = (types: ObjectTypeDefinitionNode[]) =>
   getFieldsReport(
@@ -42,10 +42,10 @@ export const getTooManyFiltersReport = (types: ObjectTypeDefinitionNode[]) =>
       (type) => (type.fields?.filter(filterableField).length ?? 0) > 5
     ),
     filterableField
-  )
+  );
 
 const filterableField = (field: FieldDefinitionNode) =>
-  hasDirective(field, 'amplienceFilterable')
+  hasDirective(field, "amplienceFilterable");
 
 /**
  * Converts a type with filtered fields in a simple string report.
@@ -68,6 +68,6 @@ const getFieldsReport = (
     }))
     .map(
       ({ type, fields }) =>
-        `type ${type}\n${fields?.map((f) => `\t${f}`).join('\n')}`
+        `type ${type}\n${fields?.map((f) => `\t${f}`).join("\n")}`
     )
-    .join('\n\n')
+    .join("\n\n");
