@@ -2,7 +2,11 @@
   "name": "amplience-graphql-codegen",
   "version": "0.1.11",
   "author": "Lab digital",
-  "private": true,
+  "homepage": "https://github.com/labd/graphql-codegen-plugin-amplience#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/labd/graphql-codegen-plugin-amplience"
+  },
   "license": "MIT",
   "packageManager": "pnpm@8.5.1",
   "engines": {
