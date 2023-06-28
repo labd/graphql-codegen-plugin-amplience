@@ -95,8 +95,8 @@ importers:
         specifier: ^16.5.0
         version: 16.6.0
       terraform-generator:
-        specifier: ^5.1.0
-        version: 5.2.0
+        specifier: ^5.3.1
+        version: 5.3.1
 
 packages:
 
@@ -5424,11 +5424,6 @@ packages:
     resolution: {integrity: sha512-O3vsMYfWighyFbTd8hk8VaSj9UAGENxAtX+//ugIst2RMk5e03h6RoIS+0ylsFxY1gvmPuAY/PO4It+gPEeySA==}
     dev: true
 
-  /replace-string@3.1.0:
-    resolution: {integrity: sha512-yPpxc4ZR2makceA9hy/jHNqc7QVkd4Je/N0WRHm6bs3PtivPuPynxE5ejU/mp5EhnCv8+uZL7vhz8rkluSlx+Q==}
-    engines: {node: '>=8'}
-    dev: false
-
   /require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -5893,12 +5888,11 @@ packages:
       supports-hyperlinks: 2.3.0
     dev: true
 
-  /terraform-generator@5.2.0:
-    resolution: {integrity: sha512-40OTdFjgorUG+lVNw1yrt2QWrUnfh5Ma/Vx/8ORHopFhI+EnLJEsuoa7dWgxDgxNOph2MLBJlufXghddTTDkUA==}
+  /terraform-generator@5.3.1:
+    resolution: {integrity: sha512-XEonZ+nTKocuFg2JPNdqd875tnUr0urLK+att2A3AJnnFgskYIZ96NDoHUHH2HYl8k6EAg5aKz+n7BKaCkDVIQ==}
     requiresBuild: true
     dependencies:
       github-sponsors: 1.0.1
-      replace-string: 3.1.0
       shelljs: 0.8.5
     dev: false
 
