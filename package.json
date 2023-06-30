@@ -1,6 +1,7 @@
 {
   "name": "amplience-graphql-codegen",
   "version": "0.1.11",
+  "private": true,
   "author": "Lab Digital",
   "homepage": "https://github.com/labd/graphql-codegen-plugin-amplience#readme",
   "repository": {
@@ -18,7 +19,9 @@
     "lint": "turbo lint -- --fix",
     "build": "turbo build",
     "clean": "rm -rf node_modules packages/*/node_modules packages/*/dist",
-    "format": "prettier \"**/*.{tx,tsx,md}\" --write"
+    "format": "prettier \"**/*.{tx,tsx,md}\" --write",
+    "version": "changeset version",
+    "release": "changeset publish"
   },
   "husky": {
     "hooks": {
