@@ -1,4 +1,4 @@
-name: Publish
+name: Release
 on:
   pull_request:
     branches:
@@ -62,7 +62,8 @@ jobs:
         with:
           title: "Release new version"
           commit: "update version"
-          publish: pnpm publish
+          version: pnpm version
+          publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
