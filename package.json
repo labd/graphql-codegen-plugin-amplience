@@ -36,7 +36,7 @@
     "@graphql-codegen/cli": "^2.2.0",
     "@labdigital/eslint-config-node": "^0.0.5",
     "@types/jest": "^29.5.2",
-    "@types/node": "^18.8.2",
+    "@types/node": "^20.3.3",
     "eslint": "^7",
     "graphql": "^16.7.1",
     "husky": "^8.0.3",
