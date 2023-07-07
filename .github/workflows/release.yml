@@ -1,9 +1,8 @@
 name: Release
 on:
-  pull_request:
+  push:
     branches:
       - main
-    types: [closed]
 
 permissions:
   contents: write # for checkout and tag
@@ -59,11 +58,6 @@ jobs:
       - name: Create and publish versions
         if: ${{ success() }}
         uses: changesets/action@v1
-        with:
-          title: "Release new version"
-          commit: "update version"
-          version: pnpm version
-          publish: pnpm release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
