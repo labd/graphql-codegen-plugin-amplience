@@ -1,4 +1,4 @@
-import fs from "fs";
+import { readFile } from "fs/promises";
 import {
   hasDirective,
   isObjectTypeDefinitionNode,
@@ -11,10 +11,10 @@ import { contentTypeSchemaBody } from "../src/lib/amplience-schema-transformers"
 it.each([
   { graphqlFile: "base", jsons: ["a", "b", "base", "localized"] },
   { graphqlFile: "hierarchy", jsons: ["root", "top-level", "child", "leaf"] },
-])("correct JSON files for $graphqlFile", ({ graphqlFile, jsons }) => {
+])("correct JSON files for $graphqlFile", async ({ graphqlFile, jsons }) => {
   const schema = buildSchema(
     addToSchema +
-      fs.readFileSync(`./test/testdata/${graphqlFile}.graphql`, "utf8")
+    (await readFile(`${__dirname}/testdata/${graphqlFile}.graphql`, "utf8"))
   );
   const documentNode = getCachedDocumentNodeFromSchema(schema);
   const contentTypes = documentNode.definitions
@@ -49,5 +49,5 @@ const pruned = <T>(object: T): Partial<T> => {
 // slot with content link
 // or content type with content reference
 
-const readJson = <T>(path: string) =>
-  JSON.parse(fs.readFileSync(path, "utf-8")) as T;
+const readJson = async <T>(path: string) =>
+  JSON.parse(await readFile(path, "utf-8")) as T;

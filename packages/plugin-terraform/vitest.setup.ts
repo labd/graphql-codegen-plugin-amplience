@@ -1,4 +1,4 @@
-const toMatchStringIgnoringWhitespace = require('./matchStringIgnoreWhiteSpace.js')
+import toMatchStringIgnoringWhitespace from './matchStringIgnoreWhiteSpace.js'
 
 expect.extend({
   toMatchStringIgnoringWhitespace: toMatchStringIgnoringWhitespace,

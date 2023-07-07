@@ -4,7 +4,9 @@
   "compilerOptions": {
     "module": "esnext",
     "target": "esNext",
-    "lib": ["esnext"],
+    "lib": [
+      "esnext"
+    ],
     "importHelpers": true,
     // output .d.ts declaration files for consumers
     "declaration": true,
@@ -29,7 +31,12 @@
     // error out if import and file system have a casing mismatch. Recommended by TS
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "types": [
+      "vitest/globals"
+    ]
   },
-  "include": ["**/*.ts"]
+  "include": [
+    "**/*.ts"
+  ]
 }

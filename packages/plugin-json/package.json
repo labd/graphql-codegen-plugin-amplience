@@ -17,7 +17,7 @@
     "start": "tsup --watch",
     "build": "tsup",
     "postbuild": "cp package.json dist",
-    "test": "jest",
+    "test": "vitest run",
     "lint": "eslint",
     "example": "graphql-codegen --config examples/codegen.yml"
   },
