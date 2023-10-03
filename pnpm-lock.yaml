@@ -65,8 +65,8 @@ importers:
   packages/plugin-json:
     dependencies:
       '@graphql-codegen/plugin-helpers':
-        specifier: ^5.0.0
-        version: 5.0.0(graphql@16.8.1)
+        specifier: ^5.0.1
+        version: 5.0.1(graphql@16.8.1)
       amplience-graphql-codegen-common:
         specifier: ^1.0.18
         version: link:../common
@@ -83,8 +83,8 @@ importers:
   packages/plugin-terraform:
     dependencies:
       '@graphql-codegen/plugin-helpers':
-        specifier: ^5.0.0
-        version: 5.0.0(graphql@16.8.1)
+        specifier: ^5.0.1
+        version: 5.0.1(graphql@16.8.1)
       amplience-graphql-codegen-common:
         specifier: ^1.0.18
         version: link:../common
@@ -957,20 +957,6 @@ packages:
       tslib: 2.5.3
     dev: true
 
-  /@graphql-codegen/plugin-helpers@5.0.0(graphql@16.8.1):
-    resolution: {integrity: sha512-suL2ZMkBAU2a4YbBHaZvUPsV1z0q3cW6S96Z/eYYfkRIsJoe2vN+wNZ9Xdzmqx0JLmeeFCBSoBGC0imFyXlkDQ==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      '@graphql-tools/utils': 10.0.3(graphql@16.8.1)
-      change-case-all: 1.0.15
-      common-tags: 1.8.2
-      graphql: 16.8.1
-      import-from: 4.0.0
-      lodash: 4.17.21
-      tslib: 2.5.3
-    dev: false
-
   /@graphql-codegen/plugin-helpers@5.0.1(graphql@16.8.1):
     resolution: {integrity: sha512-6L5sb9D8wptZhnhLLBcheSPU7Tg//DGWgc5tQBWX46KYTOTQHGqDpv50FxAJJOyFVJrveN9otWk9UT9/yfY4ww==}
     peerDependencies:
@@ -983,7 +969,6 @@ packages:
       import-from: 4.0.0
       lodash: 4.17.21
       tslib: 2.5.3
-    dev: true
 
   /@graphql-tools/apollo-engine-loader@8.0.0(graphql@16.8.1):
     resolution: {integrity: sha512-axQTbN5+Yxs1rJ6cWQBOfw3AEeC+fvIuZSfJLPLLvFJLj4pUm9fhxey/g6oQZAAQJqKPfw+tLDUQvnfvRK8Kmg==}
