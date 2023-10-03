@@ -53,8 +53,8 @@ importers:
   packages/common:
     dependencies:
       change-case:
-        specifier: ^4.1.2
-        version: 4.1.2
+        specifier: ^5.0.2
+        version: 5.0.2
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
@@ -71,8 +71,8 @@ importers:
         specifier: ^1.0.18
         version: link:../common
       change-case:
-        specifier: ^4.1.2
-        version: 4.1.2
+        specifier: ^5.0.2
+        version: 5.0.2
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
@@ -89,8 +89,8 @@ importers:
         specifier: ^1.0.18
         version: link:../common
       change-case:
-        specifier: ^4.1.2
-        version: 4.1.2
+        specifier: ^5.0.2
+        version: 5.0.2
       graphql:
         specifier: ^16.8.1
         version: 16.8.1
@@ -2471,6 +2471,10 @@ packages:
       sentence-case: 3.0.4
       snake-case: 3.0.4
       tslib: 2.6.2
+
+  /change-case@5.0.2:
+    resolution: {integrity: sha512-tH6YZXViaeC2/Mnt8m4gSmbZfNorC2rhwCX2bXw8SYZWr8ljCPB7iA+1TLG9t7yroWBFauc63LlOZ1gucMVCWw==}
+    dev: false
 
   /char-regex@1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
