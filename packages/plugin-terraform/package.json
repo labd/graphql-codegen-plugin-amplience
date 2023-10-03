@@ -25,7 +25,7 @@
     "@graphql-codegen/plugin-helpers": "^5.0.0",
     "amplience-graphql-codegen-common": "^1.0.18",
     "change-case": "^4.1.2",
-    "graphql": "^16.7.1",
+    "graphql": "^16.8.1",
     "terraform-generator": "^5.3.2"
   },
   "gitHead": "8ec548b31ea77c5bdde92f010d48d30f98be4a91"
