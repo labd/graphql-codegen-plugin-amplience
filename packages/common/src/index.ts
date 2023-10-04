@@ -1,4 +1,4 @@
-import { paramCase } from "change-case";
+import { paramCase } from "change-case-all";
 import { TypeDefinitionNode } from "graphql";
 
 export * from "./graphql";

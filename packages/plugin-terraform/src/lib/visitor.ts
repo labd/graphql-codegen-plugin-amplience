@@ -5,7 +5,7 @@ import {
   Ensure,
   hasProperty,
 } from "amplience-graphql-codegen-common";
-import { snakeCase, paramCase, capitalCase } from "change-case";
+import { snakeCase, paramCase, capitalCase } from "change-case-all";
 import {
   ObjectTypeDefinitionNode,
   EnumValueNode,
@@ -32,107 +32,106 @@ export const createObjectTypeVisitor =
     slotRepositoriesForEach,
     schemaSuffix,
   }: {
-    tfg: TerraformGenerator
-    hostname: string
-    visualization?: VisualizationType[]
-    contentRepositories?: Data[]
-    slotRepositories?: Data[]
-    contentRepositoriesForEach?: string
-    slotRepositoriesForEach?: string
-    schemaSuffix?: string
+    tfg: TerraformGenerator;
+    hostname: string;
+    visualization?: VisualizationType[];
+    contentRepositories?: Data[];
+    slotRepositories?: Data[];
+    contentRepositoriesForEach?: string;
+    slotRepositoriesForEach?: string;
+    schemaSuffix?: string;
   }) =>
-  (node: ObjectTypeDefinitionNode) => {
-    const directive = maybeDirective(node, "amplienceContentType");
-    if (!directive) return null;
+    (node: ObjectTypeDefinitionNode) => {
+      const directive = maybeDirective(node, "amplienceContentType");
+      if (!directive) return null;
 
-    const name = snakeCase(node.name.value);
+      const name = snakeCase(node.name.value);
 
-    const isSlot =
-      maybeDirectiveValue<EnumValueNode>(directive, "kind")?.value === "SLOT";
+      const isSlot =
+        maybeDirectiveValue<EnumValueNode>(directive, "kind")?.value === "SLOT";
 
-    const isAutoSync =
-      maybeDirectiveValue<EnumValueNode>(directive, "autoSync")?.value ?? true;
+      const isAutoSync =
+        maybeDirectiveValue<EnumValueNode>(directive, "autoSync")?.value ?? true;
 
-    const schema = tfg.resource("amplience_content_type_schema", name, {
-      body: fn(
-        "file",
-        `\${path.module}/schemas/${paramCase(node.name.value)}${
-          schemaSuffix ? "-" + schemaSuffix : ""
-        }.json`
-      ),
-      schema_id: typeUri(node, hostname),
-      validation_level: isSlot ? "SLOT" : "CONTENT_TYPE",
-      auto_sync: isAutoSync,
-    });
-
-    const shouldVisualize = maybeDirectiveValue<BooleanValueNode>(
-      directive,
-      "visualizations"
-    )?.value;
-
-    const iconUrl = directive
-      ? maybeDirectiveValue<StringValueNode>(directive, "icon")?.value
-      : undefined;
-
-    const dynamicVisualization = visualization?.find(hasProperty("for_each"));
-
-    const contentType = tfg.resource("amplience_content_type", name, {
-      content_type_uri: schema.attr("schema_id"),
-      label: capitalCase(node.name.value),
-      icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
-      status: "ACTIVE",
-      'dynamic"visualization"':
-        shouldVisualize && dynamicVisualization
-          ? dynamicVisualizationBlock(dynamicVisualization)
-          : undefined,
-      visualization:
-        shouldVisualize && visualization
-          ? visualization.filter((v) => !v.for_each)
-          : undefined,
-    });
-
-    const repositoryName = maybeDirectiveValue<StringValueNode>(
-      directive,
-      "repository"
-    )?.value;
-
-    if (contentRepositories?.length && !isSlot) {
-      tfg.resource('amplience_content_type_assignment', name, {
-        content_type_id: contentType.id,
-        repository_id: (
-          contentRepositories.find((r) => r.name === repositoryName) ??
-          contentRepositories[0]
-        ).id,
+      const schema = tfg.resource("amplience_content_type_schema", name, {
+        body: fn(
+          "file",
+          `\${path.module}/schemas/${paramCase(node.name.value)}${schemaSuffix ? "-" + schemaSuffix : ""
+          }.json`,
+        ),
+        schema_id: typeUri(node, hostname),
+        validation_level: isSlot ? "SLOT" : "CONTENT_TYPE",
+        auto_sync: isAutoSync,
       });
-    }
-    if (slotRepositories?.length && isSlot) {
-      tfg.resource('amplience_content_type_assignment', name, {
-        content_type_id: contentType.id,
-        repository_id: (
-          slotRepositories.find((r) => r.name === repositoryName) ??
-          slotRepositories[0]
-        ).id,
+
+      const shouldVisualize = maybeDirectiveValue<BooleanValueNode>(
+        directive,
+        "visualizations",
+      )?.value;
+
+      const iconUrl = directive
+        ? maybeDirectiveValue<StringValueNode>(directive, "icon")?.value
+        : undefined;
+
+      const dynamicVisualization = visualization?.find(hasProperty("for_each"));
+
+      const contentType = tfg.resource("amplience_content_type", name, {
+        content_type_uri: schema.attr("schema_id"),
+        label: capitalCase(node.name.value),
+        icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
+        status: "ACTIVE",
+        'dynamic"visualization"':
+          shouldVisualize && dynamicVisualization
+            ? dynamicVisualizationBlock(dynamicVisualization)
+            : undefined,
+        visualization:
+          shouldVisualize && visualization
+            ? visualization.filter((v) => !v.for_each)
+            : undefined,
       });
-    }
 
-    if (contentRepositoriesForEach && !isSlot) {
-      tfg.resource('amplience_content_type_assignment', name, {
-        for_each: arg(contentRepositoriesForEach),
-        content_type_id: contentType.id,
-        repository_id: arg('each.value'),
-      })
-    }
+      const repositoryName = maybeDirectiveValue<StringValueNode>(
+        directive,
+        "repository",
+      )?.value;
 
-    if (slotRepositoriesForEach && isSlot) {
-      tfg.resource('amplience_content_type_assignment', name, {
-        for_each: arg(slotRepositoriesForEach),
-        content_type_id: contentType.id,
-        repository_id: arg('each.value'),
-      })
-    }
+      if (contentRepositories?.length && !isSlot) {
+        tfg.resource("amplience_content_type_assignment", name, {
+          content_type_id: contentType.id,
+          repository_id: (
+            contentRepositories.find((r) => r.name === repositoryName) ??
+            contentRepositories[0]
+          ).id,
+        });
+      }
+      if (slotRepositories?.length && isSlot) {
+        tfg.resource("amplience_content_type_assignment", name, {
+          content_type_id: contentType.id,
+          repository_id: (
+            slotRepositories.find((r) => r.name === repositoryName) ??
+            slotRepositories[0]
+          ).id,
+        });
+      }
 
-    return null
-  }
+      if (contentRepositoriesForEach && !isSlot) {
+        tfg.resource("amplience_content_type_assignment", name, {
+          for_each: arg(contentRepositoriesForEach),
+          content_type_id: contentType.id,
+          repository_id: arg("each.value"),
+        });
+      }
+
+      if (slotRepositoriesForEach && isSlot) {
+        tfg.resource("amplience_content_type_assignment", name, {
+          for_each: arg(slotRepositoriesForEach),
+          content_type_id: contentType.id,
+          repository_id: arg("each.value"),
+        });
+      }
+
+      return null;
+    };
 
 export const maybeArg = (value: string, ...prefixes: string[]) =>
   ["var.", "local.", ...prefixes].some((prefix) => value.startsWith(prefix))
@@ -140,7 +139,7 @@ export const maybeArg = (value: string, ...prefixes: string[]) =>
     : value;
 
 const dynamicVisualizationBlock = (
-  visualization: Ensure<VisualizationType, "for_each">
+  visualization: Ensure<VisualizationType, "for_each">,
 ) => ({
   for_each: arg(visualization.for_each),
   content: {
