@@ -1,10 +1,11 @@
 {
   // see https://www.typescriptlang.org/tsconfig to better understand tsconfigs
-  // "include": ["src", "types"],
   "compilerOptions": {
-    "module": "esnext",
-    "target": "esNext",
-    "lib": ["esnext"],
+    "module": "node16",
+    "target": "esnext",
+    "lib": [
+      "ESNext"
+    ],
     "importHelpers": true,
     // output .d.ts declaration files for consumers
     "declaration": true,
@@ -21,7 +22,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     // use Node's module resolution algorithm, instead of the legacy TS one
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     // interop between ESM and CJS modules. Recommended by TS
     "esModuleInterop": true,
     // significant perf increase by skipping checking .d.ts files, particularly those in node_modules. Recommended by TS
@@ -31,5 +32,7 @@
     "noEmit": true,
     "downlevelIteration": true
   },
-  "include": ["**/*.ts"]
+  "include": [
+    "**/*.ts"
+  ]
 }

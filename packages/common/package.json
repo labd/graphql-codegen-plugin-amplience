@@ -2,11 +2,15 @@
   "name": "amplience-graphql-codegen-common",
   "author": "Lab Digital",
   "version": "1.0.19",
+  "type": "module",
   "private": false,
   "license": "MIT",
-  "module": "dist/index.mjs",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "files": [
     "dist"
   ],
@@ -20,7 +24,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "change-case": "^4.1.2",
+    "change-case": "^5.0.2",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6"
   },

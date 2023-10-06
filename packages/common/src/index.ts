@@ -1,9 +1,9 @@
-import { paramCase } from "change-case";
+import { kebabCase } from "change-case";
 import { TypeDefinitionNode } from "graphql";
 
-export * from "./graphql";
-export * from "./util";
-export * from "./directives";
+export * from "./graphql.js";
+export * from "./util.js";
+export * from "./directives.js";
 
 export const typeUri = (type: TypeDefinitionNode, schemaHost: string) =>
-  `${schemaHost}/${paramCase(type.name.value)}`;
+  `${schemaHost}/${kebabCase(type.name.value)}`;
