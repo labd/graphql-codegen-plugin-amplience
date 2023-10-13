@@ -7,7 +7,7 @@ import {
 } from "@graphql-codegen/plugin-helpers";
 import { schemaPrepend } from "amplience-graphql-codegen-common";
 import { snakeCase } from "change-case";
-import { GraphQLSchema, visit } from "graphql";
+import { GraphQLSchema, visit } from "graphql/index.js";
 import { map, TerraformGenerator } from "terraform-generator";
 import { createObjectTypeVisitor, maybeArg } from "./lib/visitor.js";
 import { PluginConfig } from "./lib/config.js";

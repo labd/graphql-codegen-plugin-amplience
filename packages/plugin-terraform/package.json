@@ -20,7 +20,7 @@
   "scripts": {
     "start": "tsup --watch",
     "build": "tsup",
-    "test": "jest",
+    "test": "vitest",
     "postbuild": "cp package.json dist",
     "lint": "eslint",
     "example": "graphql-codegen --config examples/codegen.yml"
