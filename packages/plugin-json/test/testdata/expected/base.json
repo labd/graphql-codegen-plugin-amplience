@@ -10,6 +10,17 @@
   ],
   "type": "object",
   "properties": {
+    "_meta": {
+      "type": "object",
+      "title": "Delivery Key",
+      "properties": {
+        "deliveryKey": {
+          "type": "string",
+          "title": "Delivery Key",
+          "description": "Set a delivery key for this content item"
+        }
+      }
+    },
     "text": {
       "title": "Text",
       "type": "string",
@@ -187,6 +198,7 @@
     "video"
   ],
   "propertyOrder": [
+    "_meta",
     "text",
     "optionalText",
     "textList",

@@ -26,6 +26,7 @@ type Base @amplienceContentType {
   union: Union
   linkedA: A @amplienceLink
   referencedB: B @amplienceReference
+  deliveryKeyWithDefaults: String @amplienceDeliveryKey
 }
 
 enum Enum {
@@ -41,6 +42,16 @@ type A @amplienceContentType {
 
 type B @amplienceContentType {
   b: String!
+}
+
+type DeliveryKeyExplicit @amplienceContentType {
+  a: String!
+  deliveryKeyExplicit: String
+    @amplienceDeliveryKey(
+      title: "explicit title"
+      description: "explicit description"
+      pattern: "explicit pattern"
+    )
 }
 
 type Inlined {
