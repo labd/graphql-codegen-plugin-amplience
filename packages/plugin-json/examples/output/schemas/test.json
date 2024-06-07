@@ -11,10 +11,22 @@
       "title": "Name",
       "description": "This a description",
       "type": "string"
+    },
+    "_meta": {
+      "type": "object",
+      "title": "Delivery Key",
+      "properties": {
+        "deliveryKey": {
+          "type": "string",
+          "title": "test title",
+          "description": "test description",
+          "pattern": "test pattern"
+        }
+      }
     }
   },
   "description": "Test",
   "type": "object",
-  "propertyOrder": ["bla", "name"],
+  "propertyOrder": ["_meta", "bla", "name"],
   "required": ["bla"]
 }

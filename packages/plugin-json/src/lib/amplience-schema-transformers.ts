@@ -26,7 +26,7 @@ import {
   isObjectType,
   isUnionType,
 } from 'graphql'
-import { AmplienceContentTypeSchemaBody, AmpliencePropertyType } from './types'
+import { AmplienceContentTypeSchemaBody, AmplienceDeliveryKeyType, AmpliencePropertyType } from './types'
 
 /**
  * Returns a Amplience ContentType from an interface type.
@@ -35,42 +35,49 @@ export const contentTypeSchemaBody = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
   schemaHost: string
-): AmplienceContentTypeSchemaBody => ({
-  $id: typeUri(type, schemaHost),
-  $schema: "http://json-schema.org/draft-07/schema#",
-  ...refType(AMPLIENCE_TYPE.CORE.Content),
-  title: capitalCase(type.name.value),
-  properties: {
-    ...objectProperties(type, schema, schemaHost),
-  },
-  description: type.description?.value ?? capitalCase(type.name.value),
-  "trait:sortable": sortableTrait(type),
-  "trait:hierarchy": isHierarchy(type)
-    ? hierarchyTrait(type, schema, schemaHost)
-    : undefined,
-  "trait:filterable": filterableTrait(type),
-  type: "object",
-  propertyOrder:
+): AmplienceContentTypeSchemaBody => {
+  const deliveryKeyProperty = deliveryKeyMetaProperty(type)
+  const basePropertyOrder =
     type.fields
-      ?.filter((field) => isAmplienceProperty(type, field))
-      .map((field) => field.name.value) ?? [],
-  required: type.fields
-    ?.filter((field) => isAmplienceProperty(type, field))
-    .filter(
-      (field) =>
-        field.type.kind === "NonNullType" ||
-        hasDirective(field, "amplienceLocalized")
-    )
-    .map((n) => n.name.value),
-  ...(isHierarchy(type)
-    ? {
-        allOf: [
-          refType(AMPLIENCE_TYPE.CORE.Content).allOf[0],
-          refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0],
-        ],
-      }
-    : {}),
-});
+      ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
+      .map((field) => field.name.value) ?? []
+  
+  return {
+    $id: typeUri(type, schemaHost),
+    $schema: "http://json-schema.org/draft-07/schema#",
+    ...refType(AMPLIENCE_TYPE.CORE.Content),
+    title: capitalCase(type.name.value),
+    properties: {
+      ...objectProperties(type, schema, schemaHost),
+      _meta: deliveryKeyProperty,
+    },
+    description: type.description?.value ?? capitalCase(type.name.value),
+    "trait:sortable": sortableTrait(type),
+    "trait:hierarchy": isHierarchy(type)
+      ? hierarchyTrait(type, schema, schemaHost)
+      : undefined,
+    "trait:filterable": filterableTrait(type),
+    type: "object",
+    // always place delivery keys at the top of the form, if present
+    propertyOrder: deliveryKeyProperty ? ['_meta', ...basePropertyOrder] : basePropertyOrder,
+    required: type.fields
+      ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
+      .filter(
+        (field) =>
+          field.type.kind === "NonNullType" ||
+          hasDirective(field, "amplienceLocalized")
+      )
+      .map((n) => n.name.value),
+    ...(isHierarchy(type)
+      ? {
+          allOf: [
+            refType(AMPLIENCE_TYPE.CORE.Content).allOf[0],
+            refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0],
+          ],
+        }
+      : {}),
+  }
+}
 
 /**
  * Returns the properties that go inside Amplience `{type: 'object', properties: ...}`
@@ -82,7 +89,7 @@ export const objectProperties = (
 ): { [name: string]: AmpliencePropertyType } =>
   Object.fromEntries(
     type.fields
-      ?.filter((field) => isAmplienceProperty(type, field))
+      ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
       .map((prop) => [
         prop.name.value,
         {
@@ -114,6 +121,34 @@ export const objectProperties = (
         },
       ]) ?? []
   );
+
+const getDeliveryKeyDirective = (field?: FieldDefinitionNode) => field && maybeDirective(field, 'amplienceDeliveryKey')
+const hasDeliveryKeyDirective = (field: FieldDefinitionNode) => !!maybeDirective(field, 'amplienceDeliveryKey')
+
+const deliveryKeyMetaProperty = (type: ObjectTypeDefinitionNode): AmplienceDeliveryKeyType | undefined => {
+  const deliveryKeyDirective = getDeliveryKeyDirective(type.fields?.find(hasDeliveryKeyDirective))
+
+  if (!deliveryKeyDirective) {
+    return
+  }
+
+  const title = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'title')?.value ?? 'Delivery Key'
+  const description = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'description')?.value ?? 'Set a delivery key for this content item'
+  const pattern = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'pattern')?.value
+
+  return {
+    type: 'object',
+    title: 'Delivery Key',
+    properties: {
+      deliveryKey: {
+        type: 'string',
+        title,
+        description,
+        pattern,
+      }
+    }
+  }
+}
 
 const isHierarchy = (type: ObjectTypeDefinitionNode) =>
   maybeDirectiveValue<EnumValueNode>(

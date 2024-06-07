@@ -25,6 +25,12 @@ type Base @amplienceContentType {
   union: Union
   linkedA: A @amplienceLink
   referencedB: B @amplienceReference
+  deliveryKey: String
+    @amplienceDeliveryKey(
+      title: "example title"
+      description: "example description"
+      pattern: "some-pattern/requirement"
+    )
 }
 
 enum Enum {

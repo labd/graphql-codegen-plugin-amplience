@@ -5,6 +5,13 @@ type Test @amplienceContentType {
   name: String
 
   bla: Int!
+
+  deliveryKey: String
+    @amplienceDeliveryKey(
+      title: "test title"
+      description: "test description"
+      pattern: "test pattern"
+    )
 }
 
 type Test2 @amplienceContentType {

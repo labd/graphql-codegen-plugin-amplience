@@ -151,3 +151,27 @@ type MyContentType @amplienceContentType {
   constArray: [String!]! @amplienceConst(items: ["this", "is", "const"])
 }
 ```
+
+## @amplienceDeliveryKey
+
+Adds a delivery key field to the Content Type form. Only works on `String` types.
+
+[See documentation](https://amplience.com/developers/docs/dev-tools/guides-tutorials/delivery-keys/#including-the-deliverykey-property-in-a-content-type-schema)
+
+```graphql
+type MyContentType @amplienceContentType {
+  deliveryKey: String
+    @amplienceDeliveryKey(
+      # Optional field title
+      # Default value: 'Delivery Key'
+      title: "example title"
+
+      # Optional field description
+      # Default value: 'Set a delivery key for this content item'
+      description: "Format: delivery-key/format/requirement"
+
+      # Optional field validation pattern
+      pattern: "delivery-key/format/requirement"
+    )
+}
+```

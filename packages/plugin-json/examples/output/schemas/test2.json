@@ -11,32 +11,14 @@
       "type": "array",
       "items": {
         "type": "object",
-        "properties": {
-          "bla": { "title": "Bla", "type": "integer" },
-          "name": {
-            "title": "Name",
-            "description": "This a description",
-            "type": "string"
-          }
-        },
-        "propertyOrder": ["bla", "name"],
-        "required": ["bla"]
+        "allOf": [{ "$ref": "https://schema-examples.com/test" }]
       }
     },
     "name": { "title": "Name", "type": "string" },
     "test": {
       "title": "Test",
       "type": "object",
-      "properties": {
-        "bla": { "title": "Bla", "type": "integer" },
-        "name": {
-          "title": "Name",
-          "description": "This a description",
-          "type": "string"
-        }
-      },
-      "propertyOrder": ["bla", "name"],
-      "required": ["bla"]
+      "allOf": [{ "$ref": "https://schema-examples.com/test" }]
     }
   },
   "description": "Test2",
