@@ -39,13 +39,38 @@ const isNonNullLocalizedField = (field: FieldDefinitionNode) =>
 export const getTooManyFiltersReport = (types: ObjectTypeDefinitionNode[]) =>
   getFieldsReport(
     types.filter(
-      (type) => (type.fields?.filter(filterableField).length ?? 0) > 5
+      (type) => (type.fields?.filter(filterableField)?.length ?? 0) > 5
     ),
     filterableField
   );
 
 const filterableField = (field: FieldDefinitionNode) =>
   hasDirective(field, "amplienceFilterable");
+
+export const getTooManyDeliveryKeysReport = (types: ObjectTypeDefinitionNode[]) =>
+  getFieldsReport(
+    types.filter(
+      (type) => (type.fields?.filter(deliveryKeyField)?.length ?? 0) > 1
+    ),
+    deliveryKeyField
+  )
+
+export const getDeliveryKeyNotNullableStringReport = (types: ObjectTypeDefinitionNode[]) =>
+  getFieldsReport(
+    types.filter(
+      (type) => type.fields?.some((field) => deliveryKeyField(field) && !nullableStringField(field))
+    ),
+    (field) => deliveryKeyField(field) && !nullableStringField(field)
+  )
+
+const deliveryKeyField = (field: FieldDefinitionNode) =>
+  hasDirective(field, 'amplienceDeliveryKey')
+
+const nullableStringField = (field: FieldDefinitionNode) =>
+  (
+    field.type.kind === 'NamedType' &&
+    field.type.name.value === 'String'
+  )
 
 /**
  * Converts a type with filtered fields in a simple string report.
