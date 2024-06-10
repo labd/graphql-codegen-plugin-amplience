@@ -12,6 +12,7 @@ import {
 } from 'amplience-graphql-codegen-common'
 import { capitalCase, paramCase } from 'change-case'
 import {
+  ConstDirectiveNode,
   EnumValueNode,
   FieldDefinitionNode,
   GraphQLSchema,
@@ -36,21 +37,25 @@ export const contentTypeSchemaBody = (
   schema: GraphQLSchema,
   schemaHost: string
 ): AmplienceContentTypeSchemaBody => {
-  const deliveryKeyProperty = deliveryKeyMetaProperty(type)
-  const basePropertyOrder =
+  const properties = objectProperties(type, schema, schemaHost)
+  const propertyOrder =
     type.fields
-      ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
-      .map((field) => field.name.value) ?? []
+    ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
+    .map((field) => field.name.value) ?? []
+
+  const deliveryKeyDirective = maybeDeliveryKeyDirective(type)
+  if (deliveryKeyDirective) {
+    properties._meta = deliveryKeyMetaProperty(deliveryKeyDirective)
+    // always place delivery keys at the top of the form, if present
+    propertyOrder.unshift('_meta')
+  }
   
   return {
     $id: typeUri(type, schemaHost),
     $schema: "http://json-schema.org/draft-07/schema#",
     ...refType(AMPLIENCE_TYPE.CORE.Content),
     title: capitalCase(type.name.value),
-    properties: {
-      ...objectProperties(type, schema, schemaHost),
-      _meta: deliveryKeyProperty,
-    },
+    properties,
     description: type.description?.value ?? capitalCase(type.name.value),
     "trait:sortable": sortableTrait(type),
     "trait:hierarchy": isHierarchy(type)
@@ -58,8 +63,7 @@ export const contentTypeSchemaBody = (
       : undefined,
     "trait:filterable": filterableTrait(type),
     type: "object",
-    // always place delivery keys at the top of the form, if present
-    propertyOrder: deliveryKeyProperty ? ['_meta', ...basePropertyOrder] : basePropertyOrder,
+    propertyOrder,
     required: type.fields
       ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
       .filter(
@@ -122,16 +126,12 @@ export const objectProperties = (
       ]) ?? []
   );
 
-const getDeliveryKeyDirective = (field?: FieldDefinitionNode) => field && maybeDirective(field, 'amplienceDeliveryKey')
-const hasDeliveryKeyDirective = (field: FieldDefinitionNode) => !!maybeDirective(field, 'amplienceDeliveryKey')
+const maybeDeliveryKeyDirective = (type: ObjectTypeDefinitionNode): ConstDirectiveNode | undefined => 
+  type.fields?.reduce<ConstDirectiveNode | undefined>((directive, field) => directive ?? maybeDirective(field, 'amplienceDeliveryKey'), undefined)
 
-const deliveryKeyMetaProperty = (type: ObjectTypeDefinitionNode): AmplienceDeliveryKeyType | undefined => {
-  const deliveryKeyDirective = getDeliveryKeyDirective(type.fields?.find(hasDeliveryKeyDirective))
+const hasDeliveryKeyDirective = (field: FieldDefinitionNode) => Boolean(maybeDirective(field, 'amplienceDeliveryKey'))
 
-  if (!deliveryKeyDirective) {
-    return
-  }
-
+const deliveryKeyMetaProperty = (deliveryKeyDirective: ConstDirectiveNode): AmplienceDeliveryKeyType => {
   const title = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'title')?.value ?? 'Delivery Key'
   const description = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'description')?.value ?? 'Set a delivery key for this content item'
   const pattern = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'pattern')?.value

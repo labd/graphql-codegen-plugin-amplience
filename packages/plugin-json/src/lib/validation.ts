@@ -39,34 +39,34 @@ const isNonNullLocalizedField = (field: FieldDefinitionNode) =>
 export const getTooManyFiltersReport = (types: ObjectTypeDefinitionNode[]) =>
   getFieldsReport(
     types.filter(
-      (type) => (type.fields?.filter(filterableField)?.length ?? 0) > 5
+      (type) => (type.fields?.filter(isFilterableField).length ?? 0) > 5
     ),
-    filterableField
+    isFilterableField
   );
 
-const filterableField = (field: FieldDefinitionNode) =>
+const isFilterableField = (field: FieldDefinitionNode) =>
   hasDirective(field, "amplienceFilterable");
 
 export const getTooManyDeliveryKeysReport = (types: ObjectTypeDefinitionNode[]) =>
   getFieldsReport(
     types.filter(
-      (type) => (type.fields?.filter(deliveryKeyField)?.length ?? 0) > 1
+      (type) => (type.fields?.filter(isDeliveryKeyField).length ?? 0) > 1
     ),
-    deliveryKeyField
+    isDeliveryKeyField
   )
 
 export const getDeliveryKeyNotNullableStringReport = (types: ObjectTypeDefinitionNode[]) =>
   getFieldsReport(
     types.filter(
-      (type) => type.fields?.some((field) => deliveryKeyField(field) && !nullableStringField(field))
+      (type) => type.fields?.some((field) => isDeliveryKeyField(field) && !isNullableStringField(field))
     ),
-    (field) => deliveryKeyField(field) && !nullableStringField(field)
+    (field) => isDeliveryKeyField(field) && !isNullableStringField(field)
   )
 
-const deliveryKeyField = (field: FieldDefinitionNode) =>
+const isDeliveryKeyField = (field: FieldDefinitionNode) =>
   hasDirective(field, 'amplienceDeliveryKey')
 
-const nullableStringField = (field: FieldDefinitionNode) =>
+const isNullableStringField = (field: FieldDefinitionNode) =>
   (
     field.type.kind === 'NamedType' &&
     field.type.name.value === 'String'
