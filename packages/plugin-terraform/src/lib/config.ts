@@ -59,7 +59,7 @@ export type PluginConfig = {
    *   slot_brand2: 234234
    * ```
    */
-  slot_repositories?: { [name: string]: string }
-  schemaSuffix?: string
-  add_required_provider?: boolean
-}
+  slot_repositories?: { [name: string]: string };
+  schemaSuffix?: string;
+  add_required_provider?: boolean;
+};
