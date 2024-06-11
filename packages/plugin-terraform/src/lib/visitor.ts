@@ -1,19 +1,20 @@
+import type { Ensure } from "amplience-graphql-codegen-common";
 import {
+  hasProperty,
   maybeDirective,
   maybeDirectiveValue,
   typeUri,
-  Ensure,
-  hasProperty,
 } from "amplience-graphql-codegen-common";
-import { snakeCase, paramCase, capitalCase } from "change-case";
-import {
-  ObjectTypeDefinitionNode,
-  EnumValueNode,
+import { capitalCase, paramCase, snakeCase } from "change-case";
+import type {
   BooleanValueNode,
+  EnumValueNode,
+  ObjectTypeDefinitionNode,
   StringValueNode,
 } from "graphql";
-import { TerraformGenerator, Data, fn, arg } from "terraform-generator";
-import { VisualizationType } from "./config";
+import type { Argument, Data, TerraformGenerator } from "terraform-generator";
+import { arg, fn } from "terraform-generator";
+import type { VisualizationType } from "./config";
 
 /**
  * This visitor checks the GraphQL object type and *updates* the terraform generator to include:
@@ -32,16 +33,16 @@ export const createObjectTypeVisitor =
     slotRepositoriesForEach,
     schemaSuffix,
   }: {
-    tfg: TerraformGenerator
-    hostname: string
-    visualization?: VisualizationType[]
-    contentRepositories?: Data[]
-    slotRepositories?: Data[]
-    contentRepositoriesForEach?: string
-    slotRepositoriesForEach?: string
-    schemaSuffix?: string
+    tfg: TerraformGenerator;
+    hostname: string;
+    visualization?: VisualizationType[];
+    contentRepositories?: Data[];
+    slotRepositories?: Data[];
+    contentRepositoriesForEach?: string;
+    slotRepositoriesForEach?: string;
+    schemaSuffix?: string;
   }) =>
-  (node: ObjectTypeDefinitionNode) => {
+  (node: ObjectTypeDefinitionNode): null => {
     const directive = maybeDirective(node, "amplienceContentType");
     if (!directive) return null;
 
@@ -58,7 +59,7 @@ export const createObjectTypeVisitor =
         "file",
         `\${path.module}/schemas/${paramCase(node.name.value)}${
           schemaSuffix ? "-" + schemaSuffix : ""
-        }.json`
+        }.json`,
       ),
       schema_id: typeUri(node, hostname),
       validation_level: isSlot ? "SLOT" : "CONTENT_TYPE",
@@ -67,7 +68,7 @@ export const createObjectTypeVisitor =
 
     const shouldVisualize = maybeDirectiveValue<BooleanValueNode>(
       directive,
-      "visualizations"
+      "visualizations",
     )?.value;
 
     const iconUrl = directive
@@ -93,11 +94,11 @@ export const createObjectTypeVisitor =
 
     const repositoryName = maybeDirectiveValue<StringValueNode>(
       directive,
-      "repository"
+      "repository",
     )?.value;
 
     if (contentRepositories?.length && !isSlot) {
-      tfg.resource('amplience_content_type_assignment', name, {
+      tfg.resource("amplience_content_type_assignment", name, {
         content_type_id: contentType.id,
         repository_id: (
           contentRepositories.find((r) => r.name === repositoryName) ??
@@ -106,7 +107,7 @@ export const createObjectTypeVisitor =
       });
     }
     if (slotRepositories?.length && isSlot) {
-      tfg.resource('amplience_content_type_assignment', name, {
+      tfg.resource("amplience_content_type_assignment", name, {
         content_type_id: contentType.id,
         repository_id: (
           slotRepositories.find((r) => r.name === repositoryName) ??
@@ -116,31 +117,34 @@ export const createObjectTypeVisitor =
     }
 
     if (contentRepositoriesForEach && !isSlot) {
-      tfg.resource('amplience_content_type_assignment', name, {
+      tfg.resource("amplience_content_type_assignment", name, {
         for_each: arg(contentRepositoriesForEach),
         content_type_id: contentType.id,
-        repository_id: arg('each.value'),
-      })
+        repository_id: arg("each.value"),
+      });
     }
 
     if (slotRepositoriesForEach && isSlot) {
-      tfg.resource('amplience_content_type_assignment', name, {
+      tfg.resource("amplience_content_type_assignment", name, {
         for_each: arg(slotRepositoriesForEach),
         content_type_id: contentType.id,
-        repository_id: arg('each.value'),
-      })
+        repository_id: arg("each.value"),
+      });
     }
 
-    return null
-  }
+    return null;
+  };
 
-export const maybeArg = (value: string, ...prefixes: string[]) =>
+export const maybeArg = (
+  value: string,
+  ...prefixes: string[]
+): Argument | string =>
   ["var.", "local.", ...prefixes].some((prefix) => value.startsWith(prefix))
     ? arg(value)
     : value;
 
 const dynamicVisualizationBlock = (
-  visualization: Ensure<VisualizationType, "for_each">
+  visualization: Ensure<VisualizationType, "for_each">,
 ) => ({
   for_each: arg(visualization.for_each),
   content: {

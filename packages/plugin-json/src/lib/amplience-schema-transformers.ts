@@ -9,9 +9,9 @@ import {
   switchArray,
   typeName,
   typeUri,
-} from 'amplience-graphql-codegen-common'
-import { capitalCase, paramCase } from 'change-case'
-import {
+} from "amplience-graphql-codegen-common";
+import { capitalCase, paramCase } from "change-case";
+import type {
   ConstDirectiveNode,
   EnumValueNode,
   FieldDefinitionNode,
@@ -23,11 +23,22 @@ import {
   TypeDefinitionNode,
   TypeNode,
   UnionTypeDefinitionNode,
-  isEnumType,
-  isObjectType,
-  isUnionType,
-} from 'graphql'
-import { AmplienceContentTypeSchemaBody, AmplienceDeliveryKeyType, AmpliencePropertyType } from './types'
+} from "graphql";
+import { isEnumType, isObjectType, isUnionType } from "graphql";
+import type {
+  AmplienceContentTypeSchemaBody,
+  AmplienceDeliveryKeyType,
+  AmpliencePropertyType,
+  EnumProperties,
+  FilterableTrait,
+  HierarchyTrait,
+  InlineContentReference,
+  InlineObject,
+  LocalizedType,
+  Properties,
+  RefType,
+  SortableTrait,
+} from "./types";
 
 /**
  * Returns a Amplience ContentType from an interface type.
@@ -35,21 +46,24 @@ import { AmplienceContentTypeSchemaBody, AmplienceDeliveryKeyType, AmplienceProp
 export const contentTypeSchemaBody = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
-  schemaHost: string
+  schemaHost: string,
 ): AmplienceContentTypeSchemaBody => {
-  const properties = objectProperties(type, schema, schemaHost)
+  const properties = objectProperties(type, schema, schemaHost);
   const propertyOrder =
     type.fields
-    ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
-    .map((field) => field.name.value) ?? []
+      ?.filter(
+        (field) =>
+          isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field),
+      )
+      .map((field) => field.name.value) ?? [];
 
-  const deliveryKeyDirective = maybeDeliveryKeyDirective(type)
+  const deliveryKeyDirective = maybeDeliveryKeyDirective(type);
   if (deliveryKeyDirective) {
-    properties._meta = deliveryKeyMetaProperty(deliveryKeyDirective)
+    properties._meta = deliveryKeyMetaProperty(deliveryKeyDirective);
     // always place delivery keys at the top of the form, if present
-    propertyOrder.unshift('_meta')
+    propertyOrder.unshift("_meta");
   }
-  
+
   return {
     $id: typeUri(type, schemaHost),
     $schema: "http://json-schema.org/draft-07/schema#",
@@ -65,11 +79,14 @@ export const contentTypeSchemaBody = (
     type: "object",
     propertyOrder,
     required: type.fields
-      ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
+      ?.filter(
+        (field) =>
+          isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field),
+      )
       .filter(
         (field) =>
           field.type.kind === "NonNullType" ||
-          hasDirective(field, "amplienceLocalized")
+          hasDirective(field, "amplienceLocalized"),
       )
       .map((n) => n.name.value),
     ...(isHierarchy(type)
@@ -80,8 +97,8 @@ export const contentTypeSchemaBody = (
           ],
         }
       : {}),
-  }
-}
+  };
+};
 
 /**
  * Returns the properties that go inside Amplience `{type: 'object', properties: ...}`
@@ -89,11 +106,14 @@ export const contentTypeSchemaBody = (
 export const objectProperties = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
-  schemaHost: string
-): { [name: string]: AmpliencePropertyType } =>
+  schemaHost: string,
+): Properties =>
   Object.fromEntries(
     type.fields
-      ?.filter((field) => isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field))
+      ?.filter(
+        (field) =>
+          isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field),
+      )
       .map((prop) => [
         prop.name.value,
         {
@@ -105,16 +125,18 @@ export const objectProperties = (
               minItems: ifValue(
                 ifValue(
                   maybeDirective(prop, "amplienceList"),
-                  (d) => maybeDirectiveValue<IntValueNode>(d, "minItems")?.value
+                  (d) =>
+                    maybeDirectiveValue<IntValueNode>(d, "minItems")?.value,
                 ),
-                Number
+                Number,
               ),
               maxItems: ifValue(
                 ifValue(
                   maybeDirective(prop, "amplienceList"),
-                  (d) => maybeDirectiveValue<IntValueNode>(d, "maxItems")?.value
+                  (d) =>
+                    maybeDirectiveValue<IntValueNode>(d, "maxItems")?.value,
                 ),
-                Number
+                Number,
               ),
               items: ampliencePropertyType(prop, subType, schema, schemaHost),
               const: arrayConstValues(prop),
@@ -123,51 +145,70 @@ export const objectProperties = (
               ampliencePropertyType(prop, type, schema, schemaHost),
           }),
         },
-      ]) ?? []
+      ]) ?? [],
   );
 
-const maybeDeliveryKeyDirective = (type: ObjectTypeDefinitionNode): ConstDirectiveNode | undefined => 
-  type.fields?.reduce<ConstDirectiveNode | undefined>((directive, field) => directive ?? maybeDirective(field, 'amplienceDeliveryKey'), undefined)
+const maybeDeliveryKeyDirective = (
+  type: ObjectTypeDefinitionNode,
+): ConstDirectiveNode | undefined =>
+  type.fields?.reduce<ConstDirectiveNode | undefined>(
+    (directive, field) =>
+      directive ?? maybeDirective(field, "amplienceDeliveryKey"),
+    undefined,
+  );
 
-const hasDeliveryKeyDirective = (field: FieldDefinitionNode) => Boolean(maybeDirective(field, 'amplienceDeliveryKey'))
+const hasDeliveryKeyDirective = (field: FieldDefinitionNode) =>
+  Boolean(maybeDirective(field, "amplienceDeliveryKey"));
 
-const deliveryKeyMetaProperty = (deliveryKeyDirective: ConstDirectiveNode): AmplienceDeliveryKeyType => {
-  const title = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'title')?.value ?? 'Delivery Key'
-  const description = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'description')?.value ?? 'Set a delivery key for this content item'
-  const pattern = maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, 'pattern')?.value
+const deliveryKeyMetaProperty = (
+  deliveryKeyDirective: ConstDirectiveNode,
+): AmplienceDeliveryKeyType => {
+  const title =
+    maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, "title")
+      ?.value ?? "Delivery Key";
+  const description =
+    maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, "description")
+      ?.value ?? "Set a delivery key for this content item";
+  const pattern = maybeDirectiveValue<StringValueNode>(
+    deliveryKeyDirective,
+    "pattern",
+  )?.value;
 
   return {
-    type: 'object',
-    title: 'Delivery Key',
+    type: "object",
+    title: "Delivery Key",
     properties: {
       deliveryKey: {
-        type: 'string',
+        type: "string",
         title,
         description,
         pattern,
-      }
-    }
-  }
-}
+      },
+    },
+  };
+};
 
 const isHierarchy = (type: ObjectTypeDefinitionNode) =>
   maybeDirectiveValue<EnumValueNode>(
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     maybeDirective(type, "amplienceContentType")!,
-    "kind"
+    "kind",
   )?.value === "HIERARCHY";
 
 const isAmplienceProperty = (
   type: ObjectTypeDefinitionNode,
-  field: FieldDefinitionNode
+  field: FieldDefinitionNode,
 ) =>
   !hasDirective(field, "amplienceIgnore") &&
   (!isHierarchy(type) || field.name.value !== "children");
 
 const arrayConstValues = (prop: FieldDefinitionNode) =>
-  ifValue(maybeDirective(prop, "amplienceConst"), (d) =>
-    maybeDirectiveValue<ListValueNode>(d, "items")?.values.map(
-      (v) => (v as StringValueNode)?.value
-    )
+  ifValue(
+    maybeDirective(prop, "amplienceConst"),
+    (d) =>
+      maybeDirectiveValue<ListValueNode>(d, "items")?.values.map(
+        (v) => (v as StringValueNode)?.value,
+      ),
   );
 
 /**
@@ -177,7 +218,7 @@ export const ampliencePropertyType = (
   prop: FieldDefinitionNode,
   type: TypeNode,
   schema: GraphQLSchema,
-  schemaHost: string
+  schemaHost: string,
 ): AmpliencePropertyType => {
   const node = schema.getType(typeName(type));
   // Handle non-primitive types.
@@ -201,11 +242,11 @@ export const ampliencePropertyType = (
         return contentReference(node.astNode, schemaHost);
       }
 
-      if (hasDirective(node.astNode, 'amplienceContentType')) {
-        return inlineContentReference(node.astNode, schemaHost)
+      if (hasDirective(node.astNode, "amplienceContentType")) {
+        return inlineContentReference(node.astNode, schemaHost);
       }
 
-      return inlineObject(node.astNode, schema, schemaHost)
+      return inlineObject(node.astNode, schema, schemaHost);
     }
   }
 
@@ -213,7 +254,7 @@ export const ampliencePropertyType = (
   switch (typeName(type)) {
     case "String":
       const constValue = ifValue(maybeDirective(prop, "amplienceConst"), (d) =>
-        maybeDirectiveValue<StringValueNode>(d, "item")
+        maybeDirectiveValue<StringValueNode>(d, "item"),
       )?.value;
 
       // Special case for const values.
@@ -232,15 +273,15 @@ export const ampliencePropertyType = (
           pattern: maybeDirectiveValue<StringValueNode>(d, "pattern")?.value,
           minLength: ifValue(
             maybeDirectiveValue<IntValueNode>(d, "minLength")?.value,
-            Number
+            Number,
           ),
           maxLength: ifValue(
             maybeDirectiveValue<IntValueNode>(d, "maxLength")?.value,
-            Number
+            Number,
           ),
           examples: maybeDirectiveValue<ListValueNode>(
             d,
-            "examples"
+            "examples",
           )?.values.map((v) => (v as StringValueNode)?.value),
         })),
       });
@@ -254,11 +295,11 @@ export const ampliencePropertyType = (
           format: maybeDirectiveValue<StringValueNode>(d, "format")?.value,
           minimum: ifValue(
             maybeDirectiveValue<IntValueNode>(d, "minimum")?.value,
-            Number
+            Number,
           ),
           maximum: ifValue(
             maybeDirectiveValue<IntValueNode>(d, "maximum")?.value,
-            Number
+            Number,
           ),
         })),
       });
@@ -268,12 +309,12 @@ export const ampliencePropertyType = (
         ? refType(
             AMPLIENCE_TYPE.LOCALIZED[
               typeName(type) as "AmplienceImage" | "AmplienceVideo"
-            ]
+            ],
           )
         : refType(
             AMPLIENCE_TYPE.CORE[
               typeName(type) as "AmplienceImage" | "AmplienceVideo"
-            ]
+            ],
           );
   }
   return {};
@@ -282,18 +323,18 @@ export const ampliencePropertyType = (
 const contentReference = (type: ObjectTypeDefinitionNode, schemaHost: string) =>
   refType(
     AMPLIENCE_TYPE.CORE.ContentReference,
-    enumProperties(type, schemaHost)
+    enumProperties(type, schemaHost),
   );
 
 const contentLink = (
   type: UnionTypeDefinitionNode | ObjectTypeDefinitionNode,
-  schemaHost: string
+  schemaHost: string,
 ) => refType(AMPLIENCE_TYPE.CORE.ContentLink, enumProperties(type, schemaHost));
 
 const enumProperties = (
   typeOrUnion: TypeDefinitionNode,
-  schemaHost: string
-) => ({
+  schemaHost: string,
+): EnumProperties => ({
   properties: {
     contentType: {
       enum: (typeOrUnion.kind === "UnionTypeDefinition"
@@ -307,20 +348,20 @@ const enumProperties = (
 const inlineObject = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
-  schemaHost: string
-) => ({
-  type: 'object',
+  schemaHost: string,
+): InlineObject => ({
+  type: "object",
   properties: objectProperties(type, schema, schemaHost),
   propertyOrder: type.fields?.map((n) => n.name.value),
   required: type.fields
-    ?.filter((field) => field.type.kind === 'NonNullType')
+    ?.filter((field) => field.type.kind === "NonNullType")
     .map((field) => field.name.value),
-})
+});
 
 const inlineContentReference = (
   type: ObjectTypeDefinitionNode,
-  schemaHost: string
-) => ({
+  schemaHost: string,
+): InlineContentReference => ({
   type: "object",
   // use inline content (https://amplience.com/developers/docs/schema-reference/data-types/#inline-content)
   // to prevent property duplication and enrich content type with meta data (e.g. schema name)
@@ -333,13 +374,16 @@ const inlineContentReference = (
 export const checkLocalized = (
   prop: FieldDefinitionNode,
   type: TypeNode,
-  result: AmpliencePropertyType
-) =>
-  hasDirective(prop, "amplienceLocalized")
-    ? prop.directives?.length === 1 && typeName(type) === "String"
+  result: AmpliencePropertyType,
+): AmpliencePropertyType | RefType => {
+  if (hasDirective(prop, "amplienceLocalized")) {
+    return prop.directives?.length === 1 && typeName(type) === "String"
       ? refType(AMPLIENCE_TYPE.LOCALIZED.String)
-      : localized(result)
-    : result;
+      : localized(result);
+  }
+
+  return result;
+};
 
 export const AMPLIENCE_TYPE = {
   LOCALIZED: {
@@ -367,11 +411,11 @@ export const AMPLIENCE_TYPE = {
   },
 };
 
-export const refType = (ref: string, ...other: object[]) => ({
+export const refType = (ref: string, ...other: object[]): RefType => ({
   allOf: [{ $ref: ref }, ...other],
 });
 
-export const localized = (value: AmpliencePropertyType) => ({
+export const localized = (value: AmpliencePropertyType): LocalizedType => ({
   ...refType(AMPLIENCE_TYPE.CORE.LocalizedValue),
   properties: {
     values: {
@@ -388,7 +432,9 @@ export const localized = (value: AmpliencePropertyType) => ({
  * Returns sortable trait path for amplience based on properties containing the `@amplienceSortable` tag
  * @returns Object that can be pushed to `trait:sortable` directly
  */
-export const sortableTrait = (type: ObjectTypeDefinitionNode) =>
+export const sortableTrait = (
+  type: ObjectTypeDefinitionNode,
+): SortableTrait | undefined =>
   ifNotEmpty(
     type.fields?.filter((m) => hasDirective(m, "amplienceSortable")) ?? [],
     (items) => ({
@@ -398,7 +444,7 @@ export const sortableTrait = (type: ObjectTypeDefinitionNode) =>
           paths: items.map((n) => `/${n.name.value}`),
         },
       ],
-    })
+    }),
   );
 
 /**
@@ -409,8 +455,8 @@ export const sortableTrait = (type: ObjectTypeDefinitionNode) =>
 export const hierarchyTrait = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
-  schemaHost: string
-) => ({
+  schemaHost: string,
+): HierarchyTrait => ({
   childContentTypes: type.fields
     ?.filter((field) => field.name.value === "children")
     .map((field) => namedType(field.type))
@@ -430,7 +476,9 @@ export const hierarchyTrait = (
  * multi-path filtering up to 5 paths.
  * @returns Object that can be pushed to `trait:filterable` directly
  */
-export const filterableTrait = (type: ObjectTypeDefinitionNode) => {
+export const filterableTrait = (
+  type: ObjectTypeDefinitionNode,
+): FilterableTrait | undefined => {
   const filterableProps =
     type.fields?.filter((m) => hasDirective(m, "amplienceFilterable")) ?? [];
 
@@ -438,7 +486,7 @@ export const filterableTrait = (type: ObjectTypeDefinitionNode) => {
 
   return {
     filterBy: combinations(filterableProps.map((s) => `/${s.name.value}`)).map(
-      (paths) => ({ paths })
+      (paths) => ({ paths }),
     ),
   };
 };

@@ -1,5 +1,4 @@
-import { dirname } from "path";
-import {
+import type {
   PluginFunction,
   PluginValidateFn,
   Types,
@@ -10,7 +9,8 @@ import {
   schemaPrepend,
 } from "amplience-graphql-codegen-common";
 import { paramCase } from "change-case";
-import { ObjectTypeDefinitionNode } from "graphql";
+import type { ObjectTypeDefinitionNode } from "graphql";
+import { dirname } from "path";
 import { contentTypeSchemaBody } from "./lib/amplience-schema-transformers";
 import {
   getDeliveryKeyNotNullableStringReport,
@@ -42,7 +42,7 @@ export const plugin: PluginFunction<PluginConfig> = (
   schema,
   _documents,
   { hostname = "https://schema-examples.com" },
-  info
+  info,
 ) => {
   const node = info?.pluginContext?.typeNode as ObjectTypeDefinitionNode;
 
@@ -54,36 +54,37 @@ export const validate: PluginValidateFn<PluginConfig> = (
   schema,
   _documents,
   _config,
-  _outputFile
+  _outputFile,
 ) => {
   const types = getObjectTypeDefinitions(schema);
   const requiredLocalizedFieldsReport = getRequiredLocalizedFieldsReport(types);
 
   if (requiredLocalizedFieldsReport.length) {
     throw new Error(
-      `Fields with '@amplienceLocalized' must be Nullable.\n\n${requiredLocalizedFieldsReport}`
+      `Fields with '@amplienceLocalized' must be Nullable.\n\n${requiredLocalizedFieldsReport}`,
     );
   }
 
   const tooManyFiltersReport = getTooManyFiltersReport(types);
   if (tooManyFiltersReport.length) {
     throw new Error(
-      `Types can have no more than 5 fields with '@amplienceFiltered'.\n\n${tooManyFiltersReport}`
+      `Types can have no more than 5 fields with '@amplienceFiltered'.\n\n${tooManyFiltersReport}`,
     );
   }
 
   const tooManyDeliveryKeysReport = getTooManyDeliveryKeysReport(types);
   if (tooManyDeliveryKeysReport) {
     throw new Error(
-      `Types can only have 1 field with '@amplienceDeliveryKey'.\n\n${tooManyDeliveryKeysReport}`
-    )
+      `Types can only have 1 field with '@amplienceDeliveryKey'.\n\n${tooManyDeliveryKeysReport}`,
+    );
   }
 
-  const deliveryKeyNotNullableStringReport = getDeliveryKeyNotNullableStringReport(types);
+  const deliveryKeyNotNullableStringReport =
+    getDeliveryKeyNotNullableStringReport(types);
   if (deliveryKeyNotNullableStringReport) {
     throw new Error(
-      `Fields with '@amplienceDeliveryKey' must be of Nullable type String.\n\n${deliveryKeyNotNullableStringReport}`
-    )
+      `Fields with '@amplienceDeliveryKey' must be of Nullable type String.\n\n${deliveryKeyNotNullableStringReport}`,
+    );
   }
 };
 
@@ -95,7 +96,7 @@ export const preset: Types.OutputPreset<PresetConfig> = {
       .map((node) => ({
         ...options,
         filename: `${dirname(options.baseOutputDir)}/schemas/${paramCase(
-          node.name.value
+          node.name.value,
         )}${
           options.config.schemaSuffix ? "-" + options.config.schemaSuffix : ""
         }.json`,

@@ -17,7 +17,8 @@
     "start": "tsup --watch",
     "build": "tsup",
     "postbuild": "cp package.json dist",
-    "lint": "eslint"
+    "lint": "eslint src/ --ext ts --fix",
+    "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
     "change-case": "^4.1.2",

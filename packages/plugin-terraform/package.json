@@ -18,7 +18,8 @@
     "build": "tsup",
     "test": "jest",
     "postbuild": "cp package.json dist",
-    "lint": "eslint",
+    "lint": "eslint src/ --ext ts --fix",
+    "typecheck": "tsc --noEmit -p .",
     "example": "graphql-codegen --config examples/codegen.yml"
   },
   "dependencies": {

@@ -1,4 +1,5 @@
-import {
+import type {
+  ConstDirectiveNode,
   DefinitionNode,
   DirectiveNode,
   FieldDefinitionNode,
@@ -12,29 +13,31 @@ import {
 
 export const hasDirective = (
   symbol: FieldDefinitionNode | TypeDefinitionNode,
-  name: string
-) => symbol.directives?.some((t) => t.name.value === name);
+  name: string,
+): boolean | undefined => symbol.directives?.some((t) => t.name.value === name);
 
 export const maybeDirective = (
   symbol: FieldDefinitionNode | TypeDefinitionNode,
-  name: string
-) => symbol.directives?.find((t) => t.name.value === name);
+  name: string,
+): ConstDirectiveNode | undefined =>
+  symbol.directives?.find((t) => t.name.value === name);
 
 export const maybeDirectiveValue = <T extends ValueNode>(
   directive: DirectiveNode,
-  argument: string
-) =>
+  argument: string,
+): T | undefined =>
   directive?.arguments?.find((t) => t.name.value === argument)?.value as
     | T
     | undefined;
 
 export const maybeFieldValue = <T extends ValueNode>(
   node: ObjectValueNode,
-  field: string
-) => node.fields.find((f) => f.name.value === field)?.value as T | undefined;
+  field: string,
+): T | undefined =>
+  node.fields.find((f) => f.name.value === field)?.value as T | undefined;
 
 export const isObjectTypeDefinitionNode = (
-  definitionNode: DefinitionNode
+  definitionNode: DefinitionNode,
 ): definitionNode is ObjectTypeDefinitionNode =>
   definitionNode.kind === "ObjectTypeDefinition";
 
@@ -58,10 +61,15 @@ export const switchArray = <T>(
   {
     ifArray,
     other,
-  }: { ifArray: (subType: TypeNode) => T; other: (type: TypeNode) => T }
-) =>
-  type.kind === "ListType"
-    ? ifArray(type.type)
-    : type.kind === "NonNullType" && type.type.kind === "ListType"
-    ? ifArray(type.type.type)
-    : other(type);
+  }: { ifArray: (subType: TypeNode) => T; other: (type: TypeNode) => T },
+): T => {
+  if (type.kind === "ListType") {
+    return ifArray(type.type);
+  }
+
+  if (type.kind === "NonNullType" && type.type.kind === "ListType") {
+    return ifArray(type.type.type);
+  }
+
+  return other(type);
+};

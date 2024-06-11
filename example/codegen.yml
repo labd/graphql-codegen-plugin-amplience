@@ -15,7 +15,7 @@ generates:
       visualization:
         - for_each: var.variables["VISUALIZATION_HOST"]
           label: visualization.key
-          templated_uri: '${visualization.value}/preview?vse={{vse.domain}}&content={{content.sys.id}}'
+          templated_uri: "${visualization.value}/preview?vse={{vse.domain}}&content={{content.sys.id}}"
           default: false
         - label: Example Preview
           templated_uri: http://example.com/preview?vse={{vse.domain}}&content={{content.sys.id}}
@@ -24,10 +24,10 @@ generates:
         # using a terraform variable:
         website1: var.variables["CONTENT_REPO1_ID"]
         # or directly:
-        website2: '123456789'
+        website2: "123456789"
       slot_repositories:
         # using a terraform variable:
         slot1: var.variables["SLOT_REPO1_ID"]
         # or directly:
-        slot2: '12312412412'
+        slot2: "12312412412"
     preset: amplience-graphql-codegen-json
