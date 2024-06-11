@@ -3,6 +3,7 @@ import {
   hasDirective,
   ifNotEmpty,
   ifValue,
+  isValue,
   maybeDirective,
   maybeDirectiveValue,
   namedType,
@@ -22,9 +23,12 @@ import type {
   StringValueNode,
   TypeDefinitionNode,
   TypeNode,
-  UnionTypeDefinitionNode,
+  UnionTypeDefinitionNode} from "graphql";
+import {
+  isEnumType,
+  isObjectType,
+  isUnionType,
 } from "graphql";
-import { isEnumType, isObjectType, isUnionType } from "graphql";
 import type {
   AmplienceContentTypeSchemaBody,
   AmplienceDeliveryKeyType,
@@ -33,7 +37,6 @@ import type {
   FilterableTrait,
   HierarchyTrait,
   InlineContentReference,
-  InlineObject,
   LocalizedType,
   Properties,
   RefType,
@@ -47,58 +50,60 @@ export const contentTypeSchemaBody = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
   schemaHost: string,
-): AmplienceContentTypeSchemaBody => {
-  const properties = objectProperties(type, schema, schemaHost);
-  const propertyOrder =
-    type.fields
+): AmplienceContentTypeSchemaBody => ({
+  $id: typeUri(type, schemaHost),
+  $schema: "http://json-schema.org/draft-07/schema#",
+  type: "object",
+  ...refType(AMPLIENCE_TYPE.CORE.Content),
+
+  title: capitalCase(type.name.value),
+
+  properties: {
+    // only add _meta property for delivery key
+    ...ifValue(maybeDeliveryKeyDirective(type), (directive) => ({
+      _meta: deliveryKeyMetaProperty(directive),
+    })),
+    ...objectProperties(type, schema, schemaHost),
+  },
+  description: type.description?.value ?? capitalCase(type.name.value),
+
+  "trait:sortable": sortableTrait(type),
+  "trait:hierarchy": isHierarchy(type)
+    ? hierarchyTrait(type, schema, schemaHost)
+    : undefined,
+  "trait:filterable": filterableTrait(type),
+
+  propertyOrder: [
+    // always place delivery keys at the top
+    maybeDeliveryKeyDirective(type) ? "_meta" : undefined,
+
+    ...(type.fields
       ?.filter(
         (field) =>
           isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field),
       )
-      .map((field) => field.name.value) ?? [];
+      .map((field) => field.name.value) ?? []),
+  ].filter(isValue),
 
-  const deliveryKeyDirective = maybeDeliveryKeyDirective(type);
-  if (deliveryKeyDirective) {
-    properties._meta = deliveryKeyMetaProperty(deliveryKeyDirective);
-    // always place delivery keys at the top of the form, if present
-    propertyOrder.unshift("_meta");
-  }
+  required: type.fields
+    ?.filter((field) => isAmplienceProperty(type, field))
+    .filter(
+      (field) =>
+        field.type.kind === "NonNullType" ||
+        hasDirective(field, "amplienceLocalized"),
+    )
+    .map((n) => n.name.value),
 
-  return {
-    $id: typeUri(type, schemaHost),
-    $schema: "http://json-schema.org/draft-07/schema#",
-    ...refType(AMPLIENCE_TYPE.CORE.Content),
-    title: capitalCase(type.name.value),
-    properties,
-    description: type.description?.value ?? capitalCase(type.name.value),
-    "trait:sortable": sortableTrait(type),
-    "trait:hierarchy": isHierarchy(type)
-      ? hierarchyTrait(type, schema, schemaHost)
-      : undefined,
-    "trait:filterable": filterableTrait(type),
-    type: "object",
-    propertyOrder,
-    required: type.fields
-      ?.filter(
-        (field) =>
-          isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field),
-      )
-      .filter(
-        (field) =>
-          field.type.kind === "NonNullType" ||
-          hasDirective(field, "amplienceLocalized"),
-      )
-      .map((n) => n.name.value),
-    ...(isHierarchy(type)
-      ? {
-          allOf: [
-            refType(AMPLIENCE_TYPE.CORE.Content).allOf[0],
-            refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0],
-          ],
-        }
-      : {}),
-  };
-};
+  // Hierarchy props
+  ...(isHierarchy(type)
+    ? {
+        allOf: [
+          refType(AMPLIENCE_TYPE.CORE.Content).allOf[0],
+          refType(AMPLIENCE_TYPE.CORE.HierarchyNode).allOf[0],
+        ],
+      }
+    : {}),
+});
 
 /**
  * Returns the properties that go inside Amplience `{type: 'object', properties: ...}`
@@ -162,31 +167,30 @@ const hasDeliveryKeyDirective = (field: FieldDefinitionNode) =>
 
 const deliveryKeyMetaProperty = (
   deliveryKeyDirective: ConstDirectiveNode,
-): AmplienceDeliveryKeyType => {
-  const title =
-    maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, "title")
-      ?.value ?? "Delivery Key";
-  const description =
-    maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, "description")
-      ?.value ?? "Set a delivery key for this content item";
-  const pattern = maybeDirectiveValue<StringValueNode>(
-    deliveryKeyDirective,
-    "pattern",
-  )?.value;
+): AmplienceDeliveryKeyType => ({
+  type: "object",
+  title: "Delivery Key",
+  properties: {
+    deliveryKey: {
+      type: "string",
 
-  return {
-    type: "object",
-    title: "Delivery Key",
-    properties: {
-      deliveryKey: {
-        type: "string",
-        title,
-        description,
-        pattern,
-      },
+      title:
+        maybeDirectiveValue<StringValueNode>(deliveryKeyDirective, "title")
+          ?.value ?? "Delivery Key",
+
+      description:
+        maybeDirectiveValue<StringValueNode>(
+          deliveryKeyDirective,
+          "description",
+        )?.value ?? "Set a delivery key for this content item",
+
+      pattern: maybeDirectiveValue<StringValueNode>(
+        deliveryKeyDirective,
+        "pattern",
+      )?.value,
     },
-  };
-};
+  },
+});
 
 const isHierarchy = (type: ObjectTypeDefinitionNode) =>
   maybeDirectiveValue<EnumValueNode>(
@@ -349,7 +353,7 @@ const inlineObject = (
   type: ObjectTypeDefinitionNode,
   schema: GraphQLSchema,
   schemaHost: string,
-): InlineObject => ({
+) => ({
   type: "object",
   properties: objectProperties(type, schema, schemaHost),
   propertyOrder: type.fields?.map((n) => n.name.value),
@@ -482,7 +486,9 @@ export const filterableTrait = (
   const filterableProps =
     type.fields?.filter((m) => hasDirective(m, "amplienceFilterable")) ?? [];
 
-  if (filterableProps.length === 0) return undefined;
+  if (filterableProps.length === 0) {
+    return undefined;
+  }
 
   return {
     filterBy: combinations(filterableProps.map((s) => `/${s.name.value}`)).map(
