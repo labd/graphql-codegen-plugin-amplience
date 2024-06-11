@@ -23,15 +23,11 @@ import type {
   StringValueNode,
   TypeDefinitionNode,
   TypeNode,
-  UnionTypeDefinitionNode} from "graphql";
-import {
-  isEnumType,
-  isObjectType,
-  isUnionType,
+  UnionTypeDefinitionNode,
 } from "graphql";
+import { isEnumType, isObjectType, isUnionType } from "graphql";
 import type {
   AmplienceContentTypeSchemaBody,
-  AmplienceDeliveryKeyType,
   AmpliencePropertyType,
   EnumProperties,
   FilterableTrait,
@@ -75,18 +71,26 @@ export const contentTypeSchemaBody = (
 
   propertyOrder: [
     // always place delivery keys at the top
+    type.fields?.some((field) => hasDirective(field, "amplienceDeliveryKey"))
+      ? "_meta"
+      : undefined,
     maybeDeliveryKeyDirective(type) ? "_meta" : undefined,
 
     ...(type.fields
       ?.filter(
         (field) =>
-          isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field),
+          isAmplienceProperty(type, field) &&
+          !hasDirective(field, "amplienceDeliveryKey"),
       )
       .map((field) => field.name.value) ?? []),
   ].filter(isValue),
 
   required: type.fields
-    ?.filter((field) => isAmplienceProperty(type, field))
+    ?.filter(
+      (field) =>
+        isAmplienceProperty(type, field) &&
+        !hasDirective(field, "amplienceDeliveryKey"),
+    )
     .filter(
       (field) =>
         field.type.kind === "NonNullType" ||
@@ -117,16 +121,19 @@ export const objectProperties = (
     type.fields
       ?.filter(
         (field) =>
-          isAmplienceProperty(type, field) && !hasDeliveryKeyDirective(field),
+          isAmplienceProperty(type, field) &&
+          !hasDirective(field, "amplienceDeliveryKey"),
       )
       .map((prop) => [
         prop.name.value,
         {
           title: capitalCase(prop.name.value),
+
           description: prop.description?.value,
           ...switchArray<AmpliencePropertyType>(prop.type, {
             ifArray: (subType) => ({
               type: "array",
+
               minItems: ifValue(
                 ifValue(
                   maybeDirective(prop, "amplienceList"),
@@ -135,6 +142,7 @@ export const objectProperties = (
                 ),
                 Number,
               ),
+
               maxItems: ifValue(
                 ifValue(
                   maybeDirective(prop, "amplienceList"),
@@ -143,7 +151,9 @@ export const objectProperties = (
                 ),
                 Number,
               ),
+
               items: ampliencePropertyType(prop, subType, schema, schemaHost),
+
               const: arrayConstValues(prop),
             }),
             other: (type) =>
@@ -162,12 +172,9 @@ const maybeDeliveryKeyDirective = (
     undefined,
   );
 
-const hasDeliveryKeyDirective = (field: FieldDefinitionNode) =>
-  Boolean(maybeDirective(field, "amplienceDeliveryKey"));
-
 const deliveryKeyMetaProperty = (
   deliveryKeyDirective: ConstDirectiveNode,
-): AmplienceDeliveryKeyType => ({
+): AmpliencePropertyType => ({
   type: "object",
   title: "Delivery Key",
   properties: {
