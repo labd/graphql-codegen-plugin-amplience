@@ -24,10 +24,15 @@
   },
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "^5.0.1",
-    "amplience-graphql-codegen-common": "^1.0.18",
     "change-case": "^4.1.2",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6"
+  },
+  "peerDependencies": {
+    "amplience-graphql-codegen-common": "^1.0.19"
+  },
+  "devDependencies": {
+    "amplience-graphql-codegen-common": "workspace:^"
   },
   "gitHead": "8ec548b31ea77c5bdde92f010d48d30f98be4a91"
 }

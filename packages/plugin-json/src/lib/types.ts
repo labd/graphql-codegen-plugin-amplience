@@ -37,13 +37,6 @@ export type EnumProperties = {
   };
 };
 
-export type InlineObject = {
-  type: string;
-  properties: Properties;
-  propertyOrder: string[] | undefined;
-  required: string[] | undefined;
-};
-
 export type InlineContentReference = {
   type: "object";
   allOf: RefType["allOf"];
@@ -72,20 +65,8 @@ export interface AmpliencePropertyType {
   minimum?: number;
   maximum?: number;
   examples?: string[];
+  pattern?: string;
 }
-
-export type AmplienceDeliveryKeyType = {
-  type: "object";
-  title: "Delivery Key";
-  properties: {
-    deliveryKey: {
-      type: "string";
-      title: string;
-      description: string;
-      pattern?: string;
-    };
-  };
-};
 
 export interface AmplienceContentTypeSchemaBody {
   $id: string;
@@ -98,10 +79,7 @@ export interface AmplienceContentTypeSchemaBody {
   "trait:sortable"?: {};
   type: "object";
   properties?: {
-    [name: string | "_meta"]:
-      | AmpliencePropertyType
-      | AmplienceDeliveryKeyType
-      | undefined;
+    [name: string | "_meta"]: AmpliencePropertyType | undefined;
   };
   definitions?: { [name: string]: AmpliencePropertyType };
   propertyOrder?: string[];
