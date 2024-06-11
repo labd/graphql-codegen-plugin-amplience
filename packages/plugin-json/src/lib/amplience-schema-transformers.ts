@@ -74,7 +74,6 @@ export const contentTypeSchemaBody = (
     type.fields?.some((field) => hasDirective(field, "amplienceDeliveryKey"))
       ? "_meta"
       : undefined,
-    maybeDeliveryKeyDirective(type) ? "_meta" : undefined,
 
     ...(type.fields
       ?.filter(
