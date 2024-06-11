@@ -14,6 +14,7 @@ import { dirname } from "path";
 import { contentTypeSchemaBody } from "./lib/amplience-schema-transformers";
 import {
   getDeliveryKeyNotNullableStringReport,
+  getMissingExtensionNameReport,
   getObjectTypeDefinitions,
   getRequiredLocalizedFieldsReport,
   getTooManyDeliveryKeysReport,
@@ -84,6 +85,13 @@ export const validate: PluginValidateFn<PluginConfig> = (
   if (deliveryKeyNotNullableStringReport) {
     throw new Error(
       `Fields with '@amplienceDeliveryKey' must be of Nullable type String.\n\n${deliveryKeyNotNullableStringReport}`,
+    );
+  }
+
+  const missingExtensionNameReport = getMissingExtensionNameReport(types);
+  if (missingExtensionNameReport.length) {
+    throw new Error(
+      `Fields with '@amplienceExtension' must have a 'name' argument.\n\n${missingExtensionNameReport}`,
     );
   }
 };
