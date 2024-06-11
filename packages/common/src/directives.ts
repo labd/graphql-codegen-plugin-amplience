@@ -15,6 +15,7 @@ export const schemaPrepend = gql`
   directive @amplienceNumber(minimum: Int, maximum: Int) on FIELD_DEFINITION
   directive @amplienceList(minItems: Int, maxItems: Int) on FIELD_DEFINITION
   directive @amplienceConst(item: String, items: [String!]) on FIELD_DEFINITION
+  directive @amplienceExtension(name: String) on FIELD_DEFINITION
   directive @amplienceLink on FIELD_DEFINITION
   directive @amplienceReference on FIELD_DEFINITION
   directive @amplienceLocalized on FIELD_DEFINITION

@@ -158,9 +158,31 @@ export const objectProperties = (
             other: (type) =>
               ampliencePropertyType(prop, type, schema, schemaHost),
           }),
+          ...extensionProperty(prop, schema),
         },
       ]) ?? [],
   );
+
+const extensionProperty = (
+  prop: FieldDefinitionNode,
+  schema: GraphQLSchema,
+) => {
+  const extensionDirective = maybeDirective(prop, "amplienceExtension");
+  if (extensionDirective) {
+    const value = maybeDirectiveValue<StringValueNode>(
+      extensionDirective,
+      "name",
+    )?.value;
+    if (isObjectType(schema.getType(namedType(prop.type).name.value))) {
+      return {
+        "ui:extension": {
+          name: value,
+        },
+      };
+    }
+  }
+  return {};
+};
 
 const maybeDeliveryKeyDirective = (
   type: ObjectTypeDefinitionNode,

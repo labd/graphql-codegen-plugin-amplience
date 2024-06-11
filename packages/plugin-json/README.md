@@ -175,3 +175,18 @@ type MyContentType @amplienceContentType {
     )
 }
 ```
+
+## @amplienceExtension
+
+Currently works ONLY on custom types (object)
+[See available extensions](https://github.com/amplience/awesome-dynamic-content-extensions?tab=readme-ov-file#content-field)
+
+```graphql
+type MyContentType @amplienceContentType {
+  other: OtherContentType @amplienceExtension(name: "extension-name")
+}
+
+type OtherContentType {
+  name: String
+}
+```

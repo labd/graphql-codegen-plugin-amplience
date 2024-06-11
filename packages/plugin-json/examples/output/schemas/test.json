@@ -1,17 +1,12 @@
 {
   "$id": "https://schema-examples.com/test",
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
   "allOf": [
     { "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content" }
   ],
   "title": "Test",
   "properties": {
-    "bla": { "title": "Bla", "type": "integer" },
-    "name": {
-      "title": "Name",
-      "description": "This a description",
-      "type": "string"
-    },
     "_meta": {
       "type": "object",
       "title": "Delivery Key",
@@ -23,10 +18,15 @@
           "pattern": "test pattern"
         }
       }
+    },
+    "bla": { "title": "Bla", "type": "integer" },
+    "name": {
+      "title": "Name",
+      "description": "This a description",
+      "type": "string"
     }
   },
   "description": "Test",
-  "type": "object",
   "propertyOrder": ["_meta", "bla", "name"],
   "required": ["bla"]
 }
