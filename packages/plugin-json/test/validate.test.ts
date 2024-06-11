@@ -51,3 +51,70 @@ it("Throws Error: Types can have no more than 5 fields with '@amplienceFiltered'
     "Types can have no more than 5 fields with '@amplienceFiltered'.\n\ntype Test\n\ta\n\tb\n\tc\n\td\n\te\n\tf"
   );
 });
+
+it("Throws error: Types can only have 1 field with '@amplienceDeliveryKey'", () => {
+  const schema = buildASTSchema(gql`
+    ${print(schemaPrepend)}
+    type Test {
+      a: String @amplienceDeliveryKey
+      b: String @amplienceDeliveryKey
+    }
+  `);
+  expect(() => validate(schema, [], {}, "", [])).toThrow(
+    "Types can only have 1 field with '@amplienceDeliveryKey'.\n\ntype Test\n\ta\n\tb"
+  );
+});
+
+it.each([
+  gql`
+  type Test {
+    a: String! @amplienceDeliveryKey
+  }
+  `,
+  gql`
+  type Test {
+    a: Int! @amplienceDeliveryKey
+  }
+  `,
+  gql`
+  type Test {
+    a: Float! @amplienceDeliveryKey
+  }
+  `,
+  gql`
+  type Test {
+    a: Boolean! @amplienceDeliveryKey
+  }
+  `,
+  gql`
+  type Test {
+    a: Int @amplienceDeliveryKey
+  }
+  `,
+  gql`
+  type Test {
+    a: Float @amplienceDeliveryKey
+  }
+  `,
+  gql`
+  type Test {
+    a: Boolean @amplienceDeliveryKey
+  }
+  `,
+  gql`
+  type ObjectType {
+    a: String!
+  }
+  type Test {
+    a: ObjectType @amplienceDeliveryKey
+  }
+  `
+])("Throws error: Fields with '@amplienceDeliveryKey' must be of Nullable type String", (testSchema) => {
+  const schema = buildASTSchema(gql`
+    ${print(schemaPrepend)}
+    ${print(testSchema)}
+  `);
+  expect(() => validate(schema, [], {}, "", [])).toThrow(
+    "Fields with '@amplienceDeliveryKey' must be of Nullable type String.\n\ntype Test\n\ta"
+  );
+});

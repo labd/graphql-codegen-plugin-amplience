@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://schema-examples.com/base",
+    "title": "Base",
+    "description": "Base",
+    "allOf": [
+      {
+        "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content"
+      }
+    ],
+    "type": "object",
+    "properties": {
+      "_meta": {
+        "type": "object",
+        "title": "Delivery Key",
+        "properties": {
+            "deliveryKey": {
+                "type": "string",
+                "title": "explciit title",
+                "description": "explicit description",
+                "pattern": "explicit pattern"
+            }
+        }
+      },
+      "a": {
+        "title": "A",
+        "type": "string"
+      }
+    },
+    "required": ["a"],
+    "propertyOrder": ["_meta", "a"]
+  }
+  

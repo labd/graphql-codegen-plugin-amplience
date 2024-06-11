@@ -21,6 +21,7 @@ export const schemaPrepend = gql`
   directive @amplienceIgnore on FIELD_DEFINITION | SCALAR | OBJECT
   directive @amplienceSortable on FIELD_DEFINITION
   directive @amplienceFilterable on FIELD_DEFINITION
+  directive @amplienceDeliveryKey(title: String, description: String, pattern: String) on FIELD_DEFINITION
 
   enum ValidationLevel {
     SLOT

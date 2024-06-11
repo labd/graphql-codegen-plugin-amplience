@@ -13,8 +13,10 @@ import { paramCase } from "change-case";
 import { ObjectTypeDefinitionNode } from "graphql";
 import { contentTypeSchemaBody } from "./lib/amplience-schema-transformers";
 import {
+  getDeliveryKeyNotNullableStringReport,
   getObjectTypeDefinitions,
   getRequiredLocalizedFieldsReport,
+  getTooManyDeliveryKeysReport,
   getTooManyFiltersReport,
 } from "./lib/validation";
 
@@ -68,6 +70,20 @@ export const validate: PluginValidateFn<PluginConfig> = (
     throw new Error(
       `Types can have no more than 5 fields with '@amplienceFiltered'.\n\n${tooManyFiltersReport}`
     );
+  }
+
+  const tooManyDeliveryKeysReport = getTooManyDeliveryKeysReport(types);
+  if (tooManyDeliveryKeysReport) {
+    throw new Error(
+      `Types can only have 1 field with '@amplienceDeliveryKey'.\n\n${tooManyDeliveryKeysReport}`
+    )
+  }
+
+  const deliveryKeyNotNullableStringReport = getDeliveryKeyNotNullableStringReport(types);
+  if (deliveryKeyNotNullableStringReport) {
+    throw new Error(
+      `Fields with '@amplienceDeliveryKey' must be of Nullable type String.\n\n${deliveryKeyNotNullableStringReport}`
+    )
   }
 };
 
