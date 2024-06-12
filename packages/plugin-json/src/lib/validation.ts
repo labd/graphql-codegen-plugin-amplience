@@ -79,22 +79,6 @@ export const getDeliveryKeyNotNullableStringReport = (
 const isDeliveryKeyField = (field: FieldDefinitionNode) =>
   hasDirective(field, "amplienceDeliveryKey");
 
-const isMissingExtensionName = (field: FieldDefinitionNode) =>
-  hasDirective(field, "amplienceExtension") &&
-  !field.directives?.some(
-    (d) =>
-      d.name.value === "amplienceExtension" &&
-      d.arguments?.some((arg) => arg.name.value === "name"),
-  );
-
-export const getMissingExtensionNameReport = (
-  types: ObjectTypeDefinitionNode[],
-): string =>
-  getFieldsReport(
-    types.filter((type) => type.fields?.some(isMissingExtensionName)),
-    isMissingExtensionName,
-  );
-
 const isNullableStringField = (field: FieldDefinitionNode) =>
   field.type.kind === "NamedType" && field.type.name.value === "String";
 

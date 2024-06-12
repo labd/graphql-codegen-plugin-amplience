@@ -27,6 +27,7 @@ type Base @amplienceContentType {
   linkedA: A @amplienceLink
   referencedB: B @amplienceReference
   deliveryKeyWithDefaults: String @amplienceDeliveryKey
+  extension: Extension @amplienceExtension(name: "extension-name")
 }
 
 enum Enum {
@@ -65,4 +66,8 @@ type Localized @amplienceContentType {
   float: Float @amplienceLocalized
   image: AmplienceImage @amplienceLocalized
   video: AmplienceVideo @amplienceLocalized
+}
+
+type Extension {
+  a: String
 }

@@ -66,7 +66,7 @@ export interface AmpliencePropertyType {
   maximum?: number;
   examples?: string[];
   pattern?: string;
-  "ui:extension"?: { name?: string };
+  "ui:extension"?: { name: string };
 }
 
 export interface AmplienceContentTypeSchemaBody {

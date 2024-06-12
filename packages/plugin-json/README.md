@@ -183,7 +183,11 @@ Currently works ONLY on custom types (object)
 
 ```graphql
 type MyContentType @amplienceContentType {
-  other: OtherContentType @amplienceExtension(name: "extension-name")
+  other: OtherContentType
+    @amplienceExtension(
+      # Name should point to the registered extension name on Amplience
+      name: "extension-name"
+    )
 }
 
 type OtherContentType {

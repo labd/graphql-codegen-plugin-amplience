@@ -61,6 +61,19 @@
       "title": "Optional Integer",
       "type": "integer"
     },
+    "extension": {
+      "properties": {
+        "a": {
+          "title": "A",
+          "type": "string"
+        }
+      },
+      "propertyOrder": ["a"],
+      "type": "object",
+      "title": "Extension",
+      "required": [],
+      "ui:extension": { "name": "extension-name" }
+    },
     "float": {
       "maximum": 10,
       "minimum": 0,
@@ -218,6 +231,7 @@
     "inlined",
     "union",
     "linkedA",
-    "referencedB"
+    "referencedB",
+    "extension"
   ]
 }
