@@ -1,6 +1,7 @@
 {
   "$id": "https://schema-examples.com/test2",
   "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
   "allOf": [
     { "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content" }
   ],
@@ -14,6 +15,14 @@
         "allOf": [{ "$ref": "https://schema-examples.com/test" }]
       }
     },
+    "extension": {
+      "title": "Extension",
+      "type": "object",
+      "properties": { "name": { "title": "Name", "type": "string" } },
+      "propertyOrder": ["name"],
+      "required": [],
+      "ui:extension": { "name": "extension-name" }
+    },
     "name": { "title": "Name", "type": "string" },
     "test": {
       "title": "Test",
@@ -22,7 +31,6 @@
     }
   },
   "description": "Test2",
-  "type": "object",
-  "propertyOrder": ["aLotOfTests", "name", "test"],
+  "propertyOrder": ["aLotOfTests", "extension", "name", "test"],
   "required": ["aLotOfTests"]
 }

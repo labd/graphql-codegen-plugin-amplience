@@ -17,6 +17,11 @@ type Test @amplienceContentType {
 type Test2 @amplienceContentType {
   name: String
   test: Test
+  extension: Test3 @amplienceExtension(name: "extension-name")
 
   aLotOfTests: [Test!]!
+}
+
+type Test3 {
+  name: String
 }

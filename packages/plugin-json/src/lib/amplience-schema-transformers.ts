@@ -256,6 +256,22 @@ export const ampliencePropertyType = (
         return inlineContentReference(node.astNode, schemaHost);
       }
 
+      const extensionDirective = maybeDirective(prop, "amplienceExtension");
+      if (extensionDirective) {
+        const extensionName = maybeDirectiveValue<StringValueNode>(
+          extensionDirective,
+          "name",
+        )?.value;
+        return extensionName
+          ? {
+              ...inlineObject(node.astNode, schema, schemaHost),
+              "ui:extension": {
+                name: extensionName,
+              },
+            }
+          : {};
+      }
+
       return inlineObject(node.astNode, schema, schemaHost);
     }
   }
