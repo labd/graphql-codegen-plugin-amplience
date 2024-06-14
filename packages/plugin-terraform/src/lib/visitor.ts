@@ -13,6 +13,7 @@ import type {
   StringValueNode,
 } from "graphql";
 import type { Argument, Data, TerraformGenerator } from "terraform-generator";
+import { list } from "terraform-generator";
 import { arg, fn } from "terraform-generator";
 import type { VisualizationType } from "./config";
 
@@ -41,6 +42,7 @@ export const createObjectTypeVisitor =
     contentRepositoriesForEach?: string;
     slotRepositoriesForEach?: string;
     schemaSuffix?: string;
+    addAmplienceIsManagedSwitch?: boolean;
   }) =>
   (node: ObjectTypeDefinitionNode): null => {
     const directive = maybeDirective(node, "amplienceContentType");
@@ -78,7 +80,7 @@ export const createObjectTypeVisitor =
     const dynamicVisualization = visualization?.find(hasProperty("for_each"));
 
     const contentType = tfg.resource("amplience_content_type", name, {
-      content_type_uri: schema.attr("schema_id"),
+      content_type_uri: typeUri(node, hostname),
       label: capitalCase(node.name.value),
       icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
       status: "ACTIVE",
@@ -90,6 +92,7 @@ export const createObjectTypeVisitor =
         shouldVisualize && visualization
           ? visualization.filter((v) => !v.for_each)
           : undefined,
+      depends_on: list(schema),
     });
 
     const repositoryName = maybeDirectiveValue<StringValueNode>(

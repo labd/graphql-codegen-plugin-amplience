@@ -4,10 +4,11 @@ hooks:
   afterAllFileWrite:
     - terraform fmt
 generates:
-  examples/output/example.tf:
+  examples/managed/output/example.tf:
     plugins:
       - ./dist/index.js
     config:
+      add_amplience_is_managed_switch: true
       hostname: "https://schema-examples.com"
       visualization:
         - for_each: var.variables["VISUALIZATION_HOST"]
@@ -20,9 +21,9 @@ generates:
         - label: Localhost without layout
           templated_uri: http://localhost:3000/preview/without-layout?vse={{vse.domain}}&content={{content.sys.id}}
           default: false
-      content_repositories:
-        website1: var.variables["CONTENT_REPO1_ID"]
-        website2: var.variables["CONTENT_REPO2_ID"]
-      slot_repositories:
-        slot1: var.variables["SLOT_REPO1_ID"]
-        slot2: var.variables["SLOT_REPO2_ID"]
+#      content_repositories:
+#        website1: var.variables["CONTENT_REPO1_ID"]
+#        website2: var.variables["CONTENT_REPO2_ID"]
+#      slot_repositories:
+#        slot1: var.variables["SLOT_REPO1_ID"]
+#        slot2: var.variables["SLOT_REPO2_ID"]

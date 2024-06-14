@@ -20,7 +20,9 @@
     "postbuild": "cp package.json dist",
     "lint": "eslint src/ --ext ts --fix",
     "typecheck": "tsc --noEmit -p .",
-    "example": "graphql-codegen --config examples/codegen.yml"
+    "example:regular": "graphql-codegen --config examples/regular/codegen.yml",
+    "example:managed": "graphql-codegen --config examples/managed/codegen.yml",
+    "examples": "pnpm run example:regular && pnpm run example:managed"
   },
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "^5.0.1",
