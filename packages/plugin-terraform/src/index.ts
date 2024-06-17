@@ -48,6 +48,9 @@ export const plugin: PluginFunction<PluginConfig> = (
         .map(([name, value]) =>
           tfg.data("amplience_content_repository", snakeCase(name), {
             id: maybeArg(value),
+            ...(add_amplience_is_managed_switch
+              ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+              : {}),
           }),
         )
     : undefined;
@@ -57,6 +60,9 @@ export const plugin: PluginFunction<PluginConfig> = (
         .map(([name, value]) =>
           tfg.data("amplience_content_repository", snakeCase(name), {
             id: maybeArg(value),
+            ...(add_amplience_is_managed_switch
+              ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+              : {}),
           }),
         )
     : undefined;
@@ -83,17 +89,6 @@ export const plugin: PluginFunction<PluginConfig> = (
 
   // Add the managed switch to the terraform generator
   if (add_amplience_is_managed_switch) {
-    for (const block of tfg.getBlocks()) {
-      let args = block.getArguments();
-      args = {
-        ...(add_amplience_is_managed_switch
-          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
-          : {}),
-        ...args,
-      };
-      block.setArguments(args);
-    }
-
     tfg.variable(amplienceIsManagedSwitchName, {
       type: arg("bool"),
       default: true,

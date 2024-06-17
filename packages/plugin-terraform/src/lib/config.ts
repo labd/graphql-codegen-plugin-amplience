@@ -63,7 +63,7 @@ export type PluginConfig = {
   schemaSuffix?: string;
   add_required_provider?: boolean;
   /**
-   * Adds a variable to control whether the codegen should generate the `amplience_is_managed` switch. If a pre-existing
+   * Adds a variable to control whether the codegen should generate the `amplience_is_managed` switch.
    *
    * If using a version of this plugin older than 1.2.0 and then switching to add_amplience_is_managed_switch = true
    * terraform will move resources automatically from a single entity to an array of N = 1. This relies on (legacy)
