@@ -1,7 +1,7 @@
 {
   "name": "amplience-graphql-codegen-terraform",
   "author": "Lab Digital",
-  "version": "1.2.0",
+  "version": "1.1.0",
   "private": false,
   "license": "MIT",
   "module": "dist/index.mjs",
@@ -20,9 +20,7 @@
     "postbuild": "cp package.json dist",
     "lint": "eslint src/ --ext ts --fix",
     "typecheck": "tsc --noEmit -p .",
-    "example:regular": "graphql-codegen --config examples/regular/codegen.yml",
-    "example:managed": "graphql-codegen --config examples/managed/codegen.yml",
-    "examples": "pnpm run example:regular && pnpm run example:managed"
+    "example": "graphql-codegen --config examples/codegen.yml"
   },
   "dependencies": {
     "@graphql-codegen/plugin-helpers": "^5.0.1",

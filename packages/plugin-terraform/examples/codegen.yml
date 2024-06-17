@@ -4,11 +4,10 @@ hooks:
   afterAllFileWrite:
     - terraform fmt
 generates:
-  examples/managed/output/example.tf:
+  examples/output/example.tf:
     plugins:
       - ./dist/index.js
     config:
-      add_amplience_is_managed_switch: true
       hostname: "https://schema-examples.com"
       visualization:
         - for_each: var.variables["VISUALIZATION_HOST"]
