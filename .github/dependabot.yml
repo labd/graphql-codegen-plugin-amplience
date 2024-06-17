@@ -2,22 +2,12 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
-    commit-message:
-      prefix: "chore(deps)"
     schedule:
       interval: "monthly"
-    groups:
-      go:
-        patterns:
-          - "*"
+    open-pull-requests-limit: 5
 
   - package-ecosystem: "npm"
     directory: "/"
-    commit-message:
-      prefix: "chore(deps)"
     schedule:
       interval: "monthly"
-    groups:
-      go:
-        patterns:
-          - "*"
+    open-pull-requests-limit: 5
