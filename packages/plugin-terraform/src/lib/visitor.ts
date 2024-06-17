@@ -16,7 +16,6 @@ import type { Argument, Data, TerraformGenerator } from "terraform-generator";
 import { list } from "terraform-generator";
 import { arg, fn } from "terraform-generator";
 import type { VisualizationType } from "./config";
-import { amplienceIsManagedSwitchName } from "../index";
 
 /**
  * This visitor checks the GraphQL object type and *updates* the terraform generator to include:
@@ -69,7 +68,7 @@ export const createObjectTypeVisitor =
       validation_level: isSlot ? "SLOT" : "CONTENT_TYPE",
       auto_sync: isAutoSync,
       ...(addAmplienceIsManagedSwitch
-        ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+        ? { count: arg(`var.amplience_is_managed ? 1 : 0`) }
         : {}),
     });
 
@@ -99,7 +98,7 @@ export const createObjectTypeVisitor =
           : undefined,
       depends_on: list(schema),
       ...(addAmplienceIsManagedSwitch
-        ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+        ? { count: arg(`var.amplience_is_managed ? 1 : 0`) }
         : {}),
     });
 
@@ -116,7 +115,7 @@ export const createObjectTypeVisitor =
           contentRepositories[0]
         ).id,
         ...(addAmplienceIsManagedSwitch
-          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+          ? { count: arg(`var.amplience_is_managed ? 1 : 0`) }
           : {}),
       });
     }
@@ -128,7 +127,7 @@ export const createObjectTypeVisitor =
           slotRepositories[0]
         ).id,
         ...(addAmplienceIsManagedSwitch
-          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+          ? { count: arg(`var.amplience_is_managed ? 1 : 0`) }
           : {}),
       });
     }
@@ -139,7 +138,7 @@ export const createObjectTypeVisitor =
         content_type_id: contentType.id,
         repository_id: arg("each.value"),
         ...(addAmplienceIsManagedSwitch
-          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+          ? { count: arg(`var.amplience_is_managed ? 1 : 0`) }
           : {}),
       });
     }
@@ -150,7 +149,7 @@ export const createObjectTypeVisitor =
         content_type_id: contentType.id,
         repository_id: arg("each.value"),
         ...(addAmplienceIsManagedSwitch
-          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+          ? { count: arg(`var.amplience_is_managed ? 1 : 0`) }
           : {}),
       });
     }

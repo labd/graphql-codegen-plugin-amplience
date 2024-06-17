@@ -14,7 +14,6 @@ import type { PluginConfig } from "./lib/config";
 import { createObjectTypeVisitor, maybeArg } from "./lib/visitor";
 
 export const addToSchema = schemaPrepend.loc?.source.body;
-export const amplienceIsManagedSwitchName = "amplience_is_managed";
 
 export const plugin: PluginFunction<PluginConfig> = (
   schema: GraphQLSchema,
@@ -49,7 +48,7 @@ export const plugin: PluginFunction<PluginConfig> = (
           tfg.data("amplience_content_repository", snakeCase(name), {
             id: maybeArg(value),
             ...(add_amplience_is_managed_switch
-              ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+              ? { count: arg(`var.amplience_is_managed ? 1 : 0`) }
               : {}),
           }),
         )
@@ -61,7 +60,7 @@ export const plugin: PluginFunction<PluginConfig> = (
           tfg.data("amplience_content_repository", snakeCase(name), {
             id: maybeArg(value),
             ...(add_amplience_is_managed_switch
-              ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+              ? { count: arg(`var.amplience_is_managed ? 1 : 0`) }
               : {}),
           }),
         )
@@ -89,7 +88,7 @@ export const plugin: PluginFunction<PluginConfig> = (
 
   // Add the managed switch to the terraform generator
   if (add_amplience_is_managed_switch) {
-    tfg.variable(amplienceIsManagedSwitchName, {
+    tfg.variable("amplience_is_managed", {
       type: arg("bool"),
       default: true,
       description: "Set to false to disable all the Amplience resources",
