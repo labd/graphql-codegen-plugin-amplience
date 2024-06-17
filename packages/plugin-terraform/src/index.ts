@@ -9,11 +9,12 @@ import { snakeCase } from "change-case";
 import type { GraphQLSchema } from "graphql";
 import { visit } from "graphql";
 import { extname } from "path";
-import { TerraformGenerator, map } from "terraform-generator";
+import { TerraformGenerator, map, arg } from "terraform-generator";
 import type { PluginConfig } from "./lib/config";
 import { createObjectTypeVisitor, maybeArg } from "./lib/visitor";
 
 export const addToSchema = schemaPrepend.loc?.source.body;
+export const amplienceIsManagedSwitchName = "amplience_is_managed";
 
 export const plugin: PluginFunction<PluginConfig> = (
   schema: GraphQLSchema,
@@ -25,6 +26,7 @@ export const plugin: PluginFunction<PluginConfig> = (
     slot_repositories,
     schemaSuffix,
     add_required_provider = true,
+    add_amplience_is_managed_switch = false,
   },
 ) => {
   const astNode = getCachedDocumentNodeFromSchema(schema);
@@ -46,6 +48,9 @@ export const plugin: PluginFunction<PluginConfig> = (
         .map(([name, value]) =>
           tfg.data("amplience_content_repository", snakeCase(name), {
             id: maybeArg(value),
+            ...(add_amplience_is_managed_switch
+              ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+              : {}),
           }),
         )
     : undefined;
@@ -55,6 +60,9 @@ export const plugin: PluginFunction<PluginConfig> = (
         .map(([name, value]) =>
           tfg.data("amplience_content_repository", snakeCase(name), {
             id: maybeArg(value),
+            ...(add_amplience_is_managed_switch
+              ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+              : {}),
           }),
         )
     : undefined;
@@ -74,9 +82,19 @@ export const plugin: PluginFunction<PluginConfig> = (
         hostname,
         visualization,
         schemaSuffix,
+        addAmplienceIsManagedSwitch: add_amplience_is_managed_switch,
       }),
     },
   });
+
+  // Add the managed switch to the terraform generator
+  if (add_amplience_is_managed_switch) {
+    tfg.variable(amplienceIsManagedSwitchName, {
+      type: arg("bool"),
+      default: true,
+      description: "Set to false to disable all the Amplience resources",
+    });
+  }
 
   // Return the terraform file string
   return tfg.generate().tf;

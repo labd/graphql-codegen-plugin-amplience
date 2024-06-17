@@ -13,8 +13,10 @@ import type {
   StringValueNode,
 } from "graphql";
 import type { Argument, Data, TerraformGenerator } from "terraform-generator";
+import { list } from "terraform-generator";
 import { arg, fn } from "terraform-generator";
 import type { VisualizationType } from "./config";
+import { amplienceIsManagedSwitchName } from "../index";
 
 /**
  * This visitor checks the GraphQL object type and *updates* the terraform generator to include:
@@ -32,6 +34,7 @@ export const createObjectTypeVisitor =
     contentRepositoriesForEach,
     slotRepositoriesForEach,
     schemaSuffix,
+    addAmplienceIsManagedSwitch,
   }: {
     tfg: TerraformGenerator;
     hostname: string;
@@ -41,6 +44,7 @@ export const createObjectTypeVisitor =
     contentRepositoriesForEach?: string;
     slotRepositoriesForEach?: string;
     schemaSuffix?: string;
+    addAmplienceIsManagedSwitch?: boolean;
   }) =>
   (node: ObjectTypeDefinitionNode): null => {
     const directive = maybeDirective(node, "amplienceContentType");
@@ -64,6 +68,9 @@ export const createObjectTypeVisitor =
       schema_id: typeUri(node, hostname),
       validation_level: isSlot ? "SLOT" : "CONTENT_TYPE",
       auto_sync: isAutoSync,
+      ...(addAmplienceIsManagedSwitch
+        ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+        : {}),
     });
 
     const shouldVisualize = maybeDirectiveValue<BooleanValueNode>(
@@ -78,7 +85,7 @@ export const createObjectTypeVisitor =
     const dynamicVisualization = visualization?.find(hasProperty("for_each"));
 
     const contentType = tfg.resource("amplience_content_type", name, {
-      content_type_uri: schema.attr("schema_id"),
+      content_type_uri: typeUri(node, hostname),
       label: capitalCase(node.name.value),
       icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
       status: "ACTIVE",
@@ -90,6 +97,10 @@ export const createObjectTypeVisitor =
         shouldVisualize && visualization
           ? visualization.filter((v) => !v.for_each)
           : undefined,
+      depends_on: list(schema),
+      ...(addAmplienceIsManagedSwitch
+        ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+        : {}),
     });
 
     const repositoryName = maybeDirectiveValue<StringValueNode>(
@@ -104,6 +115,9 @@ export const createObjectTypeVisitor =
           contentRepositories.find((r) => r.name === repositoryName) ??
           contentRepositories[0]
         ).id,
+        ...(addAmplienceIsManagedSwitch
+          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+          : {}),
       });
     }
     if (slotRepositories?.length && isSlot) {
@@ -113,6 +127,9 @@ export const createObjectTypeVisitor =
           slotRepositories.find((r) => r.name === repositoryName) ??
           slotRepositories[0]
         ).id,
+        ...(addAmplienceIsManagedSwitch
+          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+          : {}),
       });
     }
 
@@ -121,6 +138,9 @@ export const createObjectTypeVisitor =
         for_each: arg(contentRepositoriesForEach),
         content_type_id: contentType.id,
         repository_id: arg("each.value"),
+        ...(addAmplienceIsManagedSwitch
+          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+          : {}),
       });
     }
 
@@ -129,6 +149,9 @@ export const createObjectTypeVisitor =
         for_each: arg(slotRepositoriesForEach),
         content_type_id: contentType.id,
         repository_id: arg("each.value"),
+        ...(addAmplienceIsManagedSwitch
+          ? { count: arg(`var.${amplienceIsManagedSwitchName} ? 1 : 0`) }
+          : {}),
       });
     }
 
