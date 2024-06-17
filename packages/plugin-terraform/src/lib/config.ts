@@ -62,18 +62,4 @@ export type PluginConfig = {
   slot_repositories?: { [name: string]: string };
   schemaSuffix?: string;
   add_required_provider?: boolean;
-  /**
-   * Adds a variable to control whether the codegen should generate the `amplience_is_managed` switch. If a pre-existing
-   *
-   * If using a version of this plugin older than 1.2.0 and then switching to add_amplience_is_managed_switch = true
-   * terraform will move resources automatically from a single entity to an array of N = 1. This relies on (legacy)
-   * logic when using modules to recognize these changes and move the resource accordingly (see
-   * https://developer.hashicorp.com/terraform/language/modules/develop/refactoring#enabling-count-or-for_each-for-a-resource)
-   *
-   * @example
-   * ```yml
-   * add_amplience_is_managed_switch: true
-   * ```
-   */
-  add_amplience_is_managed_switch?: boolean;
 };

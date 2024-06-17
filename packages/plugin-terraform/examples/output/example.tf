@@ -6,6 +6,22 @@ terraform {
   }
 }
 
+data "amplience_content_repository" "website1" {
+  id = var.variables["CONTENT_REPO1_ID"]
+}
+
+data "amplience_content_repository" "website2" {
+  id = var.variables["CONTENT_REPO2_ID"]
+}
+
+data "amplience_content_repository" "slot1" {
+  id = var.variables["SLOT_REPO1_ID"]
+}
+
+data "amplience_content_repository" "slot2" {
+  id = var.variables["SLOT_REPO2_ID"]
+}
+
 resource "amplience_content_type_schema" "test" {
   body             = file("${path.module}/schemas/test.json")
   schema_id        = "https://schema-examples.com/test"
@@ -14,12 +30,14 @@ resource "amplience_content_type_schema" "test" {
 }
 
 resource "amplience_content_type" "test" {
-  content_type_uri = "https://schema-examples.com/test"
+  content_type_uri = amplience_content_type_schema.test.schema_id
   label            = "Test"
   status           = "ACTIVE"
-  depends_on = [
-    amplience_content_type_schema.test
-  ]
+}
+
+resource "amplience_content_type_assignment" "test" {
+  content_type_id = amplience_content_type.test.id
+  repository_id   = data.amplience_content_repository.website1.id
 }
 
 resource "amplience_content_type_schema" "test_auto_sync_false" {
@@ -30,12 +48,14 @@ resource "amplience_content_type_schema" "test_auto_sync_false" {
 }
 
 resource "amplience_content_type" "test_auto_sync_false" {
-  content_type_uri = "https://schema-examples.com/test-auto-sync-false"
+  content_type_uri = amplience_content_type_schema.test_auto_sync_false.schema_id
   label            = "Test Auto Sync False"
   status           = "ACTIVE"
-  depends_on = [
-    amplience_content_type_schema.test_auto_sync_false
-  ]
+}
+
+resource "amplience_content_type_assignment" "test_auto_sync_false" {
+  content_type_id = amplience_content_type.test_auto_sync_false.id
+  repository_id   = data.amplience_content_repository.website1.id
 }
 
 resource "amplience_content_type_schema" "test_auto_sync_true" {
@@ -46,12 +66,14 @@ resource "amplience_content_type_schema" "test_auto_sync_true" {
 }
 
 resource "amplience_content_type" "test_auto_sync_true" {
-  content_type_uri = "https://schema-examples.com/test-auto-sync-true"
+  content_type_uri = amplience_content_type_schema.test_auto_sync_true.schema_id
   label            = "Test Auto Sync True"
   status           = "ACTIVE"
-  depends_on = [
-    amplience_content_type_schema.test_auto_sync_true
-  ]
+}
+
+resource "amplience_content_type_assignment" "test_auto_sync_true" {
+  content_type_id = amplience_content_type.test_auto_sync_true.id
+  repository_id   = data.amplience_content_repository.website1.id
 }
 
 resource "amplience_content_type_schema" "test_no_auto_sync" {
@@ -62,12 +84,14 @@ resource "amplience_content_type_schema" "test_no_auto_sync" {
 }
 
 resource "amplience_content_type" "test_no_auto_sync" {
-  content_type_uri = "https://schema-examples.com/test-no-auto-sync"
+  content_type_uri = amplience_content_type_schema.test_no_auto_sync.schema_id
   label            = "Test No Auto Sync"
   status           = "ACTIVE"
-  depends_on = [
-    amplience_content_type_schema.test_no_auto_sync
-  ]
+}
+
+resource "amplience_content_type_assignment" "test_no_auto_sync" {
+  content_type_id = amplience_content_type.test_no_auto_sync.id
+  repository_id   = data.amplience_content_repository.website1.id
 }
 
 resource "amplience_content_type_schema" "test_other_repository" {
@@ -78,12 +102,14 @@ resource "amplience_content_type_schema" "test_other_repository" {
 }
 
 resource "amplience_content_type" "test_other_repository" {
-  content_type_uri = "https://schema-examples.com/test-other-repository"
+  content_type_uri = amplience_content_type_schema.test_other_repository.schema_id
   label            = "Test Other Repository"
   status           = "ACTIVE"
-  depends_on = [
-    amplience_content_type_schema.test_other_repository
-  ]
+}
+
+resource "amplience_content_type_assignment" "test_other_repository" {
+  content_type_id = amplience_content_type.test_other_repository.id
+  repository_id   = data.amplience_content_repository.website2.id
 }
 
 resource "amplience_content_type_schema" "test_slot" {
@@ -94,12 +120,14 @@ resource "amplience_content_type_schema" "test_slot" {
 }
 
 resource "amplience_content_type" "test_slot" {
-  content_type_uri = "https://schema-examples.com/test-slot"
+  content_type_uri = amplience_content_type_schema.test_slot.schema_id
   label            = "Test Slot"
   status           = "ACTIVE"
-  depends_on = [
-    amplience_content_type_schema.test_slot
-  ]
+}
+
+resource "amplience_content_type_assignment" "test_slot" {
+  content_type_id = amplience_content_type.test_slot.id
+  repository_id   = data.amplience_content_repository.slot1.id
 }
 
 resource "amplience_content_type_schema" "test_visualizations" {
@@ -110,7 +138,7 @@ resource "amplience_content_type_schema" "test_visualizations" {
 }
 
 resource "amplience_content_type" "test_visualizations" {
-  content_type_uri = "https://schema-examples.com/test-visualizations"
+  content_type_uri = amplience_content_type_schema.test_visualizations.schema_id
   label            = "Test Visualizations"
   status           = "ACTIVE"
   dynamic "visualization" {
@@ -131,8 +159,10 @@ resource "amplience_content_type" "test_visualizations" {
     templated_uri = "http://localhost:3000/preview/without-layout?vse={{vse.domain}}&content={{content.sys.id}}"
     default       = false
   }
-  depends_on = [
-    amplience_content_type_schema.test_visualizations
-  ]
+}
+
+resource "amplience_content_type_assignment" "test_visualizations" {
+  content_type_id = amplience_content_type.test_visualizations.id
+  repository_id   = data.amplience_content_repository.website1.id
 }
 
