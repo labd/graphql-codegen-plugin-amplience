@@ -93,7 +93,7 @@ export const validate: PluginValidateFn<PluginConfig> = (
     getAmplienceExtensionNotNullableObjectReport(types);
   if (amplienceExtensionNotNullableObjectReport) {
     throw new Error(
-      `Fields with '@amplienceExtension' must be of a Nullable Object type.\n\n${amplienceExtensionNotNullableObjectReport}`,
+      `Fields with '@amplienceExtension' must be Nullable and of an Object type defined elsewhere in the schema.\n\n${amplienceExtensionNotNullableObjectReport}`,
     );
   }
 

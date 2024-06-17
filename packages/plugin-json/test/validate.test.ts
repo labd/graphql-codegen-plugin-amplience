@@ -187,15 +187,21 @@ it.each([
       a: [ObjectType!]! @amplienceExtension(name: "test-extension")
     }
   `,
+  gql`
+    scalar Date
+    type Test {
+      a: Date @amplienceExtension(name: "test-extension")
+    }
+  `,
 ])(
-  "Throw error: Fields with '@amplienceExtension' must be of a Nullable Object type",
+  "Throw error: Fields with '@amplienceExtension' must be Nullable and of an Object type defined elsewhere in the schema",
   (testSchema) => {
     const schema = buildASTSchema(gql`
       ${print(schemaPrepend)}
       ${print(testSchema)}
     `);
     expect(() => validate(schema, [], {}, "", [])).toThrow(
-      "Fields with '@amplienceExtension' must be of a Nullable Object type.\n\ntype Test\n\ta",
+      "Fields with '@amplienceExtension' must be Nullable and of an Object type defined elsewhere in the schema.\n\ntype Test\n\ta",
     );
   },
 );

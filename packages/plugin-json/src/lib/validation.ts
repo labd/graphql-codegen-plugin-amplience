@@ -92,11 +92,12 @@ export const getAmplienceExtensionNotNullableObjectReport = (
         type.fields?.some(
           (field) =>
             isAmplienceExtensionField(field) &&
-            !isNullableObjectField(field.type),
+            !isNullableObjectField(field.type, types),
         ),
     ),
     (field) =>
-      isAmplienceExtensionField(field) && !isNullableObjectField(field.type),
+      isAmplienceExtensionField(field) &&
+      !isNullableObjectField(field.type, types),
   );
 
 // @amplienceExtension referencing an @amplienceContentType produces odd behavior we want to avoid
@@ -109,22 +110,25 @@ export const getAmplienceExtensionReferencesAmplienceContentTypeReport = (
         type.fields?.some(
           (field) =>
             isAmplienceExtensionField(field) &&
-            isNullableObjectField(field.type) &&
+            isNullableObjectField(field.type, types) &&
             isAmplienceContentTypeField(field.type, types),
         ),
     ),
     (field) =>
       isAmplienceExtensionField(field) &&
-      isNullableObjectField(field.type) &&
+      isNullableObjectField(field.type, types) &&
       isAmplienceContentTypeField(field.type, types),
   );
 
 const isAmplienceExtensionField = (field: FieldDefinitionNode) =>
   hasDirective(field, "amplienceExtension");
 
-const isNullableObjectField = (type: TypeNode): type is NamedTypeNode =>
-  type.kind === "NamedType" &&
-  !["Int", "Float", "String", "Boolean", "ID"].includes(type.name.value);
+const isNullableObjectField = (
+  fieldType: TypeNode,
+  allTypes: ObjectTypeDefinitionNode[],
+): fieldType is NamedTypeNode =>
+  fieldType.kind === "NamedType" &&
+  allTypes.some((type) => type.name.value === fieldType.name.value);
 
 const isAmplienceContentTypeField = (
   fieldType: NamedTypeNode,
