@@ -7,7 +7,7 @@ updates:
     schedule:
       interval: "monthly"
     groups:
-      github-actions:
+      go:
         patterns:
           - "*"
 
@@ -18,6 +18,6 @@ updates:
     schedule:
       interval: "monthly"
     groups:
-      npm:
+      go:
         patterns:
           - "*"
