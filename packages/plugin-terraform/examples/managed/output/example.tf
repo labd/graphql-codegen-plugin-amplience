@@ -6,26 +6,6 @@ terraform {
   }
 }
 
-data "amplience_content_repository" "website1" {
-  id    = var.variables["CONTENT_REPO1_ID"]
-  count = var.amplience_is_managed ? 1 : 0
-}
-
-data "amplience_content_repository" "website2" {
-  id    = var.variables["CONTENT_REPO2_ID"]
-  count = var.amplience_is_managed ? 1 : 0
-}
-
-data "amplience_content_repository" "slot1" {
-  id    = var.variables["SLOT_REPO1_ID"]
-  count = var.amplience_is_managed ? 1 : 0
-}
-
-data "amplience_content_repository" "slot2" {
-  id    = var.variables["SLOT_REPO2_ID"]
-  count = var.amplience_is_managed ? 1 : 0
-}
-
 resource "amplience_content_type_schema" "test" {
   body             = file("${path.module}/schemas/test.json")
   schema_id        = "https://schema-examples.com/test"
@@ -42,12 +22,6 @@ resource "amplience_content_type" "test" {
     amplience_content_type_schema.test
   ]
   count = var.amplience_is_managed ? 1 : 0
-}
-
-resource "amplience_content_type_assignment" "test" {
-  content_type_id = amplience_content_type.test.id
-  repository_id   = data.amplience_content_repository.website1.id
-  count           = var.amplience_is_managed ? 1 : 0
 }
 
 resource "amplience_content_type_schema" "test_auto_sync_false" {
@@ -68,12 +42,6 @@ resource "amplience_content_type" "test_auto_sync_false" {
   count = var.amplience_is_managed ? 1 : 0
 }
 
-resource "amplience_content_type_assignment" "test_auto_sync_false" {
-  content_type_id = amplience_content_type.test_auto_sync_false.id
-  repository_id   = data.amplience_content_repository.website1.id
-  count           = var.amplience_is_managed ? 1 : 0
-}
-
 resource "amplience_content_type_schema" "test_auto_sync_true" {
   body             = file("${path.module}/schemas/test-auto-sync-true.json")
   schema_id        = "https://schema-examples.com/test-auto-sync-true"
@@ -90,12 +58,6 @@ resource "amplience_content_type" "test_auto_sync_true" {
     amplience_content_type_schema.test_auto_sync_true
   ]
   count = var.amplience_is_managed ? 1 : 0
-}
-
-resource "amplience_content_type_assignment" "test_auto_sync_true" {
-  content_type_id = amplience_content_type.test_auto_sync_true.id
-  repository_id   = data.amplience_content_repository.website1.id
-  count           = var.amplience_is_managed ? 1 : 0
 }
 
 resource "amplience_content_type_schema" "test_no_auto_sync" {
@@ -116,12 +78,6 @@ resource "amplience_content_type" "test_no_auto_sync" {
   count = var.amplience_is_managed ? 1 : 0
 }
 
-resource "amplience_content_type_assignment" "test_no_auto_sync" {
-  content_type_id = amplience_content_type.test_no_auto_sync.id
-  repository_id   = data.amplience_content_repository.website1.id
-  count           = var.amplience_is_managed ? 1 : 0
-}
-
 resource "amplience_content_type_schema" "test_other_repository" {
   body             = file("${path.module}/schemas/test-other-repository.json")
   schema_id        = "https://schema-examples.com/test-other-repository"
@@ -140,12 +96,6 @@ resource "amplience_content_type" "test_other_repository" {
   count = var.amplience_is_managed ? 1 : 0
 }
 
-resource "amplience_content_type_assignment" "test_other_repository" {
-  content_type_id = amplience_content_type.test_other_repository.id
-  repository_id   = data.amplience_content_repository.website2.id
-  count           = var.amplience_is_managed ? 1 : 0
-}
-
 resource "amplience_content_type_schema" "test_slot" {
   body             = file("${path.module}/schemas/test-slot.json")
   schema_id        = "https://schema-examples.com/test-slot"
@@ -162,12 +112,6 @@ resource "amplience_content_type" "test_slot" {
     amplience_content_type_schema.test_slot
   ]
   count = var.amplience_is_managed ? 1 : 0
-}
-
-resource "amplience_content_type_assignment" "test_slot" {
-  content_type_id = amplience_content_type.test_slot.id
-  repository_id   = data.amplience_content_repository.slot1.id
-  count           = var.amplience_is_managed ? 1 : 0
 }
 
 resource "amplience_content_type_schema" "test_visualizations" {
@@ -204,12 +148,6 @@ resource "amplience_content_type" "test_visualizations" {
     amplience_content_type_schema.test_visualizations
   ]
   count = var.amplience_is_managed ? 1 : 0
-}
-
-resource "amplience_content_type_assignment" "test_visualizations" {
-  content_type_id = amplience_content_type.test_visualizations.id
-  repository_id   = data.amplience_content_repository.website1.id
-  count           = var.amplience_is_managed ? 1 : 0
 }
 
 variable "amplience_is_managed" {
