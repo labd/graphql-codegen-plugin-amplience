@@ -1,11 +1,5 @@
 # amplience-graphql-codegen-terraform
 
-## 1.2.0
-
-### Minor Changes
-
-- 3fd047d: Added option to make amplience resources unmanaged
-
 ## 1.1.0
 
 ### Minor Changes
