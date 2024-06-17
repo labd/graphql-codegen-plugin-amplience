@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "change-case": "^4.1.2",
-    "graphql": "^16.8.1",
+    "graphql": "^16.8.2",
     "graphql-tag": "^2.12.6"
   },
   "gitHead": "8ec548b31ea77c5bdde92f010d48d30f98be4a91"
