@@ -14,7 +14,8 @@ type Test @amplienceContentType {
     )
 }
 
-type Test2 @amplienceContentType {
+type Test2
+  @amplienceContentType(fieldOrder: "test extension aLotOfTests name") {
   name: String
   test: Test
   extension: Test3 @amplienceExtension(name: "extension-name")

@@ -31,6 +31,6 @@
     }
   },
   "description": "Test2",
-  "propertyOrder": ["aLotOfTests", "extension", "name", "test"],
+  "propertyOrder": ["test", "extension", "aLotOfTests", "name"],
   "required": ["aLotOfTests"]
 }

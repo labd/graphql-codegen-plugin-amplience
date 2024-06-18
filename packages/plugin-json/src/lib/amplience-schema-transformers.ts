@@ -3,7 +3,6 @@ import {
   hasDirective,
   ifNotEmpty,
   ifValue,
-  isValue,
   maybeDirective,
   maybeDirectiveValue,
   namedType,
@@ -69,20 +68,7 @@ export const contentTypeSchemaBody = (
     : undefined,
   "trait:filterable": filterableTrait(type),
 
-  propertyOrder: [
-    // always place delivery keys at the top
-    type.fields?.some((field) => hasDirective(field, "amplienceDeliveryKey"))
-      ? "_meta"
-      : undefined,
-
-    ...(type.fields
-      ?.filter(
-        (field) =>
-          isAmplienceProperty(type, field) &&
-          !hasDirective(field, "amplienceDeliveryKey"),
-      )
-      .map((field) => field.name.value) ?? []),
-  ].filter(isValue),
+  propertyOrder: propertyOrder(type),
 
   required: type.fields
     ?.filter(
@@ -197,6 +183,29 @@ const deliveryKeyMetaProperty = (
     },
   },
 });
+
+const propertyOrder = (type: ObjectTypeDefinitionNode): string[] => [
+  // always place deliveryKey meta property at the top if present
+  ...(type.fields?.some((field) => hasDirective(field, "amplienceDeliveryKey"))
+    ? ["_meta"]
+    : []),
+  ...// respect explicitly-specified fieldOrder if present
+  (ifValue(maybeDirective(type, "amplienceContentType"), (directive) =>
+    ifValue(
+      maybeDirectiveValue<StringValueNode>(directive, "fieldOrder"),
+      ({ value }) => value.split(" "),
+    ),
+  ) ??
+    // fall back to default alphabetical order
+    type.fields
+      ?.filter(
+        (field) =>
+          isAmplienceProperty(type, field) &&
+          !hasDirective(field, "amplienceDeliveryKey"),
+      )
+      .map((field) => field.name.value) ??
+    []),
+];
 
 const isHierarchy = (type: ObjectTypeDefinitionNode) =>
   maybeDirectiveValue<EnumValueNode>(
