@@ -1,0 +1,30 @@
+{
+  "$id": "https://schema-examples.com/ordered-fields",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "allOf": [
+    { "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content" }
+  ],
+  "title": "Ordered Fields",
+  "description": "Ordered Fields",
+  "type": "object",
+  "properties": {
+    "_meta": {
+      "type": "object",
+      "title": "Delivery Key",
+      "properties": {
+        "deliveryKey": {
+          "type": "string",
+          "title": "Delivery Key",
+          "description": "Set a delivery key for this content item"
+        }
+      }
+    },
+    "a": { "title": "A", "type": "string" },
+    "b": { "title": "B", "type": "string" },
+    "c": { "title": "C", "type": "string" },
+    "d": { "title": "D", "type": "string" },
+    "e": { "title": "E", "type": "string" }
+  },
+  "propertyOrder": ["_meta", "c", "b", "a", "e", "d"],
+  "required": ["a", "b", "c", "d", "e"]
+}
