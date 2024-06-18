@@ -1,9 +1,12 @@
 import {
   hasDirective,
+  ifValue,
   isObjectTypeDefinitionNode,
   isValue,
+  maybeDirective,
+  maybeDirectiveValue,
 } from "amplience-graphql-codegen-common";
-import type { NamedTypeNode, TypeNode } from "graphql";
+import type { NamedTypeNode, StringValueNode, TypeNode } from "graphql";
 import {
   type FieldDefinitionNode,
   type GraphQLSchema,
@@ -143,6 +146,84 @@ const isAmplienceContentTypeField = (
     : false;
 };
 
+export const getContentTypeFieldOrderOnIllegalFieldsReport = (
+  types: ObjectTypeDefinitionNode[],
+): string =>
+  getFieldsReport(
+    types.filter((type) =>
+      ifFieldOrderValue(
+        type,
+        (fieldOrder) =>
+          type.fields?.some(
+            (field) =>
+              fieldOrder.includes(field.name.value) &&
+              hasIllegalDirectivesForFieldOrder(field),
+          ),
+      ),
+    ),
+    (field, type) =>
+      ifFieldOrderValue(
+        type,
+        (fieldOrder) =>
+          fieldOrder.includes(field.name.value) &&
+          hasIllegalDirectivesForFieldOrder(field),
+      ),
+  );
+
+export const getContentTypeFieldOrderMissingFieldsReport = (
+  types: ObjectTypeDefinitionNode[],
+): string =>
+  getFieldsReport(
+    types.filter((type) =>
+      ifFieldOrderValue(
+        type,
+        (fieldOrder) =>
+          type.fields
+            ?.filter((field) => !hasIllegalDirectivesForFieldOrder(field))
+            .some((field) => !fieldOrder.includes(field.name.value)),
+      ),
+    ),
+    (field, type) =>
+      ifFieldOrderValue(
+        type,
+        (fieldOrder) =>
+          !hasIllegalDirectivesForFieldOrder(field) &&
+          !fieldOrder.includes(field.name.value),
+      ),
+  );
+
+export const getContentTypeFieldOrderUnknownFieldsReport = (
+  types: ObjectTypeDefinitionNode[],
+): string =>
+  types.reduce<string>((acc, type) => {
+    const fieldNames = type.fields?.map((field) => field.name.value);
+
+    const unknownFields = ifFieldOrderValue<string[]>(type, (fieldOrder) =>
+      fieldOrder.filter((fieldName) => !fieldNames?.includes(fieldName)),
+    );
+
+    return unknownFields?.length
+      ? `${acc ? `${acc}\n\n` : ""}type ${
+          type.name.value
+        }\n\t${unknownFields.join("\n\t")}`
+      : acc;
+  }, "");
+
+const ifFieldOrderValue = <T = boolean>(
+  type: ObjectTypeDefinitionNode,
+  ifFieldOrderValue: (fieldOrder: string[]) => T | undefined,
+) =>
+  ifValue(maybeDirective(type, "amplienceContentType"), (directive) =>
+    ifValue(
+      maybeDirectiveValue<StringValueNode>(directive, "fieldOrder"),
+      (fieldOrder) => ifFieldOrderValue(fieldOrder.value.split(" ")),
+    ),
+  );
+
+const hasIllegalDirectivesForFieldOrder = (field: FieldDefinitionNode) =>
+  hasDirective(field, "amplienceDeliveryKey") ||
+  hasDirective(field, "amplienceIgnore");
+
 /**
  * Converts a type with filtered fields in a simple string report.
  *
@@ -155,12 +236,17 @@ const isAmplienceContentTypeField = (
  */
 const getFieldsReport = (
   types: ObjectTypeDefinitionNode[],
-  fieldFilter: (field: FieldDefinitionNode) => boolean | undefined,
+  fieldFilter: (
+    field: FieldDefinitionNode,
+    type: ObjectTypeDefinitionNode,
+  ) => boolean | undefined,
 ): string =>
   types
     .map((type) => ({
       type: type.name.value,
-      fields: type.fields?.filter(fieldFilter).map((f) => f.name.value),
+      fields: type.fields
+        ?.filter((field) => fieldFilter(field, type))
+        .map((f) => f.name.value),
     }))
     .map(
       ({ type, fields }) =>
