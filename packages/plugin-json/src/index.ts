@@ -15,6 +15,9 @@ import { contentTypeSchemaBody } from "./lib/amplience-schema-transformers";
 import {
   getAmplienceExtensionNotNullableObjectReport,
   getAmplienceExtensionReferencesAmplienceContentTypeReport,
+  getContentTypeFieldOrderMissingFieldsReport,
+  getContentTypeFieldOrderOnIllegalFieldsReport,
+  getContentTypeFieldOrderUnknownFieldsReport,
   getDeliveryKeyNotNullableStringReport,
   getObjectTypeDefinitions,
   getRequiredLocalizedFieldsReport,
@@ -102,6 +105,30 @@ export const validate: PluginValidateFn<PluginConfig> = (
   if (amplienceExtensionOnAmplienceContentTypeReport) {
     throw new Error(
       `Types referenced by fields with '@amplienceExtension' must not have '@amplienceContentType' directive.\n\n${amplienceExtensionOnAmplienceContentTypeReport}`,
+    );
+  }
+
+  const contentTypeFieldOrderOnIllegalFieldsReport =
+    getContentTypeFieldOrderOnIllegalFieldsReport(types);
+  if (contentTypeFieldOrderOnIllegalFieldsReport) {
+    throw new Error(
+      `@amplienceContentType fieldOrder arguments must not specify fields with @amplienceDeliveryKey or @amplienceIgnore.\n\n${contentTypeFieldOrderOnIllegalFieldsReport}`,
+    );
+  }
+
+  const contentTypeFieldOrderMissingFieldsReport =
+    getContentTypeFieldOrderMissingFieldsReport(types);
+  if (contentTypeFieldOrderMissingFieldsReport) {
+    throw new Error(
+      `@amplienceContentType fieldOrder arguments must specify every field defined within the type.\n\n${contentTypeFieldOrderMissingFieldsReport}`,
+    );
+  }
+
+  const contentTypeFieldOrderUnknownFieldsReport =
+    getContentTypeFieldOrderUnknownFieldsReport(types);
+  if (contentTypeFieldOrderUnknownFieldsReport) {
+    throw new Error(
+      `@amplienceContentType fieldOrder arguments must not specify fields not defined within the type.\n\n${contentTypeFieldOrderUnknownFieldsReport}`,
     );
   }
 };

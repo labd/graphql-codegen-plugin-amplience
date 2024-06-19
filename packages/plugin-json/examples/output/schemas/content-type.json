@@ -1,11 +1,11 @@
 {
-  "$id": "https://schema-examples.com/test",
+  "$id": "https://schema-examples.com/content-type",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "allOf": [
     { "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content" }
   ],
-  "title": "Test",
+  "title": "Content Type",
   "properties": {
     "_meta": {
       "type": "object",
@@ -19,14 +19,11 @@
         }
       }
     },
-    "bla": { "title": "Bla", "type": "integer" },
-    "name": {
-      "title": "Name",
-      "description": "This a description",
-      "type": "string"
-    }
+    "b": { "title": "B", "type": "integer" },
+    "h": { "title": "H", "type": "array", "items": { "type": "string" } },
+    "z": { "title": "Z", "description": "This a description", "type": "string" }
   },
-  "description": "Test",
-  "propertyOrder": ["_meta", "bla", "name"],
-  "required": ["bla"]
+  "description": "Content Type",
+  "propertyOrder": ["_meta", "b", "h", "z"],
+  "required": ["b", "h"]
 }

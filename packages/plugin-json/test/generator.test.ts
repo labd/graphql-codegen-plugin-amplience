@@ -3,15 +3,13 @@ import {
   hasDirective,
   isObjectTypeDefinitionNode,
 } from "amplience-graphql-codegen-common";
+import { paramCase } from "change-case";
 import fs from "fs";
 import { buildSchema } from "graphql";
 import { addToSchema } from "../src/index";
 import { contentTypeSchemaBody } from "../src/lib/amplience-schema-transformers";
 
-it.each([
-  { graphqlFile: "base", jsons: ["a", "b", "base", "localized"] },
-  { graphqlFile: "hierarchy", jsons: ["root", "top-level", "child", "leaf"] },
-])("correct JSON files for $graphqlFile", ({ graphqlFile, jsons }) => {
+it.each(["base", "hierarchy"])("correct JSON files for %s", (graphqlFile) => {
   const schema = buildSchema(
     addToSchema +
       fs.readFileSync(`./test/testdata/${graphqlFile}.graphql`, "utf8"),
@@ -25,10 +23,16 @@ it.each([
     contentTypeSchemaBody(type, schema, "https://schema-examples.com"),
   );
 
-  for (const json of jsons) {
-    const contentTypeSchema = readJson(`./test/testdata/expected/${json}.json`);
+  const jsonDir = `./test/testdata/expected/${graphqlFile}`;
+  for (const jsonFile of fs.readdirSync(jsonDir)) {
+    const contentTypeSchema = readJson(`${jsonDir}/${jsonFile}`);
+
     const result = results.find(
-      (r) => r.$id === `https://schema-examples.com/${json}`,
+      (r) =>
+        r.$id ===
+        `https://schema-examples.com/${paramCase(
+          jsonFile.replace(".json", ""),
+        )}`,
     );
     if (process.env.LOG) {
       // eslint-disable-next-line no-console

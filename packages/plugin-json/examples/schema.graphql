@@ -1,10 +1,14 @@
-type Test @amplienceContentType {
+type ContentType @amplienceContentType {
   """
   This a description
   """
-  name: String
+  z: String
 
-  bla: Int!
+  b: Int!
+
+  h: [String!]!
+
+  ignored: String @amplienceIgnore
 
   deliveryKey: String
     @amplienceDeliveryKey(
@@ -14,14 +18,22 @@ type Test @amplienceContentType {
     )
 }
 
-type Test2 @amplienceContentType {
-  name: String
-  test: Test
-  extension: Test3 @amplienceExtension(name: "extension-name")
+type ContentTypeExplicitFieldOrder @amplienceContentType(fieldOrder: "h z b") {
+  z: String
 
-  aLotOfTests: [Test!]!
+  b: Int!
+
+  h: [ContentType!]!
+
+  ignored: String @amplienceIgnore
+
+  deliveryKey: String @amplienceDeliveryKey
 }
 
-type Test3 {
-  name: String
+type ObjectType {
+  string: String
+}
+
+type ExtensionType {
+  string: String
 }

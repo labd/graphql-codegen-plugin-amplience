@@ -5,8 +5,8 @@ type Base @amplienceContentType {
       maxLength: 4
       format: markdown
       pattern: "/[\\w\\-]+"
+      examples: ["one example", "another example"]
     )
-    @amplienceExample(items: ["one example", "another example"])
   optionalText: String
   textList: [String!]! @amplienceList(minItems: 1, maxItems: 10)
   integer: Int! @amplienceNumber(minimum: 0, maximum: 10)
@@ -22,15 +22,13 @@ type Base @amplienceContentType {
   enum: Enum
   a: A
   bs: [B]
+  inlined: Inlined
   union: Union
   linkedA: A @amplienceLink
   referencedB: B @amplienceReference
-  deliveryKey: String
-    @amplienceDeliveryKey(
-      title: "example title"
-      description: "example description"
-      pattern: "some-pattern/requirement"
-    )
+  deliveryKeyWithDefaults: String @amplienceDeliveryKey
+  extension: Extension @amplienceExtension(name: "extension-name")
+  ignored: String @amplienceIgnore
 }
 
 enum Enum {
@@ -38,7 +36,13 @@ enum Enum {
   b
 }
 
-union Union = A | B
+type Inlined {
+  inlined: String!
+}
+
+type Extension {
+  a: String
+}
 
 type A @amplienceContentType {
   a: String!
@@ -48,6 +52,18 @@ type B @amplienceContentType {
   b: String!
 }
 
+union Union = A | B
+
+type DeliveryKeyExplicit @amplienceContentType {
+  a: String!
+  deliveryKeyExplicit: String
+    @amplienceDeliveryKey(
+      title: "explicit title"
+      description: "explicit description"
+      pattern: "explicit pattern"
+    )
+}
+
 type Localized @amplienceContentType {
   string: String! @amplienceLocalized
   boolean: Boolean! @amplienceLocalized
@@ -55,4 +71,15 @@ type Localized @amplienceContentType {
   float: Float! @amplienceLocalized
   image: AmplienceImage! @amplienceLocalized
   video: AmplienceVideo! @amplienceLocalized
+}
+
+type OrderedFields @amplienceContentType(fieldOrder: "c b a e d") {
+  a: String!
+  b: String!
+  c: String!
+  d: String!
+  e: String!
+
+  ignored: String @amplienceIgnore
+  deliveryKey: String @amplienceDeliveryKey
 }

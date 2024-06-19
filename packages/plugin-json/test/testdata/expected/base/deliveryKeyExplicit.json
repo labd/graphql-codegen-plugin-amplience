@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://schema-examples.com/base",
-  "title": "Base",
-  "description": "Base",
+  "$id": "https://schema-examples.com/delivery-key-explicit",
+  "title": "Delivery Key Explicit",
+  "description": "Delivery Key Explicit",
   "allOf": [
     {
       "$ref": "http://bigcontent.io/cms/schema/v1/core#/definitions/content"
@@ -16,7 +16,7 @@
       "properties": {
         "deliveryKey": {
           "type": "string",
-          "title": "explciit title",
+          "title": "explicit title",
           "description": "explicit description",
           "pattern": "explicit pattern"
         }

@@ -220,3 +220,76 @@ it("Throws error: Types referenced by fields with '@amplienceExtension' must not
     "Types referenced by fields with '@amplienceExtension' must not have '@amplienceContentType' directive.\n\ntype Test\n\ta",
   );
 });
+
+it.each([
+  {
+    testSchema: gql`
+      type Test @amplienceContentType(fieldOrder: "test ignored") {
+        test: String!
+        ignored: String @amplienceIgnore
+      }
+    `,
+    errorFields: ["ignored"],
+  },
+  {
+    testSchema: gql`
+      type Test @amplienceContentType(fieldOrder: "test deliveryKey") {
+        test: String!
+        deliveryKey: String @amplienceDeliveryKey
+      }
+    `,
+    errorFields: ["deliveryKey"],
+  },
+  {
+    testSchema: gql`
+      type Test @amplienceContentType(fieldOrder: "test ignored deliveryKey") {
+        test: String!
+        ignored: String @amplienceIgnore
+        deliveryKey: String @amplienceDeliveryKey
+      }
+    `,
+    errorFields: ["ignored", "deliveryKey"],
+  },
+])(
+  "Throws error: @amplienceContentType fieldOrder arguments must not specify fields with @amplienceDeliveryKey or @amplienceIgnore",
+  ({ testSchema, errorFields }) => {
+    const schema = buildASTSchema(gql`
+      ${print(schemaPrepend)}
+      ${print(testSchema)}
+    `);
+    expect(() => validate(schema, [], {}, "", [])).toThrow(
+      `@amplienceContentType fieldOrder arguments must not specify fields with @amplienceDeliveryKey or @amplienceIgnore.\n\ntype Test\n\t${errorFields.join(
+        "\n\t",
+      )}`,
+    );
+  },
+);
+
+it("Throws error: @amplienceContentType fieldOrder arguments must specify every field defined within the type", () => {
+  const schema = buildASTSchema(gql`
+    ${print(schemaPrepend)}
+    type Test @amplienceContentType(fieldOrder: "test") {
+      test: String!
+      missing: String
+      ignored: String @amplienceIgnore
+      deliveryKey: String @amplienceDeliveryKey
+    }
+  `);
+  expect(() => validate(schema, [], {}, "", [])).toThrow(
+    `@amplienceContentType fieldOrder arguments must specify every field defined within the type.\n\ntype Test\n\tmissing`,
+  );
+});
+
+it("Throws error: @amplienceContentType fieldOrder arguments must not specify fields not defined within the type", () => {
+  const schema = buildASTSchema(gql`
+    ${print(schemaPrepend)}
+    type Test @amplienceContentType(fieldOrder: "test unknown") {
+      test: String!
+      ignored: String @amplienceIgnore
+      deliveryKey: String @amplienceDeliveryKey
+    }
+  `);
+  expect(() => validate(schema, [], {}, "", [])).toThrow(
+    `@amplienceContentType fieldOrder arguments must not specify fields not defined within the type.\n\ntype Test\n\tunknown`,
+  );
+});
