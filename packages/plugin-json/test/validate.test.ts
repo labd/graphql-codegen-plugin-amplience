@@ -121,3 +121,102 @@ it.each([
     );
   },
 );
+
+it.each([
+  gql`
+    type Test {
+      a: String! @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type Test {
+      a: Int! @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type Test {
+      a: Float! @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type Test {
+      a: Boolean! @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type Test {
+      a: String @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type Test {
+      a: Int @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type Test {
+      a: Float @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type Test {
+      a: Boolean @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type ObjectType {
+      a: String!
+    }
+    type Test {
+      a: [ObjectType] @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type ObjectType {
+      a: String!
+    }
+    type Test {
+      a: ObjectType! @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    type ObjectType {
+      a: String!
+    }
+    type Test {
+      a: [ObjectType!]! @amplienceExtension(name: "test-extension")
+    }
+  `,
+  gql`
+    scalar Date
+    type Test {
+      a: Date @amplienceExtension(name: "test-extension")
+    }
+  `,
+])(
+  "Throw error: Fields with '@amplienceExtension' must be Nullable and of an Object type defined elsewhere in the schema",
+  (testSchema) => {
+    const schema = buildASTSchema(gql`
+      ${print(schemaPrepend)}
+      ${print(testSchema)}
+    `);
+    expect(() => validate(schema, [], {}, "", [])).toThrow(
+      "Fields with '@amplienceExtension' must be Nullable and of an Object type defined elsewhere in the schema.\n\ntype Test\n\ta",
+    );
+  },
+);
+
+it("Throws error: Types referenced by fields with '@amplienceExtension' must not have '@amplienceContentType' directive", () => {
+  const schema = buildASTSchema(gql`
+    ${print(schemaPrepend)}
+    type ReferencedType @amplienceContentType {
+      a: String!
+    }
+    type Test {
+      a: ReferencedType @amplienceExtension(name: "test-extension")
+    }
+  `);
+  expect(() => validate(schema, [], {}, "", [])).toThrow(
+    "Types referenced by fields with '@amplienceExtension' must not have '@amplienceContentType' directive.\n\ntype Test\n\ta",
+  );
+});

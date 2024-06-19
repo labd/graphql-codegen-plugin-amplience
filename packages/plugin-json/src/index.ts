@@ -13,6 +13,8 @@ import type { ObjectTypeDefinitionNode } from "graphql";
 import { dirname } from "path";
 import { contentTypeSchemaBody } from "./lib/amplience-schema-transformers";
 import {
+  getAmplienceExtensionNotNullableObjectReport,
+  getAmplienceExtensionReferencesAmplienceContentTypeReport,
   getDeliveryKeyNotNullableStringReport,
   getObjectTypeDefinitions,
   getRequiredLocalizedFieldsReport,
@@ -84,6 +86,22 @@ export const validate: PluginValidateFn<PluginConfig> = (
   if (deliveryKeyNotNullableStringReport) {
     throw new Error(
       `Fields with '@amplienceDeliveryKey' must be of Nullable type String.\n\n${deliveryKeyNotNullableStringReport}`,
+    );
+  }
+
+  const amplienceExtensionNotNullableObjectReport =
+    getAmplienceExtensionNotNullableObjectReport(types);
+  if (amplienceExtensionNotNullableObjectReport) {
+    throw new Error(
+      `Fields with '@amplienceExtension' must be Nullable and of an Object type defined elsewhere in the schema.\n\n${amplienceExtensionNotNullableObjectReport}`,
+    );
+  }
+
+  const amplienceExtensionOnAmplienceContentTypeReport =
+    getAmplienceExtensionReferencesAmplienceContentTypeReport(types);
+  if (amplienceExtensionOnAmplienceContentTypeReport) {
+    throw new Error(
+      `Types referenced by fields with '@amplienceExtension' must not have '@amplienceContentType' directive.\n\n${amplienceExtensionOnAmplienceContentTypeReport}`,
     );
   }
 };

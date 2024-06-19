@@ -3,10 +3,11 @@ import {
   isObjectTypeDefinitionNode,
   isValue,
 } from "amplience-graphql-codegen-common";
-import type {
-  FieldDefinitionNode,
-  GraphQLSchema,
-  ObjectTypeDefinitionNode,
+import type { NamedTypeNode, TypeNode } from "graphql";
+import {
+  type FieldDefinitionNode,
+  type GraphQLSchema,
+  type ObjectTypeDefinitionNode,
 } from "graphql";
 
 export const getObjectTypeDefinitions = (
@@ -81,6 +82,66 @@ const isDeliveryKeyField = (field: FieldDefinitionNode) =>
 
 const isNullableStringField = (field: FieldDefinitionNode) =>
   field.type.kind === "NamedType" && field.type.name.value === "String";
+
+export const getAmplienceExtensionNotNullableObjectReport = (
+  types: ObjectTypeDefinitionNode[],
+): string =>
+  getFieldsReport(
+    types.filter(
+      (type) =>
+        type.fields?.some(
+          (field) =>
+            isAmplienceExtensionField(field) &&
+            !isNullableObjectField(field.type, types),
+        ),
+    ),
+    (field) =>
+      isAmplienceExtensionField(field) &&
+      !isNullableObjectField(field.type, types),
+  );
+
+// @amplienceExtension referencing an @amplienceContentType produces odd behavior we want to avoid
+export const getAmplienceExtensionReferencesAmplienceContentTypeReport = (
+  types: ObjectTypeDefinitionNode[],
+): string =>
+  getFieldsReport(
+    types.filter(
+      (type) =>
+        type.fields?.some(
+          (field) =>
+            isAmplienceExtensionField(field) &&
+            isNullableObjectField(field.type, types) &&
+            isAmplienceContentTypeField(field.type, types),
+        ),
+    ),
+    (field) =>
+      isAmplienceExtensionField(field) &&
+      isNullableObjectField(field.type, types) &&
+      isAmplienceContentTypeField(field.type, types),
+  );
+
+const isAmplienceExtensionField = (field: FieldDefinitionNode) =>
+  hasDirective(field, "amplienceExtension");
+
+const isNullableObjectField = (
+  fieldType: TypeNode,
+  allTypes: ObjectTypeDefinitionNode[],
+): fieldType is NamedTypeNode =>
+  fieldType.kind === "NamedType" &&
+  allTypes.some((type) => type.name.value === fieldType.name.value);
+
+const isAmplienceContentTypeField = (
+  fieldType: NamedTypeNode,
+  allTypes: ObjectTypeDefinitionNode[],
+) => {
+  const referencedType = allTypes.find(
+    (t) => t.name.value === fieldType.name.value,
+  );
+
+  return referencedType
+    ? hasDirective(referencedType, "amplienceContentType")
+    : false;
+};
 
 /**
  * Converts a type with filtered fields in a simple string report.
