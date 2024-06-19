@@ -19,15 +19,11 @@
         }
       }
     },
-    "int": { "title": "Int", "type": "integer" },
-    "list": { "title": "List", "type": "array", "items": { "type": "string" } },
-    "string": {
-      "title": "String",
-      "description": "This a description",
-      "type": "string"
-    }
+    "b": { "title": "B", "type": "integer" },
+    "h": { "title": "H", "type": "array", "items": { "type": "string" } },
+    "z": { "title": "Z", "description": "This a description", "type": "string" }
   },
   "description": "Content Type",
-  "propertyOrder": ["_meta", "string", "int", "list"],
-  "required": ["int", "list"]
+  "propertyOrder": ["_meta", "b", "h", "z"],
+  "required": ["b", "h"]
 }

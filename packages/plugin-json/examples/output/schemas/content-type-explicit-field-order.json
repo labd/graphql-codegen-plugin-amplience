@@ -18,18 +18,18 @@
         }
       }
     },
-    "int": { "title": "Int", "type": "integer" },
-    "list": {
-      "title": "List",
+    "b": { "title": "B", "type": "integer" },
+    "h": {
+      "title": "H",
       "type": "array",
       "items": {
         "type": "object",
         "allOf": [{ "$ref": "https://schema-examples.com/content-type" }]
       }
     },
-    "string": { "title": "String", "type": "string" }
+    "z": { "title": "Z", "type": "string" }
   },
   "description": "Content Type Explicit Field Order",
-  "propertyOrder": ["_meta", "string", "int", "list"],
-  "required": ["int", "list"]
+  "propertyOrder": ["_meta", "h", "z", "b"],
+  "required": ["b", "h"]
 }

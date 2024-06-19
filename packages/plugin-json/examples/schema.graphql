@@ -2,11 +2,11 @@ type ContentType @amplienceContentType {
   """
   This a description
   """
-  string: String
+  z: String
 
-  int: Int!
+  b: Int!
 
-  list: [String!]!
+  h: [String!]!
 
   ignored: String @amplienceIgnore
 
@@ -18,13 +18,12 @@ type ContentType @amplienceContentType {
     )
 }
 
-type ContentTypeExplicitFieldOrder
-  @amplienceContentType(fieldOrder: "string int list") {
-  int: Int!
+type ContentTypeExplicitFieldOrder @amplienceContentType(fieldOrder: "h z b") {
+  z: String
 
-  list: [ContentType!]!
+  b: Int!
 
-  string: String
+  h: [ContentType!]!
 
   ignored: String @amplienceIgnore
 
