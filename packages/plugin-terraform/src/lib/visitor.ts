@@ -83,7 +83,7 @@ export const createObjectTypeVisitor =
 
     const contentType = tfg.resource("amplience_content_type", name, {
       content_type_uri: schema.attr("schema_id"),
-      label: label ? label : capitalCase(node.name.value),
+      label: label ?? capitalCase(node.name.value),
       icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
       status: "ACTIVE",
       'dynamic"visualization"':
