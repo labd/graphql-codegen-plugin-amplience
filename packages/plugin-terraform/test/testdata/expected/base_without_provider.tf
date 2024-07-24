@@ -197,3 +197,21 @@ resource "amplience_content_type_assignment" "test_no_auto_sync"{
 content_type_id = amplience_content_type.test_no_auto_sync.id
 repository_id = data.amplience_content_repository.website1.id
 }
+
+resource "amplience_content_type_schema" "test_custom_label"{
+body = file("${path.module}/schemas/test-custom-label.json")
+schema_id = "https://schema-examples.com/test-custom-label"
+validation_level = "CONTENT_TYPE"
+auto_sync = true
+}
+
+resource "amplience_content_type" "test_custom_label"{
+content_type_uri = amplience_content_type_schema.test_custom_label.schema_id
+label = "Test Custom Label"
+status = "ACTIVE"
+}
+
+resource "amplience_content_type_assignment" "test_custom_label"{
+content_type_id = amplience_content_type.test_custom_label.id
+repository_id = data.amplience_content_repository.website1.id
+}
