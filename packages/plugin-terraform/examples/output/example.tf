@@ -176,7 +176,7 @@ resource "amplience_content_type_schema" "test_custom_label" {
 
 resource "amplience_content_type" "test_custom_label" {
   content_type_uri = amplience_content_type_schema.test_custom_label.schema_id
-  label            = "Test Custom Label"
+  label            = "Test Altered Custom Label"
   status           = "ACTIVE"
 }
 
