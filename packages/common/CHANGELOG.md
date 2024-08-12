@@ -1,5 +1,11 @@
 # amplience-graphql-codegen-common
 
+## 1.2.0
+
+### Minor Changes
+
+- 6131e70: Add optional directive for custom label override
+
 ## 1.1.0
 
 ### Minor Changes

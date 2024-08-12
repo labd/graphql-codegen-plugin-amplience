@@ -1,5 +1,16 @@
 # amplience-graphql-codegen-json
 
+## 1.2.0
+
+### Minor Changes
+
+- dd92fc4: - add validation for amplience extension
+
+### Patch Changes
+
+- Updated dependencies [6131e70]
+  - amplience-graphql-codegen-common@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
