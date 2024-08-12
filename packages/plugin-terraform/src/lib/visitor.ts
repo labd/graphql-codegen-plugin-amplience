@@ -75,11 +75,15 @@ export const createObjectTypeVisitor =
       ? maybeDirectiveValue<StringValueNode>(directive, "icon")?.value
       : undefined;
 
+    const label = directive
+      ? maybeDirectiveValue<StringValueNode>(directive, "label")?.value
+      : undefined;
+
     const dynamicVisualization = visualization?.find(hasProperty("for_each"));
 
     const contentType = tfg.resource("amplience_content_type", name, {
       content_type_uri: schema.attr("schema_id"),
-      label: capitalCase(node.name.value),
+      label: label ?? capitalCase(node.name.value),
       icon: iconUrl ? { size: 256, url: iconUrl } : undefined,
       status: "ACTIVE",
       'dynamic"visualization"':

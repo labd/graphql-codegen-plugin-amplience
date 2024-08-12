@@ -26,6 +26,10 @@ type TestNoAutoSync @amplienceContentType {
   name: String
 }
 
+type TestCustomLabel @amplienceContentType(label: "Test Altered Custom Label") {
+  name: String
+}
+
 type NotATest {
   name: String!
 }

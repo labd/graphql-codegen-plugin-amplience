@@ -41,5 +41,6 @@ export const schemaPrepend = gql`
     visualizations: Boolean
     icon: String
     autoSync: Boolean
+    label: String
   ) on OBJECT
 `;
