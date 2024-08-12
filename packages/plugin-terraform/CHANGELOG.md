@@ -1,5 +1,16 @@
 # amplience-graphql-codegen-terraform
 
+## 1.2.0
+
+### Minor Changes
+
+- 6131e70: Add optional directive for custom label override
+
+### Patch Changes
+
+- Updated dependencies [6131e70]
+  - amplience-graphql-codegen-common@1.2.0
+
 ## 1.1.0
 
 ### Minor Changes
