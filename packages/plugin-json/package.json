@@ -29,7 +29,7 @@
     "graphql-tag": "^2.12.6"
   },
   "peerDependencies": {
-    "amplience-graphql-codegen-common": "^1.0.19"
+    "amplience-graphql-codegen-common": "^1.2.0"
   },
   "devDependencies": {
     "amplience-graphql-codegen-common": "workspace:^"
