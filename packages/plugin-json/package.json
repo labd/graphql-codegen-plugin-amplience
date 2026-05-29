@@ -23,9 +23,9 @@
     "example": "graphql-codegen --config examples/codegen.yml"
   },
   "dependencies": {
-    "@graphql-codegen/plugin-helpers": "^5.0.1",
+    "@graphql-codegen/plugin-helpers": "^5.0.4",
     "change-case": "^4.1.2",
-    "graphql": "^16.8.1",
+    "graphql": "^16.9.0",
     "graphql-tag": "^2.12.6"
   },
   "peerDependencies": {
